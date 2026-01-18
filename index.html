@@ -46,7 +46,7 @@ h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--primary); }
 a { text-decoration: none; color: inherit; transition: var(--transition); }
 button { cursor: pointer; border: none; outline: none; font-family: var(--font-body); }
 img { max-width: 100%; display: block; }
-input, textarea { font-family: var(--font-body); }
+input, textarea, select { font-family: var(--font-body); }
 
 /* ---------- 2. UI Components ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -272,6 +272,18 @@ header {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* Track & Return Modals Specifics */
+.order-status-card {
+    background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #eee;
+}
+.status-pill {
+    display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;
+    color: white; background: #999;
+}
+.status-pill.placed { background: #3498db; }
+.status-pill.shipped { background: #f39c12; }
+.status-pill.delivered { background: #27ae60; }
+
 /* Responsive Media Queries */
 @media (max-width: 768px) {
   .mobile-toggle { display: block; }
@@ -314,7 +326,8 @@ header {
       <button onclick="toggleMenu()" style="position: absolute; top: 20px; right: 20px; font-size: 20px; background:none;"><i class="fa-solid fa-times"></i></button>
       <a href="#home" onclick="toggleMenu()">Home</a>
       <a href="#products" onclick="toggleMenu()">Shop</a>
-      <a href="#reviews" onclick="toggleMenu()">Reviews</a>
+      <a href="#" onclick="openTrackOrder(); toggleMenu()">Track Order</a>
+      <a href="#" onclick="openReturnOrder(); toggleMenu()">Return Item</a>
       <a href="#" onclick="openAdminLogin(); toggleMenu()">Admin</a>
     </nav>
     
@@ -378,6 +391,10 @@ header {
   <div class="container" style="text-align: center;">
     <h3 style="color: white; margin-bottom: 10px;">Herbal&Heaven</h3>
     <p style="color: #888; font-size: 13px;">Nature's Pure Essence. Made with Love.</p>
+    <div style="margin-top:20px; display:flex; gap:15px; justify-content:center; font-size:12px; color:#aaa;">
+        <span style="cursor:pointer;" onclick="openTrackOrder()">Track Order</span> | 
+        <span style="cursor:pointer;" onclick="openReturnOrder()">Return Policy</span>
+    </div>
   </div>
 </footer>
 
@@ -414,6 +431,39 @@ header {
   </div>
 </div>
 
+<div class="modal" id="trackModal">
+    <button onclick="closeModal('trackModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <h3>Track Your Order</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:15px;">Enter your Unique Order ID (e.g. HH-8X29)</p>
+    <div class="form-group" style="display:flex; gap:10px;">
+        <input type="text" id="trackInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
+        <button class="btn btn-primary" onclick="trackOrderNow()">Track</button>
+    </div>
+    <div id="trackResult" style="display:none;">
+        </div>
+</div>
+
+<div class="modal" id="returnModal">
+    <button onclick="closeModal('returnModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <h3>Return Item</h3>
+    <p style="font-size:13px; color:#666; margin-bottom:15px;">We offer hassle-free returns. Enter ID to fetch items.</p>
+    
+    <div id="returnStep1">
+        <div class="form-group" style="display:flex; gap:10px;">
+            <input type="text" id="returnInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
+            <button class="btn btn-primary" onclick="fetchReturnItems()">Fetch</button>
+        </div>
+    </div>
+
+    <div id="returnStep2" style="display:none;">
+        <p style="font-weight:bold; font-size:14px;">Select items to return:</p>
+        <div id="returnItemsList" style="margin:10px 0; max-height:150px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:6px;">
+            </div>
+        <textarea id="returnReason" placeholder="Reason for return..." style="width:100%; margin-bottom:10px;" rows="2"></textarea>
+        <button class="btn btn-primary" style="width:100%; background:var(--danger);" onclick="processReturn()">Confirm Return</button>
+    </div>
+</div>
+
 <div class="overlay" id="leadOverlay"></div>
 <div class="modal" id="leadModal">
   <div style="text-align:center;">
@@ -436,7 +486,7 @@ header {
 </div>
 
 <div class="modal" id="reviewModal">
-  <button onclick="closeReviewModal()" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+  <button onclick="closeModal('reviewModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
   <h3 style="margin-bottom:15px;">Write a Review</h3>
   <form onsubmit="submitReview(event)">
     <div class="form-group">
@@ -460,7 +510,7 @@ header {
 </div>
 
 <div class="modal" id="checkoutModal">
-  <button onclick="closeCheckout()" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
+  <button onclick="closeModal('checkoutModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
   
   <div id="step1">
     <h3>Shipping Info</h3>
@@ -492,13 +542,17 @@ header {
   <div id="step3" style="display:none; text-align:center;">
     <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:50px; margin-bottom:15px;"></i>
     <h3>Order Placed!</h3>
-    <p style="margin-bottom:20px;">We have sent your order details to Herbal&Heaven via WhatsApp.</p>
-    <button class="btn btn-secondary" onclick="closeCheckout(); location.reload();" style="margin-top:20px;">Close</button>
+    <div style="background:#f0f0f0; padding:10px; margin:15px 0; border-radius:8px; border:1px dashed #aaa;">
+        <p style="font-size:12px; color:#555;">Unique Order ID</p>
+        <h2 id="finalOrderId" style="letter-spacing:1px;"></h2>
+    </div>
+    <p style="margin-bottom:20px; font-size:14px;">Use this ID to Track or Return your order.</p>
+    <button class="btn btn-secondary" onclick="closeModal('checkoutModal'); location.reload();">Close</button>
   </div>
 </div>
 
 <div class="modal" id="adminModal">
-  <button onclick="document.getElementById('adminModal').classList.remove('active'); document.querySelector('.overlay').classList.remove('active');" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
+  <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
   <div id="adminLogin">
     <h3>Admin Login</h3>
     <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin:15px 0;">
@@ -515,7 +569,7 @@ header {
     </div>
     <div style="overflow-x:auto; max-height: 400px;">
         <table style="width:100%; font-size:12px; text-align:left; border-collapse:collapse;" id="orderTable">
-            <thead><tr style="background:#f5f5f5;"><th>ID/Name</th><th>Items</th><th>Notify</th></tr></thead>
+            <thead><tr style="background:#f5f5f5;"><th>ID/Status</th><th>Items</th><th>Actions</th></tr></thead>
             <tbody id="orderBody"></tbody>
         </table>
     </div>
@@ -532,9 +586,8 @@ header {
 // --- CONFIG ---
 const UPI_ID = "damareomkar96@oksbi";
 const ADMIN_PASS = "omti96";
-const OWNER_PHONE = "919595641664"; // Your Phone
-const OWNER_EMAIL = "damareomkar96@gmail.com"; // Your Email
-const SECRET_CODE = "DELETE99"; // Code to delete database
+const OWNER_PHONE = "919595641664"; 
+const SECRET_CODE = "DELETE99"; 
 
 // --- DATA ---
 const products = [
@@ -548,17 +601,16 @@ const products = [
   { id: 8, name: "Multani", cat: "Glow", price: 150, img: "pro8.jpg" }
 ];
 
-// Initial Reviews
 let reviews = JSON.parse(localStorage.getItem('hh_reviews') || JSON.stringify([
     {name: "Priya S.", rating: 5, text: "The Neem soap saved my skin! Acne is gone."},
-    {name: "Rahul K.", rating: 4, text: "Great smell, fast delivery."},
-    {name: "Anjali M.", rating: 5, text: "Packaging is eco-friendly. Love it!"}
+    {name: "Rahul K.", rating: 4, text: "Great smell, fast delivery."}
 ]));
 
 let cart = [];
 let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
 let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
 let payMethod = '';
+let currentReturnOrderId = '';
 
 // --- INIT ---
 window.onload = () => {
@@ -567,18 +619,28 @@ window.onload = () => {
     checkLeadGen();
 };
 
+// --- GENERIC MODAL UTILS ---
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.querySelector('.overlay').classList.remove('active');
+}
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    document.querySelector('.overlay').classList.add('active');
+}
+
 // --- LEAD GEN LOGIC ---
 function checkLeadGen() {
     if (!localStorage.getItem('hh_user_signed')) {
         setTimeout(() => {
-            document.getElementById('leadModal').classList.add('active');
+            openModal('leadModal');
             document.getElementById('leadOverlay').classList.add('active');
         }, 2000);
     }
 }
 
 function closeLeadModal() {
-    document.getElementById('leadModal').classList.remove('active');
+    closeModal('leadModal');
     document.getElementById('leadOverlay').classList.remove('active');
     localStorage.setItem('hh_user_signed', 'skipped'); 
 }
@@ -690,14 +752,7 @@ function buyNow(id) {
 }
 
 // --- REVIEW SYSTEM ---
-function openReviewModal() {
-    document.getElementById('reviewModal').classList.add('active');
-    document.querySelector('.overlay').classList.add('active');
-}
-function closeReviewModal() {
-    document.getElementById('reviewModal').classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
+function openReviewModal() { openModal('reviewModal'); }
 function submitReview(e) {
     e.preventDefault();
     const name = document.getElementById('revName').value;
@@ -705,11 +760,11 @@ function submitReview(e) {
     const rating = document.querySelector('input[name="rating"]:checked').value;
     
     const newRev = {name, text, rating: parseInt(rating)};
-    reviews.unshift(newRev); // Add to top
+    reviews.unshift(newRev); 
     localStorage.setItem('hh_reviews', JSON.stringify(reviews));
     
     renderReviews();
-    closeReviewModal();
+    closeModal('reviewModal');
     showToast("Review Posted! Thank you.");
     e.target.reset();
 }
@@ -729,11 +784,8 @@ function renderReviews() {
 function openCheckout() {
     if(!cart.length) return showToast("Cart is empty");
     toggleCart(); 
-    const modal = document.getElementById('checkoutModal');
-    const over = document.querySelector('.overlay');
-    modal.classList.add('active'); over.classList.add('active');
+    openModal('checkoutModal');
     
-    // Auto-fill
     if(localStorage.getItem('hh_saved_name')) {
         document.getElementById('cName').value = localStorage.getItem('hh_saved_name');
         document.getElementById('cEmail').value = localStorage.getItem('hh_saved_email');
@@ -745,11 +797,6 @@ function openCheckout() {
     document.getElementById('step3').style.display = 'none';
 }
 
-function closeCheckout() {
-    document.getElementById('checkoutModal').classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
-
 function goToPayment(e) {
     e.preventDefault();
     document.getElementById('step1').style.display = 'none';
@@ -759,7 +806,6 @@ function goToPayment(e) {
     document.getElementById('payAmount').innerText = '₹' + total;
     document.getElementById('showUpi').innerText = UPI_ID;
     
-    // Generate QR
     const url = `upi://pay?pa=${UPI_ID}&pn=HerbalHeaven&am=${total}&cu=INR`;
     document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
 }
@@ -783,9 +829,11 @@ function confirmOrder() {
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
     const itemList = cart.map(i=>`${i.name} (x${i.qty})`).join(', ');
 
-    // 1. Save Order locally
+    // Generate Unique ID: HH + 4 random chars
+    const uniqueId = "HH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+
     const order = {
-        id: 'ORD' + Math.floor(Math.random()*10000),
+        id: uniqueId,
         date: new Date().toLocaleString(),
         customer: custName,
         email: custEmail,
@@ -793,24 +841,106 @@ function confirmOrder() {
         address: custAddr,
         items: cart,
         total: total,
-        method: payMethod || 'QR Scan'
+        method: payMethod || 'QR Scan',
+        status: 'Order Placed' // Default status
     };
     orders.push(order);
     localStorage.setItem('hh_orders', JSON.stringify(orders));
 
-    // 2. Alert Owner via WhatsApp (Simulates the Customer sending the order)
-    const msg = `New Order!%0AID: ${order.id}%0AName: ${custName}%0AItems: ${itemList}%0ATotal: ₹${total}%0AAddress: ${custAddr}`;
+    // Alert Owner
+    const msg = `New Order!%0AID: ${uniqueId}%0AName: ${custName}%0AItems: ${itemList}%0ATotal: ₹${total}`;
     const waUrl = `https://wa.me/${OWNER_PHONE}?text=${msg}`;
     window.open(waUrl, '_blank');
 
-    // 3. Update UI
+    // UI Update
+    document.getElementById('finalOrderId').innerText = uniqueId;
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
     
     cart = []; updateCart();
 }
 
-// --- ADMIN & NOTIFICATIONS ---
+// --- TRACK ORDER LOGIC ---
+function openTrackOrder() { openModal('trackModal'); }
+
+function trackOrderNow() {
+    const inputId = document.getElementById('trackInput').value.trim().toUpperCase();
+    const order = orders.find(o => o.id === inputId);
+    const resultDiv = document.getElementById('trackResult');
+    
+    if (order) {
+        let statusClass = 'placed';
+        if(order.status === 'Shipped') statusClass = 'shipped';
+        if(order.status === 'Delivered') statusClass = 'delivered';
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <div class="order-status-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-weight:bold;">${order.id}</span>
+                    <span class="status-pill ${statusClass}">${order.status}</span>
+                </div>
+                <p style="font-size:12px; margin-bottom:5px;">Date: ${order.date}</p>
+                <div style="border-top:1px solid #eee; padding-top:10px; font-size:13px;">
+                    ${order.items.map(i => `<div>${i.name} x${i.qty}</div>`).join('')}
+                </div>
+                <p style="margin-top:10px; font-weight:bold;">Total: ₹${order.total}</p>
+            </div>
+        `;
+    } else {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<p style="color:red; text-align:center; margin-top:20px;">Order not found. Check ID.</p>`;
+    }
+}
+
+// --- RETURN ORDER LOGIC ---
+function openReturnOrder() { 
+    openModal('returnModal'); 
+    document.getElementById('returnStep1').style.display = 'block';
+    document.getElementById('returnStep2').style.display = 'none';
+    document.getElementById('returnInput').value = '';
+}
+
+function fetchReturnItems() {
+    const inputId = document.getElementById('returnInput').value.trim().toUpperCase();
+    const order = orders.find(o => o.id === inputId);
+    
+    if (order) {
+        currentReturnOrderId = order.id;
+        document.getElementById('returnStep1').style.display = 'none';
+        document.getElementById('returnStep2').style.display = 'block';
+        
+        const list = document.getElementById('returnItemsList');
+        list.innerHTML = order.items.map((item, idx) => `
+            <div style="display:flex; gap:10px; padding:5px; border-bottom:1px solid #eee;">
+                <input type="checkbox" id="retItem${idx}" value="${item.name}">
+                <label for="retItem${idx}">${item.name} (Qty: ${item.qty})</label>
+            </div>
+        `).join('');
+    } else {
+        alert("Order not found!");
+    }
+}
+
+function processReturn() {
+    const checkboxes = document.querySelectorAll('#returnItemsList input[type="checkbox"]:checked');
+    if (checkboxes.length === 0) return alert("Select at least one item.");
+    
+    const reason = document.getElementById('returnReason').value;
+    if (!reason) return alert("Please enter a reason.");
+
+    const selectedItems = Array.from(checkboxes).map(cb => cb.value).join(', ');
+    
+    // Construct message
+    const msg = `RETURN REQUEST%0AOrder ID: ${currentReturnOrderId}%0AItems: ${selectedItems}%0AReason: ${reason}`;
+    
+    // Send to owner via WhatsApp
+    window.open(`https://wa.me/${OWNER_PHONE}?text=${msg}`, '_blank');
+    
+    closeModal('returnModal');
+}
+
+// --- ADMIN & STATUS UPDATE ---
 function toggleMenu() {
     document.getElementById('mainMenu').classList.toggle('active');
     document.getElementById('menuOverlay').classList.toggle('active');
@@ -823,9 +953,7 @@ function showToast(msg) {
 }
 
 function openAdminLogin() {
-    const modal = document.getElementById('adminModal');
-    const over = document.querySelector('.overlay');
-    modal.classList.add('active'); over.classList.add('active');
+    openModal('adminModal');
     document.getElementById('adminLogin').style.display = 'block';
     document.getElementById('adminDash').style.display = 'none';
 }
@@ -840,15 +968,18 @@ function checkAdmin() {
 
 function refreshData() {
     const tbody = document.getElementById('orderBody');
-    tbody.innerHTML = orders.map(o => `
+    tbody.innerHTML = orders.map((o, index) => `
         <tr style="border-bottom:1px solid #eee;">
             <td style="padding:8px;">
-                <strong>${o.id}</strong><br>${o.customer}<br>
-                <small>${o.phone}</small>
+                <strong>${o.id}</strong><br>
+                <select onchange="updateStatus(${index}, this.value)" style="font-size:11px; padding:2px;">
+                    <option value="Order Placed" ${o.status === 'Order Placed' ? 'selected' : ''}>Placed</option>
+                    <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                </select>
             </td>
-            <td style="padding:8px;">
-                ${o.items.map(i=>`${i.name} (${i.qty})`).join('<br>')}
-                <br><strong>₹${o.total}</strong>
+            <td style="padding:8px; font-size:11px;">
+                ${o.items.map(i=>`${i.name}(${i.qty})`).join(', ')}
             </td>
             <td style="padding:8px; white-space:nowrap;">
                 <button class="btn-icon" style="background:#25d366" onclick="notifyWA('${o.phone}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-brands fa-whatsapp"></i></button>
@@ -856,6 +987,12 @@ function refreshData() {
             </td>
         </tr>
     `).join('');
+}
+
+function updateStatus(index, newStatus) {
+    orders[index].status = newStatus;
+    localStorage.setItem('hh_orders', JSON.stringify(orders));
+    showToast("Status Updated!");
 }
 
 // "Manual Automation" - One click triggers
@@ -870,7 +1007,6 @@ function notifyEmail(email, name, id, total) {
     window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
 }
 
-// Data Management
 function resetDatabase() {
     const code = prompt("Enter Secret Code to DELETE ALL DATA:");
     if(code === SECRET_CODE) {
@@ -889,7 +1025,7 @@ function resetDatabase() {
 
 function exportOrders() {
     const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
-        ID: o.id, Date: o.date, Name: o.customer, Phone: o.phone, 
+        ID: o.id, Status: o.status, Date: o.date, Name: o.customer, Phone: o.phone, 
         Addr: o.address, Total: o.total, Method: o.method,
         Items: o.items.map(i=>`${i.name}(${i.qty})`).join(', ')
     })));
