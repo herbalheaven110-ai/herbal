@@ -26,9 +26,9 @@
   --success: #27ae60;
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Lato', sans-serif;
-  --shadow: 0 5px 15px rgba(0,0,0,0.05);
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
   --radius: 8px;
-  --transition: all 0.25s ease;
+  --transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); /* Faster transition */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -40,7 +40,7 @@ body {
   color: var(--text-dark);
   line-height: 1.6;
   overflow-x: hidden;
-  padding-bottom: 70px;
+  padding-bottom: 80px; /* Increased space for bottom bar */
 }
 
 h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--primary); }
@@ -49,306 +49,204 @@ button { cursor: pointer; border: none; outline: none; font-family: var(--font-b
 img { max-width: 100%; display: block; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* ---------- 2. Optimized Animations ---------- */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+/* ---------- 2. Animations (Optimized) ---------- */
+.animate-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; will-change: opacity, transform; }
+.animate-in.visible { opacity: 1; transform: translateY(0); }
 
-@keyframes slideUp {
-    from { transform: translateY(10px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes cartAdd { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-.fade-in { animation: fadeIn 0.5s ease; }
-.slide-up { animation: slideUp 0.4s ease; }
-.bounce { animation: bounce 2s infinite; }
+.float { animation: float 3s ease-in-out infinite; will-change: transform; }
+.cart-animation { animation: cartAdd 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
 /* ---------- 3. UI Components ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  transition: var(--transition);
-  text-transform: uppercase;
-  font-size: 11px;
+  padding: 10px 20px; border-radius: 50px; font-weight: 700;
+  letter-spacing: 0.5px; transition: var(--transition);
+  text-transform: uppercase; font-size: 11px;
 }
 
-.btn-primary {
-  background: var(--primary); color: var(--white);
-  box-shadow: 0 3px 10px rgba(45, 74, 34, 0.2);
-}
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 4px 15px rgba(45, 74, 34, 0.3); }
+.btn-primary:active { transform: scale(0.96); } /* Better touch feedback */
 
-.btn-secondary {
-  background: transparent; color: var(--primary); border: 1px solid var(--primary);
-}
+.btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-secondary:hover { background: var(--primary); color: var(--white); }
 
-.btn-icon {
-    width: 32px; height: 32px; border-radius: 50%; display: inline-flex; 
-    align-items: center; justify-content: center; color: white; margin-left: 5px;
+.badge, .stock-badge {
+  position: absolute; color: white; border-radius: 50px; z-index: 2;
+  text-transform: uppercase; font-weight: bold;
 }
-
-.badge {
-  position: absolute; top: 15px; left: 15px;
-  background: var(--accent); color: white;
-  padding: 4px 12px; font-size: 10px;
-  border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;
-  z-index: 2;
-}
+.badge { top: 15px; left: 15px; background: var(--accent); padding: 4px 12px; font-size: 10px; letter-spacing: 1px; }
+.stock-badge { top: 15px; right: 15px; background: var(--danger); padding: 4px 8px; font-size: 9px; border-radius: 4px; }
 
 /* ---------- 4. Header ---------- */
 header {
   position: sticky; top: 0; z-index: 100;
-  background: #fdfbf7;
+  background: rgba(253, 251, 247, 0.95);
+  backdrop-filter: blur(10px); /* Smooth blur */
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  transition: transform 0.3s ease;
 }
 
 .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
 
-.logo {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary);
-}
-.logo img { 
-    height: 45px; width: 45px; border-radius: 50%; object-fit: cover;
-}
+.logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary); }
+.logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
 
+/* Desktop Menu */
 .nav-menu { display: flex; gap: 20px; align-items: center; }
-.nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; }
-.nav-menu a::after {
-  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
-  background: var(--accent); transition: var(--transition);
-}
+.nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; padding: 5px 0; }
+.nav-menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: var(--transition); }
 .nav-menu a:hover::after { width: 100%; }
 
-.signin-btn {
-    border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; 
-    font-size: 12px; transition: 0.3s;
-}
+.signin-btn { border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; font-size: 12px; transition: 0.3s; }
 .signin-btn:hover { background: var(--primary); color: white; }
 .user-info { display: none; font-size: 12px; font-weight: bold; color: var(--primary); cursor: pointer; }
 
 .nav-icons { display: flex; align-items: center; gap: 15px; }
-.cart-icon-wrap { position: relative; cursor: pointer; font-size: 18px; padding: 5px; } 
-.cart-count {
-  position: absolute; top: -5px; right: -5px;
-  background: var(--danger); color: white;
-  width: 16px; height: 16px; border-radius: 50%;
-  font-size: 9px; display: flex; align-items: center; justify-content: center;
+.cart-icon-wrap, .wishlist-icon-wrap { position: relative; cursor: pointer; font-size: 20px; padding: 5px; color: var(--text-dark); }
+.cart-count, .wishlist-count {
+  position: absolute; top: -5px; right: -5px; background: var(--danger); color: white;
+  width: 16px; height: 16px; border-radius: 50%; font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.wishlist-count { background: var(--accent); }
+
+.top-contact { background:#345b2a; color:#fff; text-align:center; padding:5px 10px; font-size:0.75rem; font-weight: 600; }
+
+/* ---------- 5. Mobile Bottom Navigation (NEW) ---------- */
+.bottom-nav {
+    display: none; /* Hidden on Desktop */
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: white; border-top: 1px solid #eee;
+    z-index: 1000;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
 
-.mobile-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--primary); padding: 5px; }
-
-.top-contact {
-  background:#345b2a; color:#fff; text-align:center;
-  padding:5px 10px; font-size:0.75rem; font-weight: 600;
+.nav-item {
+    display: flex; flex-direction: column; align-items: center;
+    color: #888; font-size: 10px; font-weight: 600; gap: 4px;
+    background: none; width: 100%;
 }
+.nav-item i { font-size: 20px; margin-bottom: 2px; transition: 0.2s; }
+.nav-item.active { color: var(--primary); }
+.nav-item.active i { transform: translateY(-2px); }
 
-/* ---------- 5. Hero Section ---------- */
+/* ---------- 6. Hero Section ---------- */
 .hero {
-  position: relative; height: 60vh; min-height: 450px;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-  display: flex; align-items: center; margin-bottom: 50px;
+  position: relative; height: 60vh; min-height: 400px;
+  background: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  display: flex; align-items: center; margin-bottom: 40px;
 }
-.hero-content {
-  position: relative; z-index: 2; color: white;
-  max-width: 600px; padding-left: 5%;
-}
-.hero h1 { font-size: 38px; line-height: 1.2; margin-bottom: 15px; color: white; }
-.hero p { font-size: 15px; margin-bottom: 25px; opacity: 0.95; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)); }
+.hero-content { position: relative; z-index: 2; color: white; max-width: 600px; padding-left: 5%; animation: fadeInUp 0.8s ease-out; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ---------- 6. Products ---------- */
-.section-title { text-align: center; margin-bottom: 35px; }
-.section-title h2 { font-size: 28px; margin-bottom: 8px; }
+/* ---------- 7. Components & Grids ---------- */
+.countdown-timer { background: var(--secondary); padding: 15px; text-align: center; margin: 20px auto; border-radius: var(--radius); max-width: 500px; }
+.timer-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+.timer-box { background: white; padding: 5px 10px; border-radius: 8px; min-width: 55px; box-shadow: var(--shadow); }
+.timer-value { font-size: 20px; font-weight: bold; color: var(--primary); }
 
-.filter-container {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 25px; align-items: center;
-}
-.search-box { position: relative; width: 100%; max-width: 280px; margin: 0 auto 12px auto; }
-.search-box input {
-  width: 100%; padding: 10px 18px; padding-right: 35px; border-radius: 50px;
-  border: 1px solid #ddd; outline: none; font-size: 13px;
-}
-.search-box i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
-.filter-btn {
-  padding: 6px 16px; border-radius: 50px; border: 1px solid #ddd; background: white;
-  cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 600;
-}
-.filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
-
-.products-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px; padding-bottom: 50px;
-}
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: 50px; }
+/* Improved Desktop Grid */
+@media(min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } }
 
 .product-card {
   background: white; border-radius: var(--radius); overflow: hidden;
-  box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #f0f0f0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: var(--transition); border: 1px solid #f0f0f0;
+  position: relative; height: 100%; display: flex; flex-direction: column;
 }
-.product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
-.product-img { height: 240px; overflow: hidden; position: relative; background: #f9f9f9; }
-.product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.product-card:hover .product-img img { transform: scale(1.03); }
+.product-img { height: 180px; overflow: hidden; position: relative; background: #f9f9f9; cursor: pointer; }
+.product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.product-card:hover .product-img img { transform: scale(1.05); }
 
-.product-info { padding: 15px; text-align: center; }
-.product-title { font-size: 16px; margin: 6px 0; color: var(--text-dark); }
-.product-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 10px; }
-
-.card-qty-wrapper {
-    display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
+.wishlist-btn {
+  position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9);
+  width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 3; transition: 0.2s; color: #ccc;
 }
-.qty-mini-btn {
-    width: 22px; height: 22px; background: #eee; border-radius: 50%; font-weight: bold;
-    display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555;
-}
-.card-qty-input {
-    width: 35px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 2px; font-size: 12px;
-}
-.card-btns { display: flex; gap: 6px; justify-content: center; }
+.wishlist-btn.active { background: var(--danger); color: white; }
 
-/* ---------- 7. Modals ---------- */
+.product-info { padding: 12px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.product-title { font-size: 14px; margin: 6px 0; color: var(--text-dark); cursor: pointer; font-weight: 700; }
+.product-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 8px; }
+
+.card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px; }
+.card-btns .btn { padding: 8px 0; font-size: 10px; width: 100%; }
+
+/* ---------- 8. Modals & Overlay ---------- */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6);
   z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
-  /* Removed all backdrop-filter */
 }
 .overlay.active { opacity: 1; visibility: visible; }
 
 .modal {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-  width: 90%; max-width: 500px; background: white;
+  width: 90%; max-width: 450px; background: white;
   z-index: 1000; border-radius: 12px; padding: 25px;
-  opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  max-height: 90vh; overflow-y: auto;
+  opacity: 0; visibility: hidden; transition: var(--transition);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+  max-height: 85vh; overflow-y: auto;
 }
 .modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
 
-.form-group { margin-bottom: 12px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 700; }
-.form-group input, .form-group textarea, .form-group select {
-  width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;
-}
-
-/* ---------- 8. Cart Drawer ---------- */
+/* ---------- 9. Cart Drawer ---------- */
 .cart-drawer {
   position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
-  background: white; z-index: 1001; transition: transform 0.3s ease;
-  display: flex; flex-direction: column; box-shadow: -3px 0 15px rgba(0,0,0,0.08);
+  background: white; z-index: 1002; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+  will-change: transform;
 }
-.cart-drawer.active { right: 0; }
-.cart-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.cart-body { flex: 1; overflow-y: auto; padding: 20px; }
-.cart-item { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #fff; }
+.cart-drawer.active { right: 0; transform: translateX(0); }
+
+.cart-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: #fff; padding: 8px; border-bottom: 1px solid #f0f0f0; }
 .cart-item img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-.cart-controls { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
 .qty-btn { width: 24px; height: 24px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
-.cart-qty-input { width: 35px; padding: 2px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;}
-.bulk-btn { background: #e0e0e0; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
 
-/* ---------- 9. Social Media Bar ---------- */
-.social-bar {
-  position: fixed; bottom: 0; left: 0; width: 100%;
-  background: white; border-top: 1px solid #eee;
-  display: flex; justify-content: space-around; align-items: center;
-  padding: 8px 0; z-index: 900;
-  box-shadow: 0 -3px 10px rgba(0,0,0,0.03);
-}
-.social-link {
-  display: flex; flex-direction: column; align-items: center;
-  font-size: 11px; color: var(--text-dark); gap: 3px;
-}
-.social-link i { font-size: 18px; transition: var(--transition); }
-.social-link:hover i { color: var(--primary); }
-.fa-whatsapp { color: #25d366; }
-.fa-instagram { color: #C13584; }
-.fa-facebook { color: #1877F2; }
+/* ---------- 10. Utils ---------- */
+.search-box { position: relative; width: 100%; max-width: 400px; margin: 0 auto 20px auto; }
+.search-box input { width: 100%; padding: 12px 20px; padding-right: 40px; border-radius: 50px; border: 1px solid #ddd; outline: none; }
+.search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
 
-/* Toast */
+.filter-btn { padding: 6px 15px; border-radius: 20px; border: 1px solid #eee; background: white; margin: 0 4px; font-size: 12px; transition: 0.2s; }
+.filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
 .toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: rgba(30,30,30,0.95); color: white; padding: 8px 16px; border-radius: 30px;
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(30,30,30,0.95); color: white; padding: 10px 20px; border-radius: 30px;
   font-size: 13px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000;
-  display: flex; align-items: center; gap: 8px; width: max-content;
+  display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Invoice (Hidden normally, used for PDF) */
-#invoiceTemplate {
-    display: none; padding: 30px; background: white; font-family: 'Lato', sans-serif;
-    width: 600px; /* Fixed width */
-}
-.inv-header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-.inv-logo img { height: 60px; margin: 0 auto; display: block; border-radius: 50%; }
-.inv-details { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 20px; }
-.inv-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
-.inv-table th { background: #f0f0f0; padding: 8px; text-align: left; }
-.inv-table td { border-bottom: 1px solid #eee; padding: 8px; }
-.inv-total { text-align: right; font-size: 16px; font-weight: bold; margin-top: 10px; }
-.inv-footer { text-align: center; font-size: 10px; color: #777; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
-
-/* Loading Spinner */
-.loading-spinner {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2001;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
+/* Responsive Tweaks */
 @media (max-width: 768px) {
-  .mobile-toggle { display: block; }
-  .nav-menu {
-    position: fixed; top: 0; left: -100%; width: 260px; height: 100vh;
-    background: white; flex-direction: column; padding: 60px 20px;
-    box-shadow: 3px 0 10px rgba(0,0,0,0.05); z-index: 1001;
-    transition: left 0.3s ease;
-    align-items: flex-start;
-  }
-  .nav-menu.active { left: 0; }
-  .nav-menu a { font-size: 15px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; width: 100%; }
-  .hero { height: 50vh; }
+  .nav-menu { display: none; } /* Hide Desktop Menu */
+  .bottom-nav { display: flex; } /* Show Bottom Nav */
+  .mobile-hide { display: none; }
+  .hero { height: 45vh; }
   .hero h1 { font-size: 28px; }
-  .cart-drawer { width: 90%; }
-  .filter-container { flex-direction: column; align-items: stretch; }
-  .search-box { width: 100%; max-width: none; }
-  .modal { width: 95%; padding: 20px; }
-  .products-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-}
-
-/* Performance Optimizations */
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .cart-drawer { width: 85%; }
+  
+  /* Fix layout shifts */
+  header .logo span { font-size: 16px; }
+  .section-title h2 { font-size: 24px; }
+  
+  /* Make horizontal scroll smoother */
+  .filter-container { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
 }
 </style>
 </head>
@@ -360,66 +258,74 @@ header {
 
 <header>
   <div class="container nav-wrapper">
-    <div class="mobile-toggle" onclick="toggleMenu()">
-      <i class="fa-solid fa-bars"></i>
-    </div>
-
     <a href="#" class="logo">
       <img src="herb.jpg" alt="Logo" loading="lazy">
       <span>Herbal&Heaven</span>
     </a>
     
-    <nav class="nav-menu" id="mainMenu">
-      <button onclick="toggleMenu()" style="position: absolute; top: 20px; right: 20px; font-size: 20px; background:none; border:none;"><i class="fa-solid fa-times"></i></button>
-      <a href="#home" onclick="toggleMenu()">Home</a>
-      <a href="#products" onclick="toggleMenu()">Shop</a>
-      <a href="#" onclick="openTrackOrder(); toggleMenu()">Track</a>
-      <a href="#" onclick="openReturnOrder(); toggleMenu()">Return</a>
+    <nav class="nav-menu">
+      <a href="#home">Home</a>
+      <a href="#products">Shop</a>
+      <a href="#" onclick="openTrackOrder()">Track</a>
+      <a href="#" onclick="openReturnOrder()">Return</a>
       
       <a href="#" class="signin-btn" id="signInBtn" onclick="openSignIn()">Sign In</a>
       <div class="user-info" id="userInfo" onclick="openUserDashboard()">
           <i class="fa-solid fa-user"></i> <span id="userNameDisplay">User</span>
       </div>
-      
-      <a href="#" onclick="openAdminLogin(); toggleMenu()">Admin</a>
+      <a href="#" onclick="openAdminLogin()" style="color:#888; font-size:11px;">Admin</a>
     </nav>
     
-    <div class="nav-icons">
+    <div class="nav-icons mobile-hide">
+      <div class="wishlist-icon-wrap" onclick="openWishlist()">
+        <i class="fa-regular fa-heart"></i>
+        <span class="wishlist-count" id="wishlistCount">0</span>
+      </div>
       <div class="cart-icon-wrap" onclick="toggleCart()">
         <i class="fa-solid fa-shopping-bag"></i>
         <span class="cart-count" id="cartCount">0</span>
       </div>
     </div>
+
+    <div class="nav-icons" style="display:none;" id="mobileHeaderIcons">
+       <div class="cart-icon-wrap" onclick="toggleCart()">
+         <i class="fa-solid fa-shopping-bag"></i>
+         <span class="cart-count" id="mobileCartCount">0</span>
+       </div>
+    </div>
   </div>
 </header>
-
-<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-
-<!-- Loading Spinner -->
-<div class="loading-spinner" id="loadingSpinner">
-  <div class="spinner"></div>
-</div>
 
 <section id="home" class="hero">
   <div class="container hero-content">
     <span style="color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:10px; display:block;">100% ORGANIC</span>
-    <h1 class="slide-up">Nature's Purest <br>Secret for You</h1>
-    <p class="slide-up">Handcrafted, chemical-free skincare rituals designed for your inner glow.</p>
-    <button class="btn btn-primary slide-up" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">Shop Now</button>
+    <h1>Nature's Purest <br>Secret for You</h1>
+    <p>Handcrafted, chemical-free skincare rituals designed for your inner glow.</p>
+    <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">Shop Now</button>
   </div>
 </section>
 
-<section id="products" class="container">
-  <div class="section-title">
+<div class="countdown-timer animate-in">
+  <h3 style="color: var(--primary); margin-bottom: 10px; font-size:14px;">🎁 Offer Ends In:</h3>
+  <div class="timer-container">
+    <div class="timer-box"><div class="timer-value" id="days">00</div><div style="font-size:10px">Days</div></div>
+    <div class="timer-box"><div class="timer-value" id="hours">00</div><div style="font-size:10px">Hrs</div></div>
+    <div class="timer-box"><div class="timer-value" id="minutes">00</div><div style="font-size:10px">Min</div></div>
+    <div class="timer-box"><div class="timer-value" id="seconds">00</div><div style="font-size:10px">Sec</div></div>
+  </div>
+</div>
+
+<section id="products" class="container" style="margin-top: 40px;">
+  <div class="section-title" style="text-align: center; margin-bottom: 20px;">
     <h2>Curated Rituals</h2>
   </div>
 
-  <div class="filter-container">
+  <div class="filter-container" style="text-align:center; margin-bottom:20px;">
     <div class="search-box">
       <input type="text" id="search" placeholder="Search soaps, oils..." onkeyup="filterProducts()">
       <i class="fa-solid fa-search"></i>
     </div>
-    <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px; width:100%; justify-content:center;">
+    <div style="overflow-x: auto; white-space: nowrap; padding-bottom: 5px;">
       <button class="filter-btn active" onclick="filterCat('all', this)">All</button>
       <button class="filter-btn" onclick="filterCat('Face', this)">Face</button>
       <button class="filter-btn" onclick="filterCat('Body', this)">Body</button>
@@ -427,39 +333,53 @@ header {
     </div>
   </div>
 
-  <div class="products-grid" id="productsGrid"></div>
+  <div class="products-grid" id="productsGrid">
+    </div>
 </section>
 
-<footer style="background: #222; color: #fff; padding: 40px 0; margin-bottom: 50px;">
-  <div class="container" style="text-align: center;">
-    <h3 style="color: white; margin-bottom: 10px;">Herbal&Heaven</h3>
-    <p style="color: #888; font-size: 13px;">Nature's Pure Essence. Made with Love.</p>
+<div class="bottom-nav">
+    <button class="nav-item active" onclick="scrollToTop()">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </button>
+    <button class="nav-item" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">
+        <i class="fa-solid fa-store"></i>
+        <span>Shop</span>
+    </button>
+    <button class="nav-item" onclick="toggleCart()">
+        <i class="fa-solid fa-shopping-bag"></i>
+        <span>Bag</span>
+    </button>
+    <button class="nav-item" onclick="handleMobileProfileClick()">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </button>
+    <button class="nav-item" onclick="openTrackOrder()">
+        <i class="fa-solid fa-truck-fast"></i>
+        <span>Track</span>
+    </button>
+</div>
+
+<footer style="background: #222; color: #fff; padding: 40px 0 80px 0; text-align: center; margin-top: 50px;">
+  <div class="container">
+    <h3>Herbal&Heaven</h3>
+    <p style="color: #888; font-size: 13px; margin-top: 10px;">Nature's Pure Essence.</p>
+    <div style="margin-top: 20px; display:flex; justify-content:center; gap:20px; font-size:20px;">
+        <a href="https://wa.me/919595641664"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="https://instagram.com/aose_clothing"><i class="fa-brands fa-instagram"></i></a>
+    </div>
   </div>
 </footer>
 
-<div class="social-bar">
-    <a href="https://wa.me/919595641664" target="_blank" class="social-link">
-        <i class="fa-brands fa-whatsapp bounce"></i><span>WhatsApp</span>
-    </a>
-    <a href="https://instagram.com/aose_clothing" target="_blank" class="social-link">
-        <i class="fa-brands fa-instagram bounce" style="animation-delay: 0.2s;"></i><span>Instagram</span>
-    </a>
-    <a href="https://facebook.com" target="_blank" class="social-link">
-        <i class="fa-brands fa-facebook bounce" style="animation-delay: 0.4s;"></i><span>Facebook</span>
-    </a>
-</div>
-
-<div class="toast" id="toast">Item added to cart</div>
-
 <div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
-  <div class="cart-header">
+  <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
     <h3>Your Bag</h3>
-    <button onclick="toggleCart()" style="background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
+    <button onclick="toggleCart()" style="background:none; font-size:20px;"><i class="fa-solid fa-times"></i></button>
   </div>
-  <div class="cart-body" id="cartItems"></div>
-  <div class="cart-header" style="border-top:1px solid #eee; border-bottom:none; flex-direction:column; gap:15px; background:#fdfbf7;">
-    <div style="display:flex; justify-content:space-between; width:100%; font-weight:700;">
+  <div class="cart-body" id="cartItems" style="flex: 1; overflow-y: auto; padding: 15px;"></div>
+  <div style="padding: 20px; background: #fdfbf7; border-top: 1px solid #eee;">
+    <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:15px;">
       <span>Total</span>
       <span id="cartTotal">₹0</span>
     </div>
@@ -467,287 +387,349 @@ header {
   </div>
 </div>
 
+<div class="modal" id="wishlistModal">
+    <button onclick="closeModal('wishlistModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <h3>My Wishlist</h3>
+    <div id="wishlistItems" style="margin-top: 15px;"></div>
+</div>
+
+<div class="modal" id="quickViewModal">
+    <button onclick="closeModal('quickViewModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <div id="quickViewContent"></div>
+</div>
+
 <div class="modal" id="signInModal">
     <button onclick="closeModal('signInModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
     <h3>Sign In</h3>
-    <p style="font-size:13px; color:#666; margin-bottom:15px;">Access your orders and details.</p>
-    <form onsubmit="handleSignIn(event)">
-        <div class="form-group"><input type="text" id="signName" placeholder="Your Name" required></div>
-        <div class="form-group"><input type="email" id="signEmail" placeholder="Email Address" required></div>
-        <div class="form-group"><input type="tel" id="signPhone" placeholder="Phone Number" required></div>
-        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+    <form onsubmit="handleSignIn(event)" style="margin-top:15px;">
+        <input type="text" id="signName" placeholder="Name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
+        <input type="email" id="signEmail" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
+        <input type="tel" id="signPhone" placeholder="Phone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Access Account</button>
     </form>
 </div>
 
 <div class="modal" id="userModal">
-    <button onclick="closeModal('userModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>My Profile</h3>
-    <p>Welcome back, <b id="dashboardName"></b></p>
-    <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
-    <h4>My Orders</h4>
-    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; font-size:12px; margin-top:10px;"></div>
-    <button class="btn btn-secondary" style="width:100%; margin-top:15px;" onclick="handleSignOut()">Sign Out</button>
-</div>
-
-<div class="modal" id="trackModal">
-    <button onclick="closeModal('trackModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>Track Your Order</h3>
-    <div class="form-group" style="display:flex; gap:10px;">
-        <input type="text" id="trackInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
-        <button class="btn btn-primary" onclick="trackOrderNow()">Track</button>
-    </div>
-    <div id="trackResult" style="display:none;"></div>
-</div>
-
-<div class="modal" id="returnModal">
-    <button onclick="closeModal('returnModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>Return Item</h3>
-    <div id="returnStep1">
-        <div class="form-group" style="display:flex; gap:10px;">
-            <input type="text" id="returnInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
-            <button class="btn btn-primary" onclick="fetchReturnItems()">Fetch</button>
-        </div>
-    </div>
-    <div id="returnStep2" style="display:none;">
-        <div id="returnItemsList" style="margin:10px 0; max-height:150px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:6px;"></div>
-        <textarea id="returnReason" placeholder="Reason..." style="width:100%; margin-bottom:10px;" rows="2"></textarea>
-        <button class="btn btn-primary" style="width:100%; background:var(--danger);" onclick="processReturn()">Confirm Return</button>
-    </div>
+    <button onclick="closeModal('userModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <h3>Profile</h3>
+    <h4 id="dashboardName" style="color:#555; margin:5px 0 15px 0;"></h4>
+    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:5px; margin-bottom:15px;"></div>
+    <button class="btn btn-secondary" style="width:100%;" onclick="handleSignOut()">Sign Out</button>
 </div>
 
 <div class="modal" id="checkoutModal">
   <button onclick="closeModal('checkoutModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
   
   <div id="step1">
-    <h3>Shipping Info</h3>
-    <form onsubmit="goToPayment(event)">
-      <div class="form-group"><input id="cName" type="text" placeholder="Full Name" required></div>
-      <div class="form-group"><input id="cEmail" type="email" placeholder="Email Address" required></div>
-      <div class="form-group"><input id="cPhone" type="tel" placeholder="Phone" required></div>
-      <div class="form-group"><textarea id="cAddr" rows="2" placeholder="Full Address" required></textarea></div>
+    <h3>Shipping</h3>
+    <form onsubmit="goToPayment(event)" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+      <input id="cName" type="text" placeholder="Full Name" style="padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+      <input id="cEmail" type="email" placeholder="Email" style="padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+      <input id="cPhone" type="tel" placeholder="Phone" style="padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+      <textarea id="cAddr" rows="2" placeholder="Address" style="padding:10px; border:1px solid #ddd; border-radius:5px;" required></textarea>
       <button type="submit" class="btn btn-primary" style="width:100%;">Proceed to Pay</button>
     </form>
   </div>
 
   <div id="step2" style="display:none; text-align:center;">
     <h3>Payment</h3>
-    <p style="margin-bottom:15px;">Total: <strong id="payAmount"></strong></p>
+    <p style="margin:10px 0;">Total: <strong id="payAmount" style="font-size:18px; color:var(--primary);"></strong></p>
     <div style="display:grid; gap:10px; margin-bottom:20px;">
       <button class="btn" style="background:#4285F4; color:white;" onclick="pay('Google Pay')">Google Pay</button>
       <button class="btn" style="background:#5F259F; color:white;" onclick="pay('PhonePe')">PhonePe</button>
       <button class="btn" style="background:#00B9F1; color:white;" onclick="pay('Paytm')">Paytm</button>
     </div>
-    <p style="font-size:12px; color:#666;">OR Scan QR Code</p>
-    <img id="qrImg" style="width:150px; margin:10px auto; border:1px solid #eee;">
-    <button class="btn btn-success" style="background:var(--success); color:white; width:100%;" onclick="confirmOrder()">I have Paid</button>
+    <div id="qrImgContainer" style="margin: 10px auto;"></div>
+    <button class="btn btn-success" style="background:var(--success); color:white; width:100%;" onclick="confirmOrder()">Confirm Payment</button>
   </div>
   
   <div id="step3" style="display:none; text-align:center;">
-    <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:40px; margin-bottom:10px;"></i>
+    <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:50px; margin-bottom:15px;"></i>
     <h3>Order Placed!</h3>
-    <h2 id="finalOrderId" style="letter-spacing:1px; margin:10px 0;"></h2>
-    <p style="font-size:13px; margin-bottom:15px;">A confirmation was sent to you.</p>
+    <p id="finalOrderId" style="font-weight:bold; font-family:monospace; margin:10px 0;"></p>
     <button class="btn btn-primary" onclick="downloadInvoice()">Download Invoice</button>
-    <button class="btn btn-secondary" onclick="closeModal('checkoutModal'); location.reload();">Close</button>
   </div>
+</div>
+
+<div class="toast" id="toast">Item added to cart</div>
+
+<div id="invoiceTemplate" style="display:none; padding:20px; font-family:sans-serif;">
+    <h2 style="text-align:center;">Herbal&Heaven</h2>
+    <p style="text-align:center; font-size:12px; color:#666;">Invoice</p>
+    <div id="invContent" style="margin-top:20px;"></div>
+</div>
+
+<div class="modal" id="trackModal">
+    <button onclick="closeModal('trackModal')" style="position: absolute; right: 15px; top: 10px;"><i class="fa-solid fa-times"></i></button>
+    <h3>Track Order</h3>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+        <input type="text" id="trackInput" placeholder="Order ID" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px;">
+        <button class="btn btn-primary" onclick="trackOrderNow()">Go</button>
+    </div>
+    <div id="trackResult" style="margin-top:15px; font-size:13px;"></div>
+</div>
+
+<div class="modal" id="returnModal">
+    <button onclick="closeModal('returnModal')" style="position: absolute; right: 15px; top: 10px;"><i class="fa-solid fa-times"></i></button>
+    <h3>Return</h3>
+    <input type="text" id="returnInput" placeholder="Order ID" style="width:100%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:5px;">
+    <button class="btn btn-primary" style="width:100%;" onclick="fetchReturnItems()">Fetch Items</button>
 </div>
 
 <div class="modal" id="adminModal">
-  <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
-  <div id="adminLogin">
-    <h3>Admin Login</h3>
-    <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin:15px 0;">
-    <button class="btn btn-primary" onclick="checkAdmin()">Login</button>
-  </div>
-  <div id="adminDash" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h3>Dashboard</h3>
-      <button class="btn btn-primary" onclick="refreshData()"><i class="fa-solid fa-rotate-right"></i></button>
+    <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 10px;"><i class="fa-solid fa-times"></i></button>
+    <h3>Admin</h3>
+    <div id="adminLogin">
+        <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:5px;">
+        <button class="btn btn-primary" onclick="checkAdmin()">Login</button>
     </div>
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-        <button class="btn btn-secondary" onclick="exportOrders()">Orders .xlsx</button>
-        <button class="btn btn-secondary" onclick="exportCustomers()">Customers .xlsx</button>
+    <div id="adminDash" style="display:none;">
+        <div style="max-height:300px; overflow:auto;"><table id="orderTable" style="width:100%; font-size:11px;"></table></div>
     </div>
-    <div style="overflow-x:auto; max-height: 400px;">
-        <table style="width:100%; font-size:12px; text-align:left; border-collapse:collapse;" id="orderTable">
-            <thead><tr style="background:#f5f5f5;"><th>ID/Status</th><th>Items</th><th>Actions</th></tr></thead>
-            <tbody id="orderBody"></tbody>
-        </table>
-    </div>
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; text-align: center;">
-        <button class="btn" style="background: var(--danger); color: white;" onclick="resetDatabase()">
-            <i class="fa-solid fa-trash"></i> Reset Database
-        </button>
-    </div>
-  </div>
-</div>
-
-<div id="invoiceTemplate">
-    <div class="inv-header">
-        <div class="inv-logo"><img src="herb.jpg" alt="Logo"></div>
-        <h2>Herbal&Heaven</h2>
-        <p style="font-size:12px; color:#555;">Rashin, Karjat, Ahmednagar, 414403</p>
-        <p style="font-size:12px; color:#555;">+91-9595641664 | aoseofficial77@gmail.com</p>
-    </div>
-    <div class="inv-details">
-        <div>
-            <strong>Bill To:</strong><br>
-            <span id="invCustName"></span><br>
-            <span id="invCustPhone"></span><br>
-            <span id="invCustAddr"></span>
-        </div>
-        <div style="text-align:right;">
-            <strong>Invoice #:</strong> <span id="invId"></span><br>
-            <strong>Date:</strong> <span id="invDate"></span>
-        </div>
-    </div>
-    <table class="inv-table">
-        <thead>
-            <tr><th>Item</th><th>Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Total</th></tr>
-        </thead>
-        <tbody id="invItemsBody"></tbody>
-    </table>
-    <div class="inv-total">Total Amount: ₹<span id="invFinalTotal"></span></div>
-    <div class="inv-footer">Thank you for choosing Nature's Purest.</div>
 </div>
 
 <script>
 // --- CONFIG ---
 const UPI_ID = "damareomkar96@oksbi";
 const ADMIN_PASS = "omti96";
-const OWNER_PHONE = "919595641664"; 
-const SECRET_CODE = "DELETE99"; 
+const OWNER_PHONE = "919595641664";
 
 // --- DATA ---
 const products = [
-  { id: 1, name: "Neem Soap", cat: "Face", price: 150, img: "proo.jpg" },
-  { id: 2, name: "Papaya Soap", cat: "Glow", price: 150, img: "pro.jpg" },
-  { id: 3, name: "Tulsi Soap", cat: "Body", price: 150, img: "pro1.jpg" },
-  { id: 4, name: "Aloe Vera", cat: "Face", price: 150, img: "pro4.jpg" },
-  { id: 5, name: "Detan Bar", cat: "Glow", price: 150, img: "pro5.jpg" },
-  { id: 6, name: "Rose Soap", cat: "Body", price: 150, img: "pro3.jpg" },
-  { id: 7, name: "Charcoal", cat: "Face", price: 150, img: "pro7.jpg" },
-  { id: 8, name: "Multani", cat: "Glow", price: 150, img: "pro8.jpg" }
+  { id: 1, name: "Neem Soap", cat: "Face", price: 150, img: "proo.jpg", stock: 15, rating: 4.5, desc: "Purifying neem soap for clear skin." },
+  { id: 2, name: "Papaya Soap", cat: "Glow", price: 150, img: "pro.jpg", stock: 8, rating: 4.7, desc: "Papaya enzyme soap for radiant skin." },
+  { id: 3, name: "Tulsi Soap", cat: "Body", price: 150, img: "pro1.jpg", stock: 20, rating: 4.3, desc: "Holy basil soap for body purification." },
+  { id: 4, name: "Aloe Vera", cat: "Face", price: 150, img: "pro4.jpg", stock: 25, rating: 4.8, desc: "Soothing aloe vera gel for sensitive skin." },
+  { id: 5, name: "Detan Bar", cat: "Glow", price: 150, img: "pro5.jpg", stock: 12, rating: 4.6, desc: "Tan removal bar for glowing skin." },
+  { id: 6, name: "Rose Soap", cat: "Body", price: 150, img: "pro3.jpg", stock: 18, rating: 4.4, desc: "Rose petal soap for silky smooth skin." },
+  { id: 7, name: "Charcoal", cat: "Face", price: 150, img: "pro7.jpg", stock: 10, rating: 4.9, desc: "Activated charcoal soap for deep cleansing." },
+  { id: 8, name: "Multani", cat: "Glow", price: 150, img: "pro8.jpg", stock: 22, rating: 4.2, desc: "Fuller's earth soap for pore cleansing." }
 ];
 
-let cart = [];
+// --- STATE ---
+let cart = JSON.parse(localStorage.getItem('hh_cart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('hh_wishlist') || '[]');
 let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
-let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('hh_current_user') || 'null');
-let currentCompletedOrder = null;
-let payMethod = '';
-let currentReturnOrderId = null;
-
-// --- PERFORMANCE OPTIMIZATIONS ---
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let currentOrder = null;
 
 // --- INIT ---
 window.onload = () => {
     renderProducts(products);
+    updateCart();
     updateUserUI();
-    addScrollAnimations();
+    updateWishlistCount();
+    startCountdown();
     
-    // Preload images for better performance
-    preloadImages();
+    // Optimized Scroll Listener
+    let scrollTimeout;
+    const animateElements = document.querySelectorAll('.animate-in');
     
-    // Add scroll event listener for animations
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', () => {
+        if (!scrollTimeout) {
+            scrollTimeout = setTimeout(() => {
+                scrollTimeout = null;
+                // Animate on scroll logic
+                animateElements.forEach(el => {
+                    if(el.getBoundingClientRect().top < window.innerHeight * 0.9) {
+                        el.classList.add('visible');
+                    }
+                });
+            }, 50); // Throttle to 50ms
+        }
+    });
     
-    // Log performance metrics
-    if (window.performance) {
-        const perfData = window.performance.timing;
-        const loadTime = perfData.loadEventEnd - perfData.navigationStart;
-        console.log(`Page load time: ${loadTime}ms`);
+    // Trigger initial animations
+    setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+    
+    // Mobile Check for Layout
+    if(window.innerWidth <= 768) {
+        document.getElementById('mobileHeaderIcons').style.display = 'flex';
     }
 };
 
-// --- IMAGE PRELOADING ---
-function preloadImages() {
-    const images = products.map(p => p.img);
-    images.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-}
-
-// --- SCROLL ANIMATIONS ---
-function addScrollAnimations() {
-    const elements = document.querySelectorAll('.section-title, .filter-container, .product-card');
-    elements.forEach(el => {
-        el.classList.add('fade-in');
-    });
-}
-
-function handleScroll() {
-    // Simple scroll animation trigger
-    const scrollPos = window.scrollY;
-    const windowHeight = window.innerHeight;
+// --- CORE FUNCTIONS ---
+function renderProducts(list) {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = list.map((p, i) => {
+        const isWished = wishlist.find(w => w.id === p.id);
+        const stockHtml = p.stock < 10 ? `<div class="stock-badge">Only ${p.stock} left</div>` : '';
+        return `
+        <div class="product-card animate-in">
+            <div class="badge">Pure</div>
+            ${stockHtml}
+            <div class="wishlist-btn ${isWished ? 'active' : ''}" onclick="toggleWishlist(${p.id}, event)">
+                <i class="fa-${isWished ? 'solid' : 'heart'} fa-heart"></i>
+            </div>
+            <div class="product-img" onclick="openQuickView(${p.id})">
+                <img src="${p.img}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="product-info">
+                <div>
+                    <h3 class="product-title" onclick="openQuickView(${p.id})">${p.name}</h3>
+                    <div class="product-price">₹${p.price}</div>
+                    <div style="font-size:12px; color:#f39c12;">${'★'.repeat(Math.floor(p.rating))}<span style="color:#ddd;">${'★'.repeat(5-Math.floor(p.rating))}</span></div>
+                </div>
+                <div class="card-btns">
+                    <button class="btn btn-primary" onclick="addToCart(${p.id}, event)">Add</button>
+                    <button class="btn btn-secondary" onclick="buyNow(${p.id}, event)">Buy</button>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
     
-    document.querySelectorAll('.product-card').forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        if (rect.top < windowHeight - 100) {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }
+    // Re-trigger animation
+    setTimeout(() => {
+        document.querySelectorAll('.products-grid .animate-in').forEach(el => el.classList.add('visible'));
+    }, 50);
+}
+
+function filterProducts() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const filtered = products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+    renderProducts(filtered);
+}
+
+function filterCat(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
+    renderProducts(filtered);
+}
+
+// --- CART & WISHLIST ---
+function addToCart(id, event) {
+    if(event) event.stopPropagation();
+    const p = products.find(x => x.id === id);
+    const ex = cart.find(x => x.id === id);
+    if(ex) {
+        if(ex.qty < p.stock) ex.qty++; else return showToast("Out of stock!");
+    } else {
+        cart.push({...p, qty: 1});
+    }
+    updateCart();
+    showToast("Added to Bag");
+    
+    // Animate Icon
+    const icons = document.querySelectorAll('.cart-icon-wrap i');
+    icons.forEach(i => {
+        i.classList.add('cart-animation');
+        setTimeout(() => i.classList.remove('cart-animation'), 400);
     });
 }
 
-// --- LOADING INDICATOR ---
-function showLoading() {
-    document.getElementById('loadingSpinner').style.display = 'block';
+function updateCart() {
+    localStorage.setItem('hh_cart', JSON.stringify(cart));
+    const count = cart.reduce((a,b) => a+b.qty, 0);
+    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+    
+    document.getElementById('cartCount').innerText = count;
+    document.getElementById('mobileCartCount').innerText = count; // Update Mobile Icon
+    document.getElementById('cartTotal').innerText = '₹' + total;
+    
+    document.getElementById('cartItems').innerHTML = cart.length ? cart.map(i => `
+        <div class="cart-item">
+            <img src="${i.img}">
+            <div style="flex:1;">
+                <div style="font-weight:700; font-size:13px;">${i.name}</div>
+                <div style="font-size:11px; color:#666;">₹${i.price}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button class="qty-btn" onclick="modQty(${i.id}, -1)">-</button>
+                <span style="font-size:12px; font-weight:bold; width:20px; text-align:center;">${i.qty}</span>
+                <button class="qty-btn" onclick="modQty(${i.id}, 1)">+</button>
+            </div>
+        </div>
+    `).join('') : '<p style="text-align:center; color:#999; margin-top:20px;">Your bag is empty.</p>';
 }
 
-function hideLoading() {
-    document.getElementById('loadingSpinner').style.display = 'none';
-}
-
-// --- GENERIC MODAL UTILS ---
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-    document.querySelector('.overlay').classList.add('active');
-}
-
-// --- USER SYSTEM ---
-function updateUserUI() {
-    if(currentUser) {
-        document.getElementById('signInBtn').style.display = 'none';
-        document.getElementById('userInfo').style.display = 'block';
-        document.getElementById('userNameDisplay').innerText = currentUser.name;
-    } else {
-        document.getElementById('signInBtn').style.display = 'block';
-        document.getElementById('userInfo').style.display = 'none';
+function modQty(id, n) {
+    const i = cart.find(x => x.id === id);
+    if(i) {
+        i.qty += n;
+        if(i.qty <= 0) cart = cart.filter(x => x.id !== id);
+        else if(i.qty > products.find(p=>p.id===id).stock) i.qty--;
     }
+    updateCart();
+}
+
+function toggleCart() {
+    const d = document.getElementById('cartDrawer');
+    const o = document.getElementById('cartOverlay');
+    if(d.classList.contains('active')) { d.classList.remove('active'); o.classList.remove('active'); }
+    else { d.classList.add('active'); o.classList.add('active'); }
+}
+
+function toggleWishlist(id, event) {
+    if(event) event.stopPropagation();
+    const idx = wishlist.findIndex(w => w.id === id);
+    if(idx > -1) { wishlist.splice(idx, 1); showToast("Removed from wishlist"); }
+    else { wishlist.push(products.find(p => p.id === id)); showToast("Added to wishlist"); }
+    
+    localStorage.setItem('hh_wishlist', JSON.stringify(wishlist));
+    updateWishlistCount();
+    renderProducts(products); // Re-render to update hearts
+}
+
+function updateWishlistCount() {
+    document.getElementById('wishlistCount').textContent = wishlist.length;
+    // Populate Modal
+    document.getElementById('wishlistItems').innerHTML = wishlist.length ? wishlist.map(p => `
+        <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
+            <img src="${p.img}" style="width:40px; height:40px; border-radius:4px;">
+            <div style="flex:1; font-size:13px;"><b>${p.name}</b><br>₹${p.price}</div>
+            <button class="btn btn-primary" style="padding:5px 10px; font-size:10px;" onclick="addToCart(${p.id}); closeModal('wishlistModal')">Add</button>
+        </div>
+    `).join('') : '<p>Empty.</p>';
+}
+
+// --- MODALS & UX ---
+function openModal(id) { document.getElementById(id).classList.add('active'); document.querySelector('.overlay').classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.querySelector('.overlay').classList.remove('active'); }
+
+function openQuickView(id) {
+    const p = products.find(x => x.id === id);
+    document.getElementById('quickViewContent').innerHTML = `
+        <div style="text-align:center;">
+            <img src="${p.img}" style="height:200px; margin:0 auto; border-radius:8px;">
+            <h2 style="margin:10px 0;">${p.name}</h2>
+            <p style="color:#666; font-size:13px; margin-bottom:15px;">${p.desc}</p>
+            <h3 style="color:var(--primary);">₹${p.price}</h3>
+            <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="addToCart(${p.id}); closeModal('quickViewModal')">Add to Cart</button>
+        </div>
+    `;
+    openModal('quickViewModal');
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = `<i class="fa-solid fa-check"></i> ${msg}`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+// --- AUTH & CHECKOUT ---
+function handleMobileProfileClick() {
+    if(currentUser) openUserDashboard();
+    else openSignIn();
 }
 
 function openSignIn() { openModal('signInModal'); }
 
 function handleSignIn(e) {
     e.preventDefault();
-    showLoading();
-    
-    setTimeout(() => {
-        const name = document.getElementById('signName').value;
-        const email = document.getElementById('signEmail').value;
-        const phone = document.getElementById('signPhone').value;
-        
-        currentUser = { name, email, phone };
-        localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
-        
-        if(!customers.find(c => c.email === email)) {
-            customers.push({name, email, phone, date: new Date().toLocaleDateString()});
-            localStorage.setItem('hh_customers', JSON.stringify(customers));
-        }
-        
-        closeModal('signInModal');
-        updateUserUI();
-        showToast(`Welcome, ${name}!`);
-        hideLoading();
-    }, 300);
+    currentUser = {
+        name: document.getElementById('signName').value,
+        email: document.getElementById('signEmail').value,
+        phone: document.getElementById('signPhone').value
+    };
+    localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
+    closeModal('signInModal');
+    updateUserUI();
+    showToast(`Welcome ${currentUser.name}`);
 }
 
 function handleSignOut() {
@@ -755,165 +737,34 @@ function handleSignOut() {
     currentUser = null;
     closeModal('userModal');
     updateUserUI();
-    showToast("Signed Out.");
+}
+
+function updateUserUI() {
+    if(currentUser) {
+        document.getElementById('signInBtn').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'block';
+        document.getElementById('userNameDisplay').innerText = currentUser.name.split(' ')[0];
+    } else {
+        document.getElementById('signInBtn').style.display = 'block';
+        document.getElementById('userInfo').style.display = 'none';
+    }
 }
 
 function openUserDashboard() {
     if(!currentUser) return;
     document.getElementById('dashboardName').innerText = currentUser.name;
-    const myOrders = orders.filter(o => o.email === currentUser.email || o.phone === currentUser.phone);
-    const container = document.getElementById('userOrderHistory');
-    
-    if(myOrders.length === 0) container.innerHTML = "<p>No orders yet.</p>";
-    else {
-        container.innerHTML = myOrders.map(o => `
-            <div style="border-bottom:1px solid #eee; padding:5px 0;">
-                <strong>${o.id}</strong> - <span style="color:var(--primary)">${o.status}</span><br>
-                Items: ${o.items.length} | Total: ₹${o.total}<br>
-                <small>${o.date}</small>
-            </div>
-        `).join('');
-    }
+    const myOrders = orders.filter(o => o.email === currentUser.email);
+    document.getElementById('userOrderHistory').innerHTML = myOrders.length ? myOrders.map(o => `
+        <div style="font-size:11px; border-bottom:1px solid #eee; padding:5px 0;">
+            <b>${o.id}</b> - ${o.status}<br>Total: ₹${o.total} | ${o.date}
+        </div>
+    `).join('') : 'No orders found.';
     openModal('userModal');
 }
 
-// --- PRODUCTS ---
-function renderProducts(list) {
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML = list.map((p, i) => `
-        <div class="product-card" style="opacity:0; transform:translateY(20px); transition:opacity 0.3s ease ${i*0.05}s, transform 0.3s ease ${i*0.05}s;">
-            <div class="badge">Pure</div>
-            <div class="product-img"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
-            <div class="product-info">
-                <h3 class="product-title">${p.name}</h3>
-                <div class="product-price">₹${p.price}</div>
-                <div class="card-qty-wrapper">
-                    <button class="qty-mini-btn" onclick="updateCardQty('${p.id}', -1)">-</button>
-                    <input type="text" id="card-qty-${p.id}" class="card-qty-input" value="1" readonly>
-                    <button class="qty-mini-btn" onclick="updateCardQty('${p.id}', 1)">+</button>
-                </div>
-                <div class="card-btns">
-                    <button class="btn btn-primary" onclick="addToCart(${p.id})">Add</button>
-                    <button class="btn btn-secondary" onclick="buyNow(${p.id})">Buy</button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-    
-    // Trigger animations
-    setTimeout(() => {
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        });
-    }, 100);
-}
-
-function updateCardQty(id, chg) {
-    const el = document.getElementById(`card-qty-${id}`);
-    let v = parseInt(el.value) + chg;
-    if(v<1) v=1; 
-    el.value = v;
-    
-    // Add visual feedback
-    if (chg > 0) {
-        el.parentElement.classList.add('bounce');
-        setTimeout(() => el.parentElement.classList.remove('bounce'), 300);
-    }
-}
-
-function filterProducts() {
-    const q = document.getElementById('search').value.toLowerCase();
-    renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
-}
-
-function filterCat(cat, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProducts(cat === 'all' ? products : products.filter(p => p.cat.includes(cat)));
-}
-
-// --- CART ---
-function addToCart(id) {
-    const p = products.find(x => x.id === id);
-    const qtyInput = document.getElementById(`card-qty-${id}`);
-    const qty = parseInt(qtyInput ? qtyInput.value : 1);
-    const ex = cart.find(x => x.id === id);
-    
-    // Animation feedback
-    const cartIcon = document.querySelector('.cart-icon-wrap i');
-    cartIcon.style.transform = 'scale(1.2)';
-    setTimeout(() => cartIcon.style.transform = 'scale(1)', 300);
-    
-    if(ex) ex.qty += qty; else cart.push({...p, qty});
-    if(qtyInput) qtyInput.value = 1;
-    updateCart(); 
-    showToast("Added to Bag");
-}
-
-function updateCart() {
-    const count = cart.reduce((a,b) => a+b.qty, 0);
-    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-    document.getElementById('cartCount').innerText = count;
-    document.getElementById('cartTotal').innerText = '₹' + total;
-    document.getElementById('cartItems').innerHTML = cart.length ? cart.map(i => `
-        <div class="cart-item">
-            <img src="${i.img}">
-            <div style="flex:1;">
-                <div style="font-weight:700; font-size:13px;">${i.name}</div>
-                <div style="font-size:11px; color:#666;">₹${i.price}</div>
-                <div class="cart-controls">
-                    <button class="qty-btn" onclick="modQty(${i.id}, -1)">-</button>
-                    <input type="number" class="cart-qty-input" value="${i.qty}" onchange="manualCartQty(${i.id}, this.value)">
-                    <button class="qty-btn" onclick="modQty(${i.id}, 1)">+</button>
-                    <button class="bulk-btn" onclick="modQty(${i.id}, 10)">+10</button>
-                </div>
-            </div>
-        </div>
-    `).join('') : '<p style="text-align:center; color:#999; font-size:12px;">Empty Bag</p>';
-}
-
-function modQty(id, n) {
-    const i = cart.find(x => x.id === id);
-    if(i) { 
-        i.qty += n; 
-        if(i.qty <= 0) cart = cart.filter(x => x.id !== id); 
-    }
-    updateCart();
-}
-
-function manualCartQty(id, v) {
-    const i = cart.find(x => x.id === id);
-    if(i) { i.qty = parseInt(v) > 0 ? parseInt(v) : 1; }
-    updateCart();
-}
-
-function toggleCart() {
-    const d = document.getElementById('cartDrawer');
-    const o = document.getElementById('cartOverlay');
-    if(d.classList.contains('active')) { 
-        d.classList.remove('active'); 
-        o.classList.remove('active'); 
-    } else { 
-        d.classList.add('active'); 
-        o.classList.add('active'); 
-    }
-}
-
-function buyNow(id) { 
-    cart=[]; 
-    addToCart(id); 
-    toggleCart(); 
-    openCheckout(); 
-}
-
-// --- CHECKOUT ---
 function openCheckout() {
     if(!cart.length) return showToast("Cart is empty");
-    toggleCart(); 
-    openModal('checkoutModal');
-    
-    // Pre-fill if logged in
+    toggleCart(); openModal('checkoutModal');
     if(currentUser) {
         document.getElementById('cName').value = currentUser.name;
         document.getElementById('cEmail').value = currentUser.email;
@@ -928,263 +779,89 @@ function goToPayment(e) {
     e.preventDefault();
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'block';
-    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-    document.getElementById('payAmount').innerText = '₹' + total;
+    const total = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    document.getElementById('payAmount').innerText = '₹'+total;
+    // Generate QR
     const url = `upi://pay?pa=${UPI_ID}&pn=HerbalHeaven&am=${total}&cu=INR`;
-    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-}
-
-function pay(m) { 
-    payMethod = m; 
-    showToast(`Selected ${m}`);
+    document.getElementById('qrImgContainer').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}" style="margin:0 auto;">`;
 }
 
 function confirmOrder() {
-    showLoading();
+    const total = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const uid = "ORD-" + Math.floor(Math.random()*10000);
     
-    setTimeout(() => {
-        const name = document.getElementById('cName').value;
-        const email = document.getElementById('cEmail').value;
-        const phone = document.getElementById('cPhone').value;
-        const addr = document.getElementById('cAddr').value;
-        const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-        const uid = "HH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
-
-        // Create Order Object
-        const order = {
-            id: uid, 
-            date: new Date().toLocaleDateString(),
-            customer: name, 
-            email, 
-            phone, 
-            address: addr,
-            items: [...cart], 
-            total, 
-            method: payMethod || 'QR', 
-            status: 'Placed'
-        };
-        
-        // Save locally
-        orders.push(order);
-        localStorage.setItem('hh_orders', JSON.stringify(orders));
-        currentCompletedOrder = order;
-
-        // Notify Owner
-        const msg = `New Order! ID: ${uid} Name: ${name} Total: ₹${total}`;
-        window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-
-        document.getElementById('finalOrderId').innerText = uid;
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
-        
-        // Populate Invoice HTML
-        document.getElementById('invId').innerText = uid;
-        document.getElementById('invDate').innerText = order.date;
-        document.getElementById('invCustName').innerText = name;
-        document.getElementById('invCustPhone').innerText = phone;
-        document.getElementById('invCustAddr').innerText = addr;
-        document.getElementById('invFinalTotal').innerText = total;
-        document.getElementById('invItemsBody').innerHTML = order.items.map(i => 
-            `<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right;">${i.price}</td><td style="text-align:right;">${i.price*i.qty}</td></tr>`
-        ).join('');
-
-        cart = []; 
-        updateCart();
-        hideLoading();
-    }, 500);
+    currentOrder = {
+        id: uid,
+        date: new Date().toLocaleDateString(),
+        customer: document.getElementById('cName').value,
+        email: document.getElementById('cEmail').value,
+        items: [...cart],
+        total: total,
+        status: 'Placed'
+    };
+    
+    orders.push(currentOrder);
+    localStorage.setItem('hh_orders', JSON.stringify(orders));
+    
+    // Notify Owner
+    window.open(`https://wa.me/${OWNER_PHONE}?text=New Order: ${uid} Value: ₹${total}`, '_blank');
+    
+    document.getElementById('finalOrderId').innerText = uid;
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'block';
+    cart = []; updateCart();
 }
 
-// --- INVOICE ---
 function downloadInvoice() {
-    if(!currentCompletedOrder) return alert("No order found!");
-    const element = document.getElementById('invoiceTemplate');
-    element.style.display = 'block';
-    
-    html2pdf(element, {
-        margin: 10,
-        filename: `Invoice_${currentCompletedOrder.id}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).then(() => {
-        element.style.display = 'none';
-    });
+    const el = document.getElementById('invoiceTemplate');
+    document.getElementById('invContent').innerHTML = `
+        <p>Order ID: ${currentOrder.id}</p>
+        <p>Customer: ${currentOrder.customer}</p>
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+            <tr><th style="text-align:left;">Item</th><th>Price</th></tr>
+            ${currentOrder.items.map(i => `<tr><td>${i.name} x${i.qty}</td><td>${i.price*i.qty}</td></tr>`).join('')}
+        </table>
+        <h3 style="text-align:right;">Total: ₹${currentOrder.total}</h3>
+    `;
+    el.style.display = 'block';
+    html2pdf(el).then(() => el.style.display = 'none');
 }
 
-// --- TRACK & RETURN ---
-function openTrackOrder() { openModal('trackModal'); }
-
-function trackOrderNow() {
-    const id = document.getElementById('trackInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
-    const r = document.getElementById('trackResult');
-    r.style.display = 'block';
-    if(o) r.innerHTML = `<div style="background:#f9f9f9; padding:10px; border:1px solid #eee; border-radius:6px; margin-top:10px;"><b>${o.id}</b>: <span style="color:var(--primary)">${o.status}</span><br>Date: ${o.date}<br>Total: ₹${o.total}</div>`;
-    else r.innerHTML = "<p style='color:red; margin-top:10px;'>Order not found.</p>";
+function buyNow(id, e) {
+    if(e) e.stopPropagation();
+    cart = []; addToCart(id); toggleCart(); openCheckout();
 }
 
-function openReturnOrder() { 
-    openModal('returnModal'); 
-    document.getElementById('returnStep1').style.display = 'block'; 
-    document.getElementById('returnStep2').style.display = 'none'; 
-}
-
-function fetchReturnItems() {
-    const id = document.getElementById('returnInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
-    if(o) {
-        currentReturnOrderId = o.id;
-        document.getElementById('returnStep1').style.display = 'none';
-        document.getElementById('returnStep2').style.display = 'block';
-        document.getElementById('returnItemsList').innerHTML = o.items.map(i => `<div><input type="checkbox" value="${i.name}"> ${i.name}</div>`).join('');
-    } else alert("Order not found");
-}
-
-function processReturn() {
-    const reason = document.getElementById('returnReason').value;
-    const msg = `RETURN: ${currentReturnOrderId} Reason: ${reason}`;
-    window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-    closeModal('returnModal');
-    showToast("Return request sent");
-}
-
-// --- ADMIN & MENU ---
-function toggleMenu() {
-    const m = document.getElementById('mainMenu');
-    const o = document.getElementById('menuOverlay');
-    if(m.classList.contains('active')) { 
-        m.classList.remove('active'); 
-        o.classList.remove('active'); 
-    } else { 
-        m.classList.add('active'); 
-        o.classList.add('active'); 
-    }
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.innerText = msg; 
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function openAdminLogin() { 
-    openModal('adminModal'); 
-    document.getElementById('adminLogin').style.display = 'block'; 
-    document.getElementById('adminDash').style.display = 'none'; 
-}
-
+// --- ADMIN & MISC ---
 function checkAdmin() {
     if(document.getElementById('admPass').value === ADMIN_PASS) {
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminDash').style.display = 'block';
-        refreshData();
+        document.getElementById('orderTable').innerHTML = orders.map(o => `
+            <tr><td style="padding:5px; border-bottom:1px solid #eee;">
+                <b>${o.id}</b> (${o.customer})<br>₹${o.total} - ${o.status}
+            </td></tr>
+        `).join('');
     } else alert("Wrong Password");
 }
 
-function refreshData() {
-    showLoading();
-    
-    setTimeout(() => {
-        document.getElementById('orderBody').innerHTML = orders.map((o, index) => 
-            `<tr style="border-bottom:1px solid #eee;">
-                <td style="padding:8px;">
-                    <strong>${o.id}</strong><br>
-                    <select onchange="updateStatus(${index}, this.value)" style="font-size:11px; padding:2px;">
-                        <option value="Placed" ${o.status === 'Placed' ? 'selected' : ''}>Placed</option>
-                        <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                        <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                    </select>
-                </td>
-                <td style="padding:8px; font-size:11px;">${o.items.map(i=>`${i.name}(${i.qty})`).join(', ')}</td>
-                <td style="padding:8px; white-space:nowrap;">
-                    <button class="btn-icon" style="background:#25d366" onclick="notifyWA('${o.phone}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-brands fa-whatsapp"></i></button>
-                    <button class="btn-icon" style="background:#DB4437" onclick="notifyEmail('${o.email}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-solid fa-envelope"></i></button>
-                </td>
-            </tr>`
-        ).join('');
-        hideLoading();
-    }, 300);
+function openTrackOrder() { openModal('trackModal'); }
+function trackOrderNow() {
+    const id = document.getElementById('trackInput').value;
+    const o = orders.find(x => x.id == id);
+    document.getElementById('trackResult').innerText = o ? `Status: ${o.status} | Date: ${o.date}` : "Order not found.";
 }
 
-function updateStatus(index, newStatus) {
-    orders[index].status = newStatus;
-    localStorage.setItem('hh_orders', JSON.stringify(orders));
-    showToast("Status Updated!");
+function startCountdown() {
+    const end = new Date(); end.setDate(end.getDate()+3);
+    setInterval(() => {
+        const t = end - new Date();
+        document.getElementById('days').innerText = Math.floor(t/(1000*60*60*24));
+        document.getElementById('hours').innerText = Math.floor((t%(1000*60*60*24))/(1000*60*60));
+        document.getElementById('minutes').innerText = Math.floor((t%(1000*60*60))/(1000*60));
+        document.getElementById('seconds').innerText = Math.floor((t%(1000*60))/1000);
+    }, 1000);
 }
-
-function notifyWA(phone, name, id, total) {
-    const msg = `Hi ${name}, Your order ${id} of ₹${total} is confirmed! - Herbal&Heaven`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-}
-
-function notifyEmail(email, name, id, total) {
-    const subject = `Order Confirmed: ${id}`;
-    const body = `Hi ${name},\n\nOrder ${id} amounting to ₹${total} is confirmed.\n\nRegards,\nOmkar`;
-    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-}
-
-function resetDatabase() {
-    const code = prompt("Enter Secret Code to DELETE ALL DATA:");
-    if(code === SECRET_CODE) {
-        if(confirm("Are you sure? This cannot be undone.")) {
-            localStorage.removeItem('hh_orders');
-            localStorage.removeItem('hh_customers');
-            orders = []; 
-            customers = []; 
-            refreshData(); 
-            alert("Database Wiped.");
-        }
-    } else alert("Incorrect Code.");
-}
-
-function exportOrders() {
-    showLoading();
-    
-    setTimeout(() => {
-        const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
-            ID: o.id, Status: o.status, Date: o.date, Name: o.customer, Phone: o.phone, 
-            Total: o.total, Items: o.items.map(i=>`${i.name}(${i.qty})`).join(', ')
-        })));
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Orders");
-        XLSX.writeFile(wb, "Orders.xlsx");
-        hideLoading();
-    }, 500);
-}
-
-function exportCustomers() {
-    showLoading();
-    
-    setTimeout(() => {
-        const ws = XLSX.utils.json_to_sheet(customers);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Customers");
-        XLSX.writeFile(wb, "Customers.xlsx");
-        hideLoading();
-    }, 500);
-}
-
-// --- PERFORMANCE OPTIMIZATIONS ---
-// Debounce function for search
-let searchTimeout;
-function filterProducts() {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        const q = document.getElementById('search').value.toLowerCase();
-        renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
-    }, 300);
-}
-
-// Request Animation Frame for smooth animations
-function animateElement(element, property, value) {
-    requestAnimationFrame(() => {
-        element.style[property] = value;
-    });
-}
-
-// Touch events for mobile
-document.addEventListener('touchstart', function() {}, {passive: true});
 </script>
 </body>
 </html>
