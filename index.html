@@ -28,7 +28,7 @@
   --font-body: 'Lato', sans-serif;
   --shadow: 0 10px 30px rgba(0,0,0,0.08);
   --radius: 8px;
-  --transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); /* Faster transition */
+  --transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -40,7 +40,7 @@ body {
   color: var(--text-dark);
   line-height: 1.6;
   overflow-x: hidden;
-  padding-bottom: 80px; /* Increased space for bottom bar */
+  padding-bottom: 80px; /* Space for bottom bar */
 }
 
 h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--primary); }
@@ -49,12 +49,11 @@ button { cursor: pointer; border: none; outline: none; font-family: var(--font-b
 img { max-width: 100%; display: block; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* ---------- 2. Animations (Optimized) ---------- */
+/* ---------- 2. Animations ---------- */
 .animate-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; will-change: opacity, transform; }
 .animate-in.visible { opacity: 1; transform: translateY(0); }
 
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 @keyframes cartAdd { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
 
 .float { animation: float 3s ease-in-out infinite; will-change: transform; }
@@ -71,7 +70,7 @@ input, textarea, select { font-family: var(--font-body); }
 }
 
 .btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 4px 15px rgba(45, 74, 34, 0.3); }
-.btn-primary:active { transform: scale(0.96); } /* Better touch feedback */
+.btn-primary:active { transform: scale(0.96); }
 
 .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-secondary:hover { background: var(--primary); color: var(--white); }
@@ -87,7 +86,7 @@ input, textarea, select { font-family: var(--font-body); }
 header {
   position: sticky; top: 0; z-index: 100;
   background: rgba(253, 251, 247, 0.95);
-  backdrop-filter: blur(10px); /* Smooth blur */
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
@@ -120,7 +119,7 @@ header {
 
 .top-contact { background:#345b2a; color:#fff; text-align:center; padding:5px 10px; font-size:0.75rem; font-weight: 600; }
 
-/* ---------- 5. Mobile Bottom Navigation (NEW) ---------- */
+/* ---------- 5. Mobile Bottom Navigation ---------- */
 .bottom-nav {
     display: none; /* Hidden on Desktop */
     position: fixed; bottom: 0; left: 0; width: 100%;
@@ -158,7 +157,6 @@ header {
 .timer-value { font-size: 20px; font-weight: bold; color: var(--primary); }
 
 .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: 50px; }
-/* Improved Desktop Grid */
 @media(min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } }
 
 .product-card {
@@ -241,11 +239,8 @@ header {
   .hero h1 { font-size: 28px; }
   .cart-drawer { width: 85%; }
   
-  /* Fix layout shifts */
   header .logo span { font-size: 16px; }
   .section-title h2 { font-size: 24px; }
-  
-  /* Make horizontal scroll smoother */
   .filter-container { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
 }
 </style>
@@ -288,7 +283,11 @@ header {
     </div>
 
     <div class="nav-icons" style="display:none;" id="mobileHeaderIcons">
-       <div class="cart-icon-wrap" onclick="toggleCart()">
+       <div class="wishlist-icon-wrap" onclick="openWishlist()">
+         <i class="fa-regular fa-heart"></i>
+         <span class="wishlist-count" id="mobileWishlistCount">0</span>
+       </div>
+       <div class="cart-icon-wrap" onclick="toggleCart()" style="margin-left: 5px;">
          <i class="fa-solid fa-shopping-bag"></i>
          <span class="cart-count" id="mobileCartCount">0</span>
        </div>
@@ -342,9 +341,9 @@ header {
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
     </button>
-    <button class="nav-item" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">
-        <i class="fa-solid fa-store"></i>
-        <span>Shop</span>
+    <button class="nav-item" onclick="openReturnOrder()">
+        <i class="fa-solid fa-rotate-left"></i>
+        <span>Return</span>
     </button>
     <button class="nav-item" onclick="toggleCart()">
         <i class="fa-solid fa-shopping-bag"></i>
@@ -559,7 +558,7 @@ function renderProducts(list) {
             <div class="badge">Pure</div>
             ${stockHtml}
             <div class="wishlist-btn ${isWished ? 'active' : ''}" onclick="toggleWishlist(${p.id}, event)">
-                <i class="fa-${isWished ? 'solid' : 'heart'} fa-heart"></i>
+                <i class="fa-${isWished ? 'solid' : 'regular'} fa-heart"></i>
             </div>
             <div class="product-img" onclick="openQuickView(${p.id})">
                 <img src="${p.img}" alt="${p.name}" loading="lazy">
@@ -673,7 +672,9 @@ function toggleWishlist(id, event) {
 }
 
 function updateWishlistCount() {
-    document.getElementById('wishlistCount').textContent = wishlist.length;
+    const count = wishlist.length;
+    document.getElementById('wishlistCount').textContent = count;
+    document.getElementById('mobileWishlistCount').textContent = count; // Update Mobile
     // Populate Modal
     document.getElementById('wishlistItems').innerHTML = wishlist.length ? wishlist.map(p => `
         <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
@@ -682,6 +683,22 @@ function updateWishlistCount() {
             <button class="btn btn-primary" style="padding:5px 10px; font-size:10px;" onclick="addToCart(${p.id}); closeModal('wishlistModal')">Add</button>
         </div>
     `).join('') : '<p>Empty.</p>';
+}
+
+function openWishlist() {
+    updateWishlistCount(); // Ensure UI is fresh
+    openModal('wishlistModal');
+}
+
+function openReturnOrder() {
+    openModal('returnModal');
+}
+
+function fetchReturnItems() {
+    const id = document.getElementById('returnInput').value.trim();
+    if(!id) return showToast("Enter Order ID");
+    // Mock functionality (just notify admin for now)
+    window.open(`https://wa.me/${OWNER_PHONE}?text=Return Request for Order: ${id}`, '_blank');
 }
 
 // --- MODALS & UX ---
