@@ -57,7 +57,6 @@ input, textarea, select { font-family: var(--font-body); }
 .animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
 
 /* ---------- 3. UI Components ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -126,7 +125,6 @@ header {
 }
 .nav-menu a:hover::after { width: 100%; }
 
-/* Sign In Button Style */
 .signin-btn {
     border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; 
     font-size: 12px; transition: 0.3s;
@@ -231,7 +229,7 @@ header {
 
 .modal {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-  width: 90%; max-width: 450px; background: white;
+  width: 90%; max-width: 500px; background: white;
   z-index: 1000; border-radius: 12px; padding: 25px;
   opacity: 0; visibility: hidden; transition: var(--transition);
   box-shadow: 0 25px 50px rgba(0,0,0,0.25);
@@ -288,9 +286,10 @@ header {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Invoice Styles (Hidden normally, used for PDF generation) */
+/* Invoice (Hidden normally, used for PDF) */
 #invoiceTemplate {
     display: none; padding: 20px; background: white; font-family: 'Lato', sans-serif;
+    width: 600px; /* Fixed width for consistent PDF */
 }
 .inv-header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
 .inv-logo img { height: 60px; margin: 0 auto; display: block; border-radius: 50%; }
@@ -450,8 +449,7 @@ header {
     <p>Welcome back, <b id="dashboardName"></b></p>
     <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
     <h4>My Orders</h4>
-    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; font-size:12px; margin-top:10px;">
-        </div>
+    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; font-size:12px; margin-top:10px;"></div>
     <button class="btn btn-secondary" style="width:100%; margin-top:15px;" onclick="handleSignOut()">Sign Out</button>
 </div>
 
@@ -512,6 +510,7 @@ header {
     <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:40px; margin-bottom:10px;"></i>
     <h3>Order Placed!</h3>
     <h2 id="finalOrderId" style="letter-spacing:1px; margin:10px 0;"></h2>
+    <p style="font-size:13px; margin-bottom:15px;">A confirmation was sent to you.</p>
     <button class="btn btn-primary" onclick="downloadInvoice()">Download Invoice</button>
     <button class="btn btn-secondary" onclick="closeModal('checkoutModal'); location.reload();">Close</button>
   </div>
@@ -538,6 +537,11 @@ header {
             <thead><tr style="background:#f5f5f5;"><th>ID/Status</th><th>Items</th><th>Actions</th></tr></thead>
             <tbody id="orderBody"></tbody>
         </table>
+    </div>
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; text-align: center;">
+        <button class="btn" style="background: var(--danger); color: white;" onclick="resetDatabase()">
+            <i class="fa-solid fa-trash"></i> Reset Database
+        </button>
     </div>
   </div>
 </div>
@@ -568,7 +572,7 @@ header {
         <tbody id="invItemsBody"></tbody>
     </table>
     <div class="inv-total">Total Amount: ₹<span id="invFinalTotal"></span></div>
-    <div class="inv-footer">Thank you for choosing Nature's Purest. For queries contact support.</div>
+    <div class="inv-footer">Thank you for choosing Nature's Purest.</div>
 </div>
 
 <script>
@@ -576,6 +580,7 @@ header {
 const UPI_ID = "damareomkar96@oksbi";
 const ADMIN_PASS = "omti96";
 const OWNER_PHONE = "919595641664"; 
+const SECRET_CODE = "DELETE99"; 
 
 // --- DATA ---
 const products = [
@@ -593,8 +598,8 @@ let cart = [];
 let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
 let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('hh_current_user') || 'null');
+let currentCompletedOrder = null; // Stores last order for Invoice
 let payMethod = '';
-let currentOrderId = '';
 
 // --- INIT ---
 window.onload = () => {
@@ -633,7 +638,6 @@ function handleSignIn(e) {
     currentUser = { name, email, phone };
     localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
     
-    // Save to customers list if new
     if(!customers.find(c => c.email === email)) {
         customers.push({name, email, phone, date: new Date().toLocaleDateString()});
         localStorage.setItem('hh_customers', JSON.stringify(customers));
@@ -653,7 +657,6 @@ function handleSignOut() {
 function openUserDashboard() {
     if(!currentUser) return;
     document.getElementById('dashboardName').innerText = currentUser.name;
-    // Filter orders by email or phone
     const myOrders = orders.filter(o => o.email === currentUser.email || o.phone === currentUser.phone);
     const container = document.getElementById('userOrderHistory');
     
@@ -788,16 +791,21 @@ function confirmOrder() {
     const addr = document.getElementById('cAddr').value;
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
     const uid = "HH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
-    currentOrderId = uid;
 
+    // Create Order Object
     const order = {
         id: uid, date: new Date().toLocaleDateString(),
         customer: name, email, phone, address: addr,
-        items: cart, total, method: payMethod || 'QR', status: 'Placed'
+        items: [...cart], // Clone cart items for storage
+        total, method: payMethod || 'QR', status: 'Placed'
     };
+    
+    // Save locally
     orders.push(order);
     localStorage.setItem('hh_orders', JSON.stringify(orders));
+    currentCompletedOrder = order; // Save for invoice
 
+    // Notify Owner
     const msg = `New Order! ID: ${uid} Name: ${name} Total: ₹${total}`;
     window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
 
@@ -805,29 +813,29 @@ function confirmOrder() {
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
     
-    // Prepare Invoice Data
+    // Populate Invoice HTML (Hidden)
     document.getElementById('invId').innerText = uid;
     document.getElementById('invDate').innerText = order.date;
     document.getElementById('invCustName').innerText = name;
     document.getElementById('invCustPhone').innerText = phone;
     document.getElementById('invCustAddr').innerText = addr;
     document.getElementById('invFinalTotal').innerText = total;
-    
-    document.getElementById('invItemsBody').innerHTML = cart.map(i => 
+    document.getElementById('invItemsBody').innerHTML = order.items.map(i => 
         `<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right;">${i.price}</td><td style="text-align:right;">${i.price*i.qty}</td></tr>`
     ).join('');
 
     cart = []; updateCart();
 }
 
-// --- INVOICE GENERATION ---
+// --- INVOICE ---
 function downloadInvoice() {
+    if(!currentCompletedOrder) return alert("No order found!");
     const element = document.getElementById('invoiceTemplate');
-    element.style.display = 'block'; // Show temporarily
+    element.style.display = 'block'; // Make visible for capture
     
     html2pdf(element, {
         margin: 10,
-        filename: `Invoice_${currentOrderId}.pdf`,
+        filename: `Invoice_${currentCompletedOrder.id}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -885,15 +893,62 @@ function checkAdmin() {
     } else alert("Wrong Password");
 }
 function refreshData() {
-    document.getElementById('orderBody').innerHTML = orders.map(o => 
-        `<tr><td>${o.id}<br>${o.status}</td><td>${o.items.length} Items</td><td><button onclick="window.open('tel:${o.phone}')">Call</button></td></tr>`
+    document.getElementById('orderBody').innerHTML = orders.map((o, index) => 
+        `<tr style="border-bottom:1px solid #eee;">
+            <td style="padding:8px;">
+                <strong>${o.id}</strong><br>
+                <select onchange="updateStatus(${index}, this.value)" style="font-size:11px; padding:2px;">
+                    <option value="Placed" ${o.status === 'Placed' ? 'selected' : ''}>Placed</option>
+                    <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                </select>
+            </td>
+            <td style="padding:8px; font-size:11px;">${o.items.map(i=>`${i.name}(${i.qty})`).join(', ')}</td>
+            <td style="padding:8px; white-space:nowrap;">
+                <button class="btn-icon" style="background:#25d366" onclick="notifyWA('${o.phone}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-brands fa-whatsapp"></i></button>
+                <button class="btn-icon" style="background:#DB4437" onclick="notifyEmail('${o.email}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-solid fa-envelope"></i></button>
+            </td>
+        </tr>`
     ).join('');
 }
+function updateStatus(index, newStatus) {
+    orders[index].status = newStatus;
+    localStorage.setItem('hh_orders', JSON.stringify(orders));
+    showToast("Status Updated!");
+}
+function notifyWA(phone, name, id, total) {
+    const msg = `Hi ${name}, Your order ${id} of ₹${total} is confirmed! - Herbal&Heaven`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function notifyEmail(email, name, id, total) {
+    const subject = `Order Confirmed: ${id}`;
+    const body = `Hi ${name},\n\nOrder ${id} amounting to ₹${total} is confirmed.\n\nRegards,\nOmkar`;
+    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+}
+function resetDatabase() {
+    const code = prompt("Enter Secret Code to DELETE ALL DATA:");
+    if(code === SECRET_CODE) {
+        if(confirm("Are you sure? This cannot be undone.")) {
+            localStorage.removeItem('hh_orders');
+            localStorage.removeItem('hh_customers');
+            orders = []; customers = []; refreshData(); alert("Database Wiped.");
+        }
+    } else alert("Incorrect Code.");
+}
 function exportOrders() {
-    const ws = XLSX.utils.json_to_sheet(orders);
+    const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
+        ID: o.id, Status: o.status, Date: o.date, Name: o.customer, Phone: o.phone, 
+        Total: o.total, Items: o.items.map(i=>`${i.name}(${i.qty})`).join(', ')
+    })));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Orders");
     XLSX.writeFile(wb, "Orders.xlsx");
+}
+function exportCustomers() {
+    const ws = XLSX.utils.json_to_sheet(customers);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Customers");
+    XLSX.writeFile(wb, "Customers.xlsx");
 }
 </script>
 </body>
