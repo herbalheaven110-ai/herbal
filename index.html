@@ -49,8 +49,13 @@ button { cursor: pointer; border: none; outline: none; font-family: var(--font-b
 img { max-width: 100%; display: block; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* ---------- 2. Animations ---------- */
-.animate-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; will-change: opacity, transform; }
+/* ---------- 2. Animations (Optimized) ---------- */
+.animate-in { 
+    opacity: 0; 
+    transform: translateY(20px); 
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+    will-change: opacity, transform; 
+}
 .animate-in.visible { opacity: 1; transform: translateY(0); }
 
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -75,6 +80,11 @@ input, textarea, select { font-family: var(--font-body); }
 .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-secondary:hover { background: var(--primary); color: var(--white); }
 
+.btn-icon {
+    width: 28px; height: 28px; border-radius: 50%; display: inline-flex; 
+    align-items: center; justify-content: center; color: white; margin-left: 5px;
+}
+
 .badge, .stock-badge {
   position: absolute; color: white; border-radius: 50px; z-index: 2;
   text-transform: uppercase; font-weight: bold;
@@ -91,6 +101,7 @@ header {
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
   transition: transform 0.3s ease;
+  will-change: transform; /* Hardware Acceleration */
 }
 
 .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
@@ -103,6 +114,9 @@ header {
 .nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; padding: 5px 0; }
 .nav-menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: var(--transition); }
 .nav-menu a:hover::after { width: 100%; }
+
+/* Admin Button Specifics */
+.admin-link { color: var(--danger) !important; font-weight: 800; }
 
 .signin-btn { border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; font-size: 12px; transition: 0.3s; }
 .signin-btn:hover { background: var(--primary); color: white; }
@@ -129,6 +143,7 @@ header {
     padding: 10px 0;
     box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
     padding-bottom: max(10px, env(safe-area-inset-bottom));
+    will-change: transform;
 }
 
 .nav-item {
@@ -155,6 +170,9 @@ header {
 .timer-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
 .timer-box { background: white; padding: 5px 10px; border-radius: 8px; min-width: 55px; box-shadow: var(--shadow); }
 .timer-value { font-size: 20px; font-weight: bold; color: var(--primary); }
+
+/* CONTENT-VISIBILITY OPTIMIZATION: Faster rendering */
+#products { content-visibility: auto; contain-intrinsic-size: 1000px; }
 
 .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: 50px; }
 @media(min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } }
@@ -188,16 +206,18 @@ header {
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6);
   z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
+  will-change: opacity;
 }
 .overlay.active { opacity: 1; visibility: visible; }
 
 .modal {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-  width: 90%; max-width: 450px; background: white;
+  width: 90%; max-width: 500px; background: white;
   z-index: 1000; border-radius: 12px; padding: 25px;
   opacity: 0; visibility: hidden; transition: var(--transition);
   box-shadow: 0 25px 50px rgba(0,0,0,0.25);
   max-height: 85vh; overflow-y: auto;
+  will-change: transform, opacity;
 }
 .modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
 
@@ -264,11 +284,12 @@ header {
       <a href="#" onclick="openTrackOrder()">Track</a>
       <a href="#" onclick="openReturnOrder()">Return</a>
       
+      <a href="#" onclick="openAdminLogin()" class="admin-link">Admin Portal</a>
+
       <a href="#" class="signin-btn" id="signInBtn" onclick="openSignIn()">Sign In</a>
       <div class="user-info" id="userInfo" onclick="openUserDashboard()">
           <i class="fa-solid fa-user"></i> <span id="userNameDisplay">User</span>
       </div>
-      <a href="#" onclick="openAdminLogin()" style="color:#888; font-size:11px;">Admin</a>
     </nav>
     
     <div class="nav-icons mobile-hide">
@@ -475,15 +496,36 @@ header {
     <button class="btn btn-primary" style="width:100%;" onclick="fetchReturnItems()">Fetch Items</button>
 </div>
 
-<div class="modal" id="adminModal">
+<div class="modal" id="adminModal" style="max-width: 600px;">
     <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 10px;"><i class="fa-solid fa-times"></i></button>
-    <h3>Admin</h3>
+    <h3>Admin Portal</h3>
+    
     <div id="adminLogin">
-        <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:5px;">
-        <button class="btn btn-primary" onclick="checkAdmin()">Login</button>
+        <input type="password" id="admPass" placeholder="Enter Admin Password" style="width:100%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:5px;">
+        <button class="btn btn-primary" style="width:100%;" onclick="checkAdmin()">Login</button>
     </div>
+
     <div id="adminDash" style="display:none;">
-        <div style="max-height:300px; overflow:auto;"><table id="orderTable" style="width:100%; font-size:11px;"></table></div>
+        <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="exportOrders()"><i class="fa-solid fa-file-excel"></i> Export Orders</button>
+            <button class="btn btn-secondary" onclick="exportCustomers()"><i class="fa-solid fa-users"></i> Customers</button>
+            <button class="btn btn-primary" onclick="refreshData()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+        
+        <div style="max-height:350px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
+            <table id="orderTable" style="width:100%; font-size:12px; border-collapse:collapse; text-align:left;">
+                <thead style="background:#f5f5f5; position:sticky; top:0;">
+                    <tr><th style="padding:8px;">Order Details</th><th style="padding:8px;">Actions</th></tr>
+                </thead>
+                <tbody id="orderBody"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #eee; text-align: center;">
+            <button class="btn" style="background: var(--danger); color: white; font-size: 10px;" onclick="resetDatabase()">
+                <i class="fa-solid fa-trash"></i> Reset Database (Danger)
+            </button>
+        </div>
     </div>
 </div>
 
@@ -492,6 +534,7 @@ header {
 const UPI_ID = "damareomkar96@oksbi";
 const ADMIN_PASS = "omti96";
 const OWNER_PHONE = "919595641664";
+const SECRET_CODE = "DELETE99";
 
 // --- DATA ---
 const products = [
@@ -509,6 +552,7 @@ const products = [
 let cart = JSON.parse(localStorage.getItem('hh_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('hh_wishlist') || '[]');
 let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
+let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('hh_current_user') || 'null');
 let currentOrder = null;
 
@@ -520,26 +564,26 @@ window.onload = () => {
     updateWishlistCount();
     startCountdown();
     
-    // Optimized Scroll Listener
-    let scrollTimeout;
+    // Performance: Use RequestAnimationFrame for Scrolling
+    let ticking = false;
     const animateElements = document.querySelectorAll('.animate-in');
     
     window.addEventListener('scroll', () => {
-        if (!scrollTimeout) {
-            scrollTimeout = setTimeout(() => {
-                scrollTimeout = null;
-                // Animate on scroll logic
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
                 animateElements.forEach(el => {
-                    if(el.getBoundingClientRect().top < window.innerHeight * 0.9) {
+                    if(el.getBoundingClientRect().top < window.innerHeight * 0.95) {
                         el.classList.add('visible');
                     }
                 });
-            }, 50); // Throttle to 50ms
+                ticking = false;
+            });
+            ticking = true;
         }
     });
     
     // Trigger initial animations
-    setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+    setTimeout(() => window.dispatchEvent(new Event('scroll')), 50);
     
     // Mobile Check for Layout
     if(window.innerWidth <= 768) {
@@ -577,11 +621,6 @@ function renderProducts(list) {
         </div>
         `;
     }).join('');
-    
-    // Re-trigger animation
-    setTimeout(() => {
-        document.querySelectorAll('.products-grid .animate-in').forEach(el => el.classList.add('visible'));
-    }, 50);
 }
 
 function filterProducts() {
@@ -624,7 +663,7 @@ function updateCart() {
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
     
     document.getElementById('cartCount').innerText = count;
-    document.getElementById('mobileCartCount').innerText = count; // Update Mobile Icon
+    document.getElementById('mobileCartCount').innerText = count; 
     document.getElementById('cartTotal').innerText = '₹' + total;
     
     document.getElementById('cartItems').innerHTML = cart.length ? cart.map(i => `
@@ -668,14 +707,13 @@ function toggleWishlist(id, event) {
     
     localStorage.setItem('hh_wishlist', JSON.stringify(wishlist));
     updateWishlistCount();
-    renderProducts(products); // Re-render to update hearts
+    renderProducts(products); 
 }
 
 function updateWishlistCount() {
     const count = wishlist.length;
     document.getElementById('wishlistCount').textContent = count;
-    document.getElementById('mobileWishlistCount').textContent = count; // Update Mobile
-    // Populate Modal
+    document.getElementById('mobileWishlistCount').textContent = count;
     document.getElementById('wishlistItems').innerHTML = wishlist.length ? wishlist.map(p => `
         <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
             <img src="${p.img}" style="width:40px; height:40px; border-radius:4px;">
@@ -686,7 +724,7 @@ function updateWishlistCount() {
 }
 
 function openWishlist() {
-    updateWishlistCount(); // Ensure UI is fresh
+    updateWishlistCount(); 
     openModal('wishlistModal');
 }
 
@@ -697,7 +735,6 @@ function openReturnOrder() {
 function fetchReturnItems() {
     const id = document.getElementById('returnInput').value.trim();
     if(!id) return showToast("Enter Order ID");
-    // Mock functionality (just notify admin for now)
     window.open(`https://wa.me/${OWNER_PHONE}?text=Return Request for Order: ${id}`, '_blank');
 }
 
@@ -738,12 +775,18 @@ function openSignIn() { openModal('signInModal'); }
 
 function handleSignIn(e) {
     e.preventDefault();
-    currentUser = {
-        name: document.getElementById('signName').value,
-        email: document.getElementById('signEmail').value,
-        phone: document.getElementById('signPhone').value
-    };
+    const name = document.getElementById('signName').value;
+    const email = document.getElementById('signEmail').value;
+    const phone = document.getElementById('signPhone').value;
+    currentUser = { name, email, phone };
     localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
+    
+    // Auto-save to customers list
+    if(!customers.find(c => c.email === email)) {
+        customers.push({...currentUser, joined: new Date().toLocaleDateString()});
+        localStorage.setItem('hh_customers', JSON.stringify(customers));
+    }
+    
     closeModal('signInModal');
     updateUserUI();
     showToast(`Welcome ${currentUser.name}`);
@@ -812,6 +855,7 @@ function confirmOrder() {
         date: new Date().toLocaleDateString(),
         customer: document.getElementById('cName').value,
         email: document.getElementById('cEmail').value,
+        phone: document.getElementById('cPhone').value,
         items: [...cart],
         total: total,
         status: 'Placed'
@@ -849,17 +893,89 @@ function buyNow(id, e) {
     cart = []; addToCart(id); toggleCart(); openCheckout();
 }
 
-// --- ADMIN & MISC ---
+// --- FULL ADMIN FEATURES ---
+function openAdminLogin() { 
+    openModal('adminModal'); 
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminDash').style.display = 'none';
+}
+
 function checkAdmin() {
     if(document.getElementById('admPass').value === ADMIN_PASS) {
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminDash').style.display = 'block';
-        document.getElementById('orderTable').innerHTML = orders.map(o => `
-            <tr><td style="padding:5px; border-bottom:1px solid #eee;">
-                <b>${o.id}</b> (${o.customer})<br>₹${o.total} - ${o.status}
-            </td></tr>
-        `).join('');
-    } else alert("Wrong Password");
+        refreshData();
+        showToast("Admin Logged In");
+    } else {
+        alert("Wrong Password");
+    }
+}
+
+function refreshData() {
+    const tbody = document.getElementById('orderBody');
+    if(!orders.length) { tbody.innerHTML = "<tr><td colspan='2' style='padding:10px;'>No orders yet.</td></tr>"; return; }
+    
+    tbody.innerHTML = orders.map((o, index) => `
+        <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:10px; vertical-align:top;">
+                <strong>${o.id}</strong> <span style="color:#888; font-size:10px;">${o.date}</span><br>
+                ${o.customer} (${o.phone})<br>
+                Total: ₹${o.total}<br>
+                <div style="margin-top:5px; font-size:11px; color:#555;">
+                   ${o.items.map(i=>`${i.name} (${i.qty})`).join(', ')}
+                </div>
+            </td>
+            <td style="padding:10px; vertical-align:top;">
+                <select onchange="updateStatus(${index}, this.value)" style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px; margin-bottom:5px;">
+                    <option value="Placed" ${o.status==='Placed'?'selected':''}>Placed</option>
+                    <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                </select>
+                <div style="display:flex;">
+                    <button class="btn-icon" style="background:#25d366" onclick="window.open('https://wa.me/${o.phone}?text=Order ${o.id} Status: ${o.status}', '_blank')"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button class="btn-icon" style="background:#DB4437" onclick="window.open('mailto:${o.email}?subject=Order ${o.id}&body=Status: ${o.status}')"><i class="fa-solid fa-envelope"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateStatus(index, newStatus) {
+    orders[index].status = newStatus;
+    localStorage.setItem('hh_orders', JSON.stringify(orders));
+    showToast(`Order Updated: ${newStatus}`);
+}
+
+function exportOrders() {
+    const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
+        ID: o.id, Date: o.date, Name: o.customer, Phone: o.phone, 
+        Status: o.status, Total: o.total, Items: o.items.map(i=>i.name).join(', ')
+    })));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Orders");
+    XLSX.writeFile(wb, "Herbal_Orders.xlsx");
+}
+
+function exportCustomers() {
+    const ws = XLSX.utils.json_to_sheet(customers);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Customers");
+    XLSX.writeFile(wb, "Herbal_Customers.xlsx");
+}
+
+function resetDatabase() {
+    const code = prompt("Enter Secret Code to WIPE DATA:");
+    if(code === SECRET_CODE) {
+        if(confirm("Permanently delete all orders and customers?")) {
+            localStorage.removeItem('hh_orders');
+            localStorage.removeItem('hh_customers');
+            orders = []; customers = [];
+            refreshData();
+            showToast("Database Reset Complete.");
+        }
+    } else {
+        alert("Incorrect Code.");
+    }
 }
 
 function openTrackOrder() { openModal('trackModal'); }
