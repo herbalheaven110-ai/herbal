@@ -21,731 +21,194 @@
   --secondary: #f4e9d5;
   --accent: #c5a059;
   --text-dark: #2c2c2c;
+  --text-light: #666;
   --white: #ffffff;
   --danger: #e74c3c;
   --success: #27ae60;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'Lato', sans-serif;
-  --shadow: 0 10px 30px rgba(0,0,0,0.08);
   --radius: 8px;
-  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html { scroll-behavior: smooth; }
 body {
-  font-family: var(--font-body);
+  font-family: 'Lato', sans-serif;
   background-color: #fdfbf7;
   color: var(--text-dark);
   line-height: 1.6;
   overflow-x: hidden;
-  padding-bottom: 70px; /* Space for bottom bar */
+  padding-bottom: 80px;
 }
 
-h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--primary); }
-a { text-decoration: none; color: inherit; transition: var(--transition); }
-button { cursor: pointer; border: none; outline: none; font-family: var(--font-body); }
+h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--primary); }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; font-family: 'Lato', sans-serif; }
 img { max-width: 100%; display: block; }
-input, textarea, select { font-family: var(--font-body); }
+input, textarea, select { font-family: 'Lato', sans-serif; }
 
-/* ---------- 2. Animations ---------- */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-@keyframes slideInRight {
-    from { transform: translateX(100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideInLeft {
-    from { transform: translateX(-100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes cartAdd {
-    0% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.2) rotate(180deg); }
-    100% { transform: scale(1) rotate(360deg); }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-.animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-.float { animation: float 3s ease-in-out infinite; }
-.pulse { animation: pulse 2s infinite; }
-.slide-in-right { animation: slideInRight 0.6s ease-out forwards; }
-.slide-in-left { animation: slideInLeft 0.6s ease-out forwards; }
-.cart-animation { animation: cartAdd 0.6s ease; }
-.shake { animation: shake 0.5s ease; }
-
-/* ---------- 3. UI Components ---------- */
+/* ---------- 2. UI Components ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  transition: var(--transition);
-  text-transform: uppercase;
-  font-size: 11px;
+  padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px; transition: transform 0.2s, background 0.2s;
 }
+.btn:active { transform: scale(0.98); }
 
-.btn-primary {
-  background: var(--primary); color: var(--white);
-  box-shadow: 0 4px 15px rgba(45, 74, 34, 0.3);
-}
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+.btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 4px 15px rgba(45, 74, 34, 0.2); }
+.btn-primary:hover { background: var(--primary-hover); }
 
-.btn-secondary {
-  background: transparent; color: var(--primary); border: 1px solid var(--primary);
-}
+.btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-secondary:hover { background: var(--primary); color: var(--white); }
 
 .btn-icon {
-    width: 32px; height: 32px; border-radius: 50%; display: inline-flex; 
+    width: 30px; height: 30px; border-radius: 50%; display: inline-flex; 
     align-items: center; justify-content: center; color: white; margin-left: 5px;
 }
 
 .badge {
-  position: absolute; top: 15px; left: 15px;
-  background: var(--accent); color: white;
-  padding: 4px 12px; font-size: 10px;
-  border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;
+  position: absolute; top: 10px; left: 10px; background: var(--accent); color: white;
+  padding: 3px 10px; font-size: 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;
   z-index: 2;
 }
 
-.stock-badge {
-  position: absolute; top: 15px; right: 15px;
-  background: var(--danger); color: white;
-  padding: 4px 8px; font-size: 9px;
-  border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
-  z-index: 2;
-}
-
-/* ---------- 4. Header ---------- */
+/* ---------- 3. Header & Nav ---------- */
 header {
   position: sticky; top: 0; z-index: 100;
-  background: #fdfbf7; /* Removed Blur for performance */
+  background: #fdfbf7;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  animation: slideInDown 0.5s ease;
-}
-
-@keyframes slideInDown {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
 
 .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
 
-.logo {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary);
-}
-.logo img { 
-    height: 45px; width: 45px; border-radius: 50%; object-fit: cover;
-    animation: rotateLogo 20s linear infinite;
-}
+.logo { display: flex; align-items: center; gap: 8px; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--primary); }
+.logo img { height: 45px; width: 45px; border-radius: 50%; object-fit: cover; animation: rotateLogo 20s linear infinite; }
 @keyframes rotateLogo { 100% { transform: rotate(360deg); } }
 
+/* Mobile Optimized Menu */
 .nav-menu { display: flex; gap: 20px; align-items: center; }
-.nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; }
-.nav-menu a::after {
-  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
-  background: var(--accent); transition: var(--transition);
-}
+.nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; padding: 5px 0; }
+.nav-menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
 .nav-menu a:hover::after { width: 100%; }
 
-.signin-btn {
-    border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; 
-    font-size: 12px; transition: 0.3s;
-}
-.signin-btn:hover { background: var(--primary); color: white; }
+.signin-btn { border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 12px; }
 .user-info { display: none; font-size: 12px; font-weight: bold; color: var(--primary); cursor: pointer; }
 
 .nav-icons { display: flex; align-items: center; gap: 15px; }
-.cart-icon-wrap, .wishlist-icon-wrap { 
-    position: relative; cursor: pointer; font-size: 18px; padding: 5px;
-    transition: var(--transition);
-}
-.cart-icon-wrap:hover, .wishlist-icon-wrap:hover {
-    transform: translateY(-2px);
-}
-.cart-count, .wishlist-count {
-  position: absolute; top: -5px; right: -5px;
-  background: var(--danger); color: white;
-  width: 16px; height: 16px; border-radius: 50%;
-  font-size: 9px; display: flex; align-items: center; justify-content: center;
+.icon-wrap { position: relative; cursor: pointer; font-size: 18px; padding: 5px; } 
+.count-badge {
+  position: absolute; top: -5px; right: -5px; background: var(--danger); color: white;
+  width: 16px; height: 16px; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center;
 }
 
-.wishlist-count { background: var(--accent); }
+.mobile-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--primary); padding: 8px; }
 
-.mobile-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--primary); padding: 5px; }
-
-.top-contact {
-  background:#345b2a; color:#fff; text-align:center;
-  padding:5px 10px; font-size:0.75rem; font-weight: 600;
-}
-
-/* ---------- 5. Hero Section ---------- */
+/* ---------- 4. Hero Section ---------- */
 .hero {
-  position: relative; height: 60vh; min-height: 450px;
+  position: relative; height: 50vh; min-height: 400px;
   background: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-  display: flex; align-items: center; margin-bottom: 50px;
-  overflow: hidden;
+  display: flex; align-items: center; margin-bottom: 40px;
+  transform: translateZ(0); /* Hardware Accel */
 }
-.hero::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
-}
-.hero-content {
-  position: relative; z-index: 2; color: white;
-  max-width: 600px; padding-left: 5%;
-  animation: slideUp 0.8s ease-out;
-}
-.hero h1 { font-size: 38px; line-height: 1.2; margin-bottom: 15px; color: white; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); }
+.hero-content { position: relative; z-index: 2; color: white; max-width: 600px; padding-left: 5%; animation: fadeInUp 0.8s ease-out; }
+.hero h1 { font-size: 36px; line-height: 1.2; margin-bottom: 15px; color: white; }
 .hero p { font-size: 15px; margin-bottom: 25px; opacity: 0.95; }
 
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ---------- 6. Countdown Timer ---------- */
-.countdown-timer {
-  background: var(--secondary);
-  padding: 15px;
-  text-align: center;
-  margin: 20px auto;
-  border-radius: var(--radius);
-  max-width: 500px;
-  animation: pulse 2s infinite;
-}
-
-.timer-container {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.timer-box {
-  background: white;
-  padding: 10px;
-  border-radius: 8px;
-  min-width: 60px;
-  box-shadow: var(--shadow);
-}
-
-.timer-value {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--primary);
-}
-
-.timer-label {
-  font-size: 11px;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* ---------- 7. Featured Carousel ---------- */
-.featured-section {
-  padding: 40px 0;
-  background: linear-gradient(135deg, #fdfbf7 0%, #f4e9d5 100%);
-}
-
-.carousel-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.carousel-track {
-  display: flex;
-  transition: transform 0.5s ease;
-}
-
-.carousel-slide {
-  min-width: 100%;
-  padding: 20px;
-  text-align: center;
-}
-
-.carousel-slide img {
-  height: 200px;
-  width: 200px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin: 0 auto 20px;
-  border: 5px solid white;
-  box-shadow: var(--shadow);
-}
-
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.8);
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10;
-  transition: var(--transition);
-}
-
-.carousel-btn:hover {
-  background: white;
-  transform: translateY(-50%) scale(1.1);
-}
-
-.carousel-btn.prev { left: 10px; }
-.carousel-btn.next { right: 10px; }
-
-/* ---------- 8. Products ---------- */
-.section-title { text-align: center; margin-bottom: 35px; }
-.section-title h2 { font-size: 28px; margin-bottom: 8px; }
-
-.filter-container {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 25px; align-items: center;
-}
-.search-box { position: relative; width: 100%; max-width: 280px; margin: 0 auto 12px auto; }
-.search-box input {
-  width: 100%; padding: 10px 18px; padding-right: 35px; border-radius: 50px;
-  border: 1px solid #ddd; outline: none; font-size: 13px;
-}
+/* ---------- 5. Products ---------- */
+.section-title { text-align: center; margin-bottom: 30px; }
+.filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 25px; }
+.search-box { position: relative; width: 100%; max-width: 300px; margin: 0 auto 15px auto; }
+.search-box input { width: 100%; padding: 10px 15px; padding-right: 35px; border-radius: 50px; border: 1px solid #ddd; outline: none; }
 .search-box i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
-.filter-btn {
-  padding: 6px 16px; border-radius: 50px; border: 1px solid #ddd; background: white;
-  cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 600;
-}
+.filter-btn { padding: 6px 14px; border-radius: 50px; border: 1px solid #ddd; background: white; font-size: 12px; transition: 0.2s; }
 .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-.products-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px; padding-bottom: 50px;
-}
+.products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding-bottom: 40px; }
+.product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid #f0f0f0; }
+.product-img { height: 180px; overflow: hidden; background: #f9f9f9; }
+.product-img img { width: 100%; height: 100%; object-fit: cover; }
+.product-info { padding: 12px; text-align: center; }
+.product-title { font-size: 15px; margin: 5px 0; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-price { font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 8px; }
 
-.product-card {
-  background: white; border-radius: var(--radius); overflow: hidden;
-  box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #f0f0f0;
-  position: relative;
-}
-.product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+/* In-Card Quantity */
+.card-qty { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px; }
+.qty-mini { width: 24px; height: 24px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+.qty-display { width: 30px; text-align: center; font-size: 13px; border: none; background: transparent; }
+.card-btns { display: flex; gap: 5px; justify-content: center; }
 
-.product-img { 
-  height: 240px; overflow: hidden; position: relative; background: #f9f9f9;
-  cursor: pointer;
-}
-.product-img img { 
-  width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;
-  loading: lazy;
-}
-.product-card:hover .product-img img { transform: scale(1.05); }
-
-.wishlist-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255,255,255,0.9);
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 3;
-  transition: var(--transition);
-}
-
-.wishlist-btn:hover {
-  background: white;
-  transform: scale(1.1);
-}
-
-.wishlist-btn.active {
-  background: var(--danger);
-  color: white;
-}
-
-.product-info { padding: 15px; text-align: center; }
-.product-title { 
-  font-size: 16px; margin: 6px 0; color: var(--text-dark);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.product-title:hover {
-  color: var(--primary);
-}
-.product-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 10px; }
-
-.product-rating {
-  display: flex;
-  justify-content: center;
-  gap: 2px;
-  margin-bottom: 8px;
-}
-
-.star {
-  color: #ffd700;
-  font-size: 12px;
-}
-
-.rating-count {
-  font-size: 11px;
-  color: #666;
-  margin-left: 5px;
-}
-
-.card-qty-wrapper {
-    display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
-}
-.qty-mini-btn {
-    width: 22px; height: 22px; background: #eee; border-radius: 50%; font-weight: bold;
-    display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555;
-    transition: var(--transition);
-}
-.qty-mini-btn:hover {
-    background: var(--primary);
-    color: white;
-}
-.card-qty-input {
-    width: 35px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 2px; font-size: 12px;
-}
-.card-btns { display: flex; gap: 6px; justify-content: center; }
-
-/* ---------- 9. Product Quick View ---------- */
-.quick-view-modal .modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-@media (min-width: 768px) {
-  .quick-view-modal .modal-content {
-    flex-direction: row;
-  }
-}
-
-.quick-view-image {
-  flex: 1;
-}
-
-.quick-view-image img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: var(--radius);
-}
-
-.quick-view-details {
-  flex: 1;
-}
-
-.product-description {
-  font-size: 14px;
-  color: #666;
-  margin: 10px 0;
-  line-height: 1.6;
-}
-
-.product-specs {
-  list-style: none;
-  margin: 15px 0;
-}
-
-.product-specs li {
-  padding: 5px 0;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
-}
-
-.product-specs li:last-child {
-  border-bottom: none;
-}
-
-/* ---------- 10. Order Progress Tracker ---------- */
-.progress-tracker {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin: 20px 0;
-  padding: 0 10px;
-}
-
-.progress-tracker::before {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: #eee;
-  z-index: 1;
-}
-
-.progress-step {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  flex: 1;
-}
-
-.step-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #eee;
-  color: #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 8px;
-  transition: var(--transition);
-}
-
-.step-circle.active {
-  background: var(--success);
-  color: white;
-  transform: scale(1.1);
-}
-
-.step-label {
-  font-size: 11px;
-  color: #666;
-}
-
-/* ---------- 11. Review System ---------- */
-.review-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.review-item {
-  padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-.reviewer-name {
-  font-weight: bold;
-  font-size: 13px;
-}
-
-.review-date {
-  font-size: 11px;
-  color: #999;
-}
-
-.review-text {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.5;
-}
-
-/* ---------- 12. Newsletter ---------- */
-.newsletter {
-  background: var(--primary);
-  color: white;
-  padding: 40px 20px;
-  text-align: center;
-  margin: 40px 0;
-  border-radius: var(--radius);
-}
-
-.newsletter-form {
-  max-width: 500px;
-  margin: 20px auto 0;
-  display: flex;
-  gap: 10px;
-}
-
-.newsletter-form input {
-  flex: 1;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 50px;
-  font-size: 14px;
-}
-
-/* ---------- 13. Back to Top Button ---------- */
-.back-to-top {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-  border: 2px solid white;
-  box-shadow: var(--shadow);
-}
-
-.back-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.back-to-top:hover {
-  background: var(--primary-hover);
-  transform: translateY(-3px);
-}
-
-/* ---------- 14. Modals ---------- */
-/* FIXED: Removed backdrop-filter to solve Mobile Blur Glitch */
+/* ---------- 6. Modals & Overlays (Fixed Blur) ---------- */
 .overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7); /* Solid transparent black */
-  z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); /* Solid transparency, NO BLUR */
+  z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s;
 }
 .overlay.active { opacity: 1; visibility: visible; }
 
 .modal {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-  width: 90%; max-width: 500px; background: white;
-  z-index: 1000; border-radius: 12px; padding: 25px;
-  opacity: 0; visibility: hidden; transition: var(--transition);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+  width: 90%; max-width: 450px; background: white; z-index: 1000; border-radius: 12px; padding: 20px;
+  opacity: 0; visibility: hidden; transition: 0.3s; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   max-height: 90vh; overflow-y: auto;
 }
 .modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
 
-.form-group { margin-bottom: 12px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 700; }
-.form-group input, .form-group textarea, .form-group select {
-  width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;
-}
-
-/* ---------- 15. Cart Drawer ---------- */
+/* ---------- 7. Cart Drawer ---------- */
 .cart-drawer {
-  position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
-  background: white; z-index: 1001; transition: var(--transition);
+  position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
+  background: white; z-index: 1001; transition: transform 0.3s ease; /* Better performance than right */
+  transform: translateX(100%);
   display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
 }
-.cart-drawer.active { right: 0; }
-.cart-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.cart-body { flex: 1; overflow-y: auto; padding: 20px; }
-.cart-item { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #fff; padding: 10px; border-radius: var(--radius); border: 1px solid #f0f0f0; }
-.cart-item img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-.cart-controls { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-.qty-btn { width: 24px; height: 24px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.qty-btn:hover { background: var(--primary); color: white; }
-.cart-qty-input { width: 35px; padding: 2px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;}
-.bulk-btn { background: #e0e0e0; font-size: 10px; padding: 2px 6px; border-radius: 4px; transition: var(--transition); }
-.bulk-btn:hover { background: var(--primary); color: white; }
+.cart-drawer.active { right: 0; transform: translateX(0); }
+.cart-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.cart-body { flex: 1; overflow-y: auto; padding: 15px; }
+.cart-item { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #fff; padding: 10px; border: 1px solid #f5f5f5; border-radius: 6px; }
+.cart-item img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
+.cart-controls { display: flex; gap: 5px; margin-top: 5px; align-items: center; }
+.bulk-btn { background: #f0f0f0; padding: 2px 8px; font-size: 10px; border-radius: 4px; }
 
-/* ---------- 16. Social Media Bar ---------- */
+/* ---------- 8. Social Bar ---------- */
 .social-bar {
-  position: fixed; bottom: 0; left: 0; width: 100%;
-  background: white; border-top: 1px solid #eee;
-  display: flex; justify-content: space-around; align-items: center;
-  padding: 8px 0; z-index: 900;
-  box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+  position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #eee;
+  display: flex; justify-content: space-around; align-items: center; padding: 8px 0; z-index: 900;
 }
-.social-link {
-  display: flex; flex-direction: column; align-items: center;
-  font-size: 11px; color: var(--text-dark); gap: 3px;
-}
-.social-link i { font-size: 18px; transition: transform 0.2s; }
-.social-link:hover i { transform: translateY(-3px); }
-.fa-whatsapp { color: #25d366; }
-.fa-instagram { color: #C13584; }
-.fa-facebook { color: #1877F2; }
+.social-link { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--text-dark); }
+.social-link i { font-size: 18px; margin-bottom: 2px; }
 
-/* Toast */
-.toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: rgba(30,30,30,0.9); color: white; padding: 8px 16px; border-radius: 30px;
-  font-size: 13px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000;
-  display: flex; align-items: center; gap: 8px; width: max-content;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* Invoice (Hidden normally, used for PDF) */
+/* Invoice Styles (Off-screen render) */
 #invoiceTemplate {
-    display: none; padding: 30px; background: white; font-family: 'Lato', sans-serif;
-    width: 600px; /* Fixed width */
+    position: absolute; top: 0; left: -9999px; /* Hide off-screen */
+    width: 600px; padding: 30px; background: white; font-family: 'Lato', sans-serif; border: 1px solid #000;
 }
 .inv-header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-.inv-logo img { height: 60px; margin: 0 auto; display: block; border-radius: 50%; }
-.inv-details { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 20px; }
-.inv-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
-.inv-table th { background: #f0f0f0; padding: 8px; text-align: left; }
+.inv-logo img { height: 60px; margin: 0 auto; display: block; }
+.inv-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; }
+.inv-table th { background: #f5f5f5; padding: 8px; text-align: left; }
 .inv-table td { border-bottom: 1px solid #eee; padding: 8px; }
-.inv-total { text-align: right; font-size: 16px; font-weight: bold; margin-top: 10px; }
-.inv-footer { text-align: center; font-size: 10px; color: #777; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; }
 
-/* Responsive */
+/* Mobile Adjustments */
 @media (max-width: 768px) {
   .mobile-toggle { display: block; }
   .nav-menu {
     position: fixed; top: 0; left: -100%; width: 260px; height: 100vh;
     background: white; flex-direction: column; padding: 60px 20px;
     box-shadow: 5px 0 15px rgba(0,0,0,0.1); z-index: 1001;
-    transition: left 0.3s ease;
-    align-items: flex-start;
+    transition: transform 0.3s ease; transform: translateX(-100%);
+    align-items: flex-start; visibility: hidden;
   }
-  .nav-menu.active { left: 0; }
-  .nav-menu a { font-size: 15px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; width: 100%; }
-  .hero { height: 50vh; }
-  .hero h1 { font-size: 28px; }
-  .cart-drawer { width: 90%; }
-  .filter-container { flex-direction: column; align-items: stretch; }
-  .search-box { width: 100%; max-width: none; }
-  .modal { width: 95%; padding: 20px; }
-  .newsletter-form { flex-direction: column; }
-  .timer-container { flex-wrap: wrap; }
-  .timer-box { min-width: 45px; }
+  .nav-menu.active { left: 0; transform: translateX(0); visibility: visible; }
+  .nav-menu a { font-size: 16px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; width: 100%; }
 }
 </style>
 </head>
 <body>
-
-<div class="top-contact">
-  Free Shipping on orders above ₹499 | Support: +91-9595641664
-</div>
 
 <header>
   <div class="container nav-wrapper">
@@ -754,33 +217,26 @@ header {
     </div>
 
     <a href="#" class="logo">
-      <img src="herb.jpg" alt="Logo" loading="lazy">
+      <img src="herb.jpg" alt="Logo">
       <span>Herbal&Heaven</span>
     </a>
     
     <nav class="nav-menu" id="mainMenu">
-      <button onclick="toggleMenu()" style="position: absolute; top: 20px; right: 20px; font-size: 20px; background:none; border:none;"><i class="fa-solid fa-times"></i></button>
       <a href="#home" onclick="toggleMenu()">Home</a>
       <a href="#products" onclick="toggleMenu()">Shop</a>
       <a href="#" onclick="openTrackOrder(); toggleMenu()">Track</a>
       <a href="#" onclick="openReturnOrder(); toggleMenu()">Return</a>
-      
-      <a href="#" class="signin-btn" id="signInBtn" onclick="openSignIn()">Sign In</a>
-      <div class="user-info" id="userInfo" onclick="openUserDashboard()">
+      <a href="#" class="signin-btn" id="signInBtn" onclick="openSignIn(); toggleMenu()">Sign In</a>
+      <div class="user-info" id="userInfo" onclick="openUserDashboard(); toggleMenu()">
           <i class="fa-solid fa-user"></i> <span id="userNameDisplay">User</span>
       </div>
-      
       <a href="#" onclick="openAdminLogin(); toggleMenu()">Admin</a>
     </nav>
     
     <div class="nav-icons">
-      <div class="wishlist-icon-wrap" onclick="openWishlist()">
-        <i class="fa-solid fa-heart"></i>
-        <span class="wishlist-count" id="wishlistCount">0</span>
-      </div>
-      <div class="cart-icon-wrap" onclick="toggleCart()">
+      <div class="icon-wrap" onclick="toggleCart()">
         <i class="fa-solid fa-shopping-bag"></i>
-        <span class="cart-count" id="cartCount">0</span>
+        <span class="count-badge" id="cartCount">0</span>
       </div>
     </div>
   </div>
@@ -790,117 +246,39 @@ header {
 
 <section id="home" class="hero">
   <div class="container hero-content">
-    <span style="color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:10px; display:block;">100% ORGANIC</span>
+    <span style="color:var(--accent); font-weight:700;">100% ORGANIC</span>
     <h1>Nature's Purest <br>Secret for You</h1>
     <p>Handcrafted, chemical-free skincare rituals designed for your inner glow.</p>
-    <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">Shop Now</button>
+    <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView()">Shop Now</button>
   </div>
 </section>
 
-<!-- Countdown Timer -->
-<div class="countdown-timer animate-in">
-  <h3 style="color: var(--primary); margin-bottom: 10px;">🎁 Special Offer Ends In:</h3>
-  <div class="timer-container">
-    <div class="timer-box">
-      <div class="timer-value" id="days">00</div>
-      <div class="timer-label">Days</div>
-    </div>
-    <div class="timer-box">
-      <div class="timer-value" id="hours">00</div>
-      <div class="timer-label">Hours</div>
-    </div>
-    <div class="timer-box">
-      <div class="timer-value" id="minutes">00</div>
-      <div class="timer-label">Minutes</div>
-    </div>
-    <div class="timer-box">
-      <div class="timer-value" id="seconds">00</div>
-      <div class="timer-label">Seconds</div>
-    </div>
-  </div>
-</div>
-
-<!-- Featured Products Carousel -->
-<section class="featured-section">
-  <div class="container">
-    <div class="section-title">
-      <h2>🌟 Featured Products</h2>
-      <p>Our best-selling organic rituals</p>
-    </div>
-    <div class="carousel-container">
-      <div class="carousel-track" id="carouselTrack">
-        <!-- Carousel slides will be added dynamically -->
-      </div>
-      <button class="carousel-btn prev" onclick="prevSlide()">‹</button>
-      <button class="carousel-btn next" onclick="nextSlide()">›</button>
-    </div>
-  </div>
-</section>
-
-<!-- Main Products Section -->
 <section id="products" class="container">
-  <div class="section-title animate-in">
+  <div class="section-title">
     <h2>Curated Rituals</h2>
   </div>
 
-  <div class="filter-container animate-in delay-1">
+  <div class="filter-container">
     <div class="search-box">
-      <input type="text" id="search" placeholder="Search soaps, oils..." onkeyup="filterProducts()">
+      <input type="text" id="search" placeholder="Search soaps..." onkeyup="filterProducts()">
       <i class="fa-solid fa-search"></i>
     </div>
-    <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px; width:100%; justify-content:center;">
-      <button class="filter-btn active" onclick="filterCat('all', this)">All</button>
-      <button class="filter-btn" onclick="filterCat('Face', this)">Face</button>
-      <button class="filter-btn" onclick="filterCat('Body', this)">Body</button>
-      <button class="filter-btn" onclick="filterCat('Glow', this)">Glow</button>
+    <div style="display:flex; gap:5px;">
+        <button class="filter-btn active" onclick="filterCat('all', this)">All</button>
+        <button class="filter-btn" onclick="filterCat('Face', this)">Face</button>
+        <button class="filter-btn" onclick="filterCat('Glow', this)">Glow</button>
     </div>
   </div>
 
   <div class="products-grid" id="productsGrid"></div>
 </section>
 
-<!-- Newsletter Section -->
-<section class="newsletter slide-in-left">
-  <div class="container">
-    <h2 style="color: white;">Stay Updated</h2>
-    <p>Subscribe to get exclusive offers and skincare tips</p>
-    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-      <input type="email" placeholder="Your email address" required>
-      <button type="submit" class="btn btn-primary">Subscribe</button>
-    </form>
-  </div>
-</section>
-
-<footer style="background: #222; color: #fff; padding: 40px 0; margin-bottom: 50px;">
-  <div class="container" style="text-align: center;">
-    <h3 style="color: white; margin-bottom: 10px;">Herbal&Heaven</h3>
-    <p style="color: #888; font-size: 13px;">Nature's Pure Essence. Made with Love.</p>
-    <div style="margin-top: 20px; font-size: 12px; color: #aaa;">
-      <p>© 2024 Herbal&Heaven. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-
-<!-- Back to Top Button -->
-<div class="back-to-top" id="backToTop" onclick="scrollToTop()">
-  <i class="fa-solid fa-chevron-up"></i>
-</div>
-
 <div class="social-bar">
-    <a href="https://wa.me/919595641664" target="_blank" class="social-link">
-        <i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span>
-    </a>
-    <a href="https://instagram.com/aose_clothing" target="_blank" class="social-link">
-        <i class="fa-brands fa-instagram"></i><span>Instagram</span>
-    </a>
-    <a href="https://facebook.com" target="_blank" class="social-link">
-        <i class="fa-brands fa-facebook"></i><span>Facebook</span>
-    </a>
+    <a href="https://wa.me/919595641664" target="_blank" class="social-link"><i class="fa-brands fa-whatsapp" style="color:#25d366"></i><span>WhatsApp</span></a>
+    <a href="https://instagram.com" target="_blank" class="social-link"><i class="fa-brands fa-instagram" style="color:#C13584"></i><span>Instagram</span></a>
+    <a href="https://facebook.com" target="_blank" class="social-link"><i class="fa-brands fa-facebook" style="color:#1877F2"></i><span>Facebook</span></a>
 </div>
 
-<div class="toast" id="toast">Item added to cart</div>
-
-<!-- Cart Drawer -->
 <div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-header">
@@ -908,7 +286,7 @@ header {
     <button onclick="toggleCart()" style="background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
   </div>
   <div class="cart-body" id="cartItems"></div>
-  <div class="cart-header" style="border-top:1px solid #eee; border-bottom:none; flex-direction:column; gap:15px; background:#fdfbf7;">
+  <div class="cart-header" style="border-top:1px solid #eee; border-bottom:none; flex-direction:column; gap:10px; background:#fdfbf7;">
     <div style="display:flex; justify-content:space-between; width:100%; font-weight:700;">
       <span>Total</span>
       <span id="cartTotal">₹0</span>
@@ -917,1047 +295,297 @@ header {
   </div>
 </div>
 
-<!-- Wishlist Modal -->
-<div class="modal" id="wishlistModal">
-    <button onclick="closeModal('wishlistModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>My Wishlist</h3>
-    <div id="wishlistItems" style="max-height: 400px; overflow-y: auto; margin-top: 15px;">
-        <!-- Wishlist items will be added here -->
-    </div>
-</div>
-
-<!-- Product Quick View Modal -->
-<div class="modal" id="quickViewModal">
-    <button onclick="closeModal('quickViewModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <div class="modal-content" id="quickViewContent">
-        <!-- Content will be dynamically added -->
-    </div>
-</div>
-
-<!-- Existing Modals (Sign In, User, Track, Return, Checkout, Admin) -->
 <div class="modal" id="signInModal">
-    <button onclick="closeModal('signInModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
     <h3>Sign In</h3>
-    <p style="font-size:13px; color:#666; margin-bottom:15px;">Access your orders and details.</p>
-    <form onsubmit="handleSignIn(event)">
-        <div class="form-group"><input type="text" id="signName" placeholder="Your Name" required></div>
-        <div class="form-group"><input type="email" id="signEmail" placeholder="Email Address" required></div>
-        <div class="form-group"><input type="tel" id="signPhone" placeholder="Phone Number" required></div>
+    <form onsubmit="handleSignIn(event)" style="margin-top:15px;">
+        <input type="text" id="signName" placeholder="Name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
+        <input type="email" id="signEmail" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
+        <input type="tel" id="signPhone" placeholder="Phone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;" required>
         <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
     </form>
+    <button onclick="closeModal('signInModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
 </div>
 
 <div class="modal" id="userModal">
-    <button onclick="closeModal('userModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
     <h3>My Profile</h3>
-    <p>Welcome back, <b id="dashboardName"></b></p>
-    <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
-    <h4>My Orders</h4>
-    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; font-size:12px; margin-top:10px;"></div>
+    <p>Welcome, <b id="dashboardName"></b></p>
+    <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; margin-top:15px; border-top:1px solid #eee;"></div>
     <button class="btn btn-secondary" style="width:100%; margin-top:15px;" onclick="handleSignOut()">Sign Out</button>
-</div>
-
-<div class="modal" id="trackModal">
-    <button onclick="closeModal('trackModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>Track Your Order</h3>
-    <div class="form-group" style="display:flex; gap:10px;">
-        <input type="text" id="trackInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
-        <button class="btn btn-primary" onclick="trackOrderNow()">Track</button>
-    </div>
-    <div id="trackResult" style="display:none;"></div>
-</div>
-
-<div class="modal" id="returnModal">
-    <button onclick="closeModal('returnModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
-    <h3>Return Item</h3>
-    <div id="returnStep1">
-        <div class="form-group" style="display:flex; gap:10px;">
-            <input type="text" id="returnInput" placeholder="Enter Order ID" style="text-transform:uppercase;">
-            <button class="btn btn-primary" onclick="fetchReturnItems()">Fetch</button>
-        </div>
-    </div>
-    <div id="returnStep2" style="display:none;">
-        <div id="returnItemsList" style="margin:10px 0; max-height:150px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:6px;"></div>
-        <textarea id="returnReason" placeholder="Reason..." style="width:100%; margin-bottom:10px;" rows="2"></textarea>
-        <button class="btn btn-primary" style="width:100%; background:var(--danger);" onclick="processReturn()">Confirm Return</button>
-    </div>
+    <button onclick="closeModal('userModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
 </div>
 
 <div class="modal" id="checkoutModal">
-  <button onclick="closeModal('checkoutModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
-  
   <div id="step1">
-    <h3>Shipping Info</h3>
-    <form onsubmit="goToPayment(event)">
-      <div class="form-group"><input id="cName" type="text" placeholder="Full Name" required></div>
-      <div class="form-group"><input id="cEmail" type="email" placeholder="Email Address" required></div>
-      <div class="form-group"><input id="cPhone" type="tel" placeholder="Phone" required></div>
-      <div class="form-group"><textarea id="cAddr" rows="2" placeholder="Full Address" required></textarea></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">Proceed to Pay</button>
-    </form>
-  </div>
-
-  <div id="step2" style="display:none; text-align:center;">
-    <h3>Payment</h3>
-    <p style="margin-bottom:15px;">Total: <strong id="payAmount"></strong></p>
-    <div style="display:grid; gap:10px; margin-bottom:20px;">
-      <button class="btn" style="background:#4285F4; color:white;" onclick="pay('Google Pay')">Google Pay</button>
-      <button class="btn" style="background:#5F259F; color:white;" onclick="pay('PhonePe')">PhonePe</button>
-      <button class="btn" style="background:#00B9F1; color:white;" onclick="pay('Paytm')">Paytm</button>
+    <h3>Shipping</h3>
+    <div style="margin-top:15px;">
+        <input id="cName" placeholder="Name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;">
+        <input id="cEmail" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;">
+        <input id="cPhone" placeholder="Phone" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;">
+        <textarea id="cAddr" placeholder="Address" rows="2" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
+        <button class="btn btn-primary" style="width:100%;" onclick="goToPayment()">Pay Now</button>
     </div>
-    <p style="font-size:12px; color:#666;">OR Scan QR Code</p>
-    <img id="qrImg" style="width:150px; margin:10px auto; border:1px solid #eee;">
-    <button class="btn btn-success" style="background:var(--success); color:white; width:100%;" onclick="confirmOrder()">I have Paid</button>
   </div>
-  
+  <div id="step2" style="display:none; text-align:center;">
+    <h3>Payment: <span id="payAmount"></span></h3>
+    <div style="margin:15px 0;">
+        <button class="btn" style="background:#4285F4; color:white; margin:5px;" onclick="payMethod='GPay'">GPay</button>
+        <button class="btn" style="background:#5F259F; color:white; margin:5px;" onclick="payMethod='PhonePe'">PhonePe</button>
+        <button class="btn" style="background:#00B9F1; color:white; margin:5px;" onclick="payMethod='Paytm'">Paytm</button>
+    </div>
+    <img id="qrImg" style="width:150px; margin:0 auto; border:1px solid #eee;">
+    <button class="btn btn-success" style="width:100%; margin-top:15px;" onclick="confirmOrder()">Done</button>
+  </div>
   <div id="step3" style="display:none; text-align:center;">
-    <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:40px; margin-bottom:10px;"></i>
-    <h3>Order Placed!</h3>
-    <h2 id="finalOrderId" style="letter-spacing:1px; margin:10px 0;"></h2>
-    <p style="font-size:13px; margin-bottom:15px;">A confirmation was sent to you.</p>
-    <button class="btn btn-primary" onclick="downloadInvoice()">Download Invoice</button>
-    <button class="btn btn-secondary" onclick="closeModal('checkoutModal'); location.reload();">Close</button>
+    <i class="fa-solid fa-circle-check" style="color:var(--success); font-size:40px;"></i>
+    <h3>Success!</h3>
+    <p>ID: <b id="finalOrderId"></b></p>
+    <button class="btn btn-primary" style="margin-top:10px;" onclick="downloadInvoice()">Download Invoice</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="closeModal('checkoutModal'); location.reload();">Close</button>
   </div>
+  <button onclick="closeModal('checkoutModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
+</div>
+
+<div class="modal" id="trackModal">
+    <h3>Track Order</h3>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+        <input id="trackInput" placeholder="Order ID (HH-XXXX)" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:5px; text-transform:uppercase;">
+        <button class="btn btn-primary" onclick="trackOrderNow()">Go</button>
+    </div>
+    <div id="trackResult" style="margin-top:15px;"></div>
+    <button onclick="closeModal('trackModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
+</div>
+
+<div class="modal" id="returnModal">
+    <h3>Return Item</h3>
+    <div id="retStep1" style="margin-top:15px;">
+        <input id="returnInput" placeholder="Order ID" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; text-transform:uppercase;">
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="fetchReturnItems()">Fetch</button>
+    </div>
+    <div id="retStep2" style="display:none; margin-top:15px;">
+        <div id="returnItemsList"></div>
+        <textarea id="returnReason" placeholder="Reason" style="width:100%; padding:10px; margin-top:10px; border:1px solid #ddd; border-radius:5px;"></textarea>
+        <button class="btn btn-primary" style="width:100%; background:var(--danger); margin-top:10px;" onclick="processReturn()">Submit Return</button>
+    </div>
+    <button onclick="closeModal('returnModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
 </div>
 
 <div class="modal" id="adminModal">
-  <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 15px; background:none;"><i class="fa-solid fa-times"></i></button>
-  <div id="adminLogin">
-    <h3>Admin Login</h3>
-    <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin:15px 0;">
-    <button class="btn btn-primary" onclick="checkAdmin()">Login</button>
-  </div>
-  <div id="adminDash" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h3>Dashboard</h3>
-      <button class="btn btn-primary" onclick="refreshData()"><i class="fa-solid fa-rotate-right"></i></button>
+    <div id="adminLogin">
+        <h3>Admin</h3>
+        <input type="password" id="admPass" placeholder="Password" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:5px;">
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="checkAdmin()">Login</button>
     </div>
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-        <button class="btn btn-secondary" onclick="exportOrders()">Orders .xlsx</button>
-        <button class="btn btn-secondary" onclick="exportCustomers()">Customers .xlsx</button>
+    <div id="adminDash" style="display:none;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <h3>Dashboard</h3>
+            <button onclick="refreshData()"><i class="fa-solid fa-sync"></i></button>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn btn-secondary" onclick="exportOrders()">Orders</button>
+            <button class="btn btn-secondary" onclick="exportCustomers()">Customers</button>
+        </div>
+        <div style="overflow-x:auto; max-height:300px;"><table id="orderTable" style="width:100%; font-size:12px; text-align:left;"><thead><tr><th>Order</th><th>Action</th></tr></thead><tbody id="orderBody"></tbody></table></div>
+        <button class="btn" style="width:100%; margin-top:15px; background:var(--danger); color:white;" onclick="resetDatabase()">Reset DB</button>
     </div>
-    <div style="overflow-x:auto; max-height: 400px;">
-        <table style="width:100%; font-size:12px; text-align:left; border-collapse:collapse;" id="orderTable">
-            <thead><tr style="background:#f5f5f5;"><th>ID/Status</th><th>Items</th><th>Actions</th></tr></thead>
-            <tbody id="orderBody"></tbody>
-        </table>
-    </div>
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; text-align: center;">
-        <button class="btn" style="background: var(--danger); color: white;" onclick="resetDatabase()">
-            <i class="fa-solid fa-trash"></i> Reset Database
-        </button>
-    </div>
-  </div>
+    <button onclick="closeModal('adminModal')" style="position: absolute; right: 15px; top: 15px; background:none; font-size:18px;"><i class="fa-solid fa-times"></i></button>
 </div>
 
 <div id="invoiceTemplate">
     <div class="inv-header">
-        <div class="inv-logo"><img src="herb.jpg" alt="Logo"></div>
-        <h2>Herbal&Heaven</h2>
-        <p style="font-size:12px; color:#555;">Rashin, Karjat, Ahmednagar, 414403</p>
-        <p style="font-size:12px; color:#555;">+91-9595641664 | aoseofficial77@gmail.com</p>
+        <div style="text-align:center; margin-bottom:20px;">
+            <img src="herb.jpg" style="height:60px; margin:0 auto; display:block;">
+            <h2 style="margin:5px 0;">Herbal&Heaven</h2>
+            <p style="font-size:12px; color:#555;">Rashin, Karjat, Ahmednagar, 414403</p>
+            <p style="font-size:12px; color:#555;">+91-9595641664 | aoseofficial77@gmail.com</p>
+        </div>
     </div>
-    <div class="inv-details">
+    <div style="display:flex; justify-content:space-between; font-size:12px; border-bottom:1px solid #eee; padding-bottom:15px;">
         <div>
-            <strong>Bill To:</strong><br>
-            <span id="invCustName"></span><br>
-            <span id="invCustPhone"></span><br>
-            <span id="invCustAddr"></span>
+            <strong>Bill To:</strong><br><span id="invName"></span><br><span id="invPhone"></span><br><span id="invAddr"></span>
         </div>
         <div style="text-align:right;">
-            <strong>Invoice #:</strong> <span id="invId"></span><br>
-            <strong>Date:</strong> <span id="invDate"></span>
+            <strong>Invoice #:</strong> <span id="invId"></span><br><strong>Date:</strong> <span id="invDate"></span>
         </div>
     </div>
-    <table class="inv-table">
-        <thead>
-            <tr><th>Item</th><th>Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Total</th></tr>
-        </thead>
-        <tbody id="invItemsBody"></tbody>
+    <table class="inv-table" style="width:100%; margin:20px 0; font-size:12px; border-collapse:collapse;">
+        <thead><tr style="background:#f9f9f9;"><th style="padding:8px; text-align:left;">Item</th><th style="padding:8px;">Qty</th><th style="padding:8px; text-align:right;">Total</th></tr></thead>
+        <tbody id="invBody"></tbody>
     </table>
-    <div class="inv-total">Total Amount: ₹<span id="invFinalTotal"></span></div>
-    <div class="inv-footer">Thank you for choosing Nature's Purest.</div>
+    <div style="text-align:right; font-weight:bold; font-size:16px;">Total: ₹<span id="invTotal"></span></div>
 </div>
 
 <script>
-// --- CONFIG ---
-const UPI_ID = "damareomkar96@oksbi";
-const ADMIN_PASS = "omti96";
-const OWNER_PHONE = "919595641664"; 
-const SECRET_CODE = "DELETE99"; 
-
-// --- DATA ---
+// CONFIG
+const CONFIG = { UPI: "damareomkar96@oksbi", PASS: "omti96", OWNER: "919595641664", CODE: "DELETE99" };
 const products = [
-  { 
-    id: 1, 
-    name: "Neem Soap", 
-    cat: "Face", 
-    price: 150, 
-    img: "proo.jpg",
-    description: "Purifying neem soap for clear skin. Antibacterial properties fight acne.",
-    stock: 15,
-    rating: 4.5,
-    reviews: 42,
-    ingredients: "Neem extract, Turmeric, Basil",
-    benefits: "Clears acne, Reduces inflammation"
-  },
-  { 
-    id: 2, 
-    name: "Papaya Soap", 
-    cat: "Glow", 
-    price: 150, 
-    img: "pro.jpg",
-    description: "Papaya enzyme soap for radiant skin. Natural exfoliation and brightening.",
-    stock: 8,
-    rating: 4.7,
-    reviews: 38,
-    ingredients: "Papaya extract, Vitamin C, Aloe Vera",
-    benefits: "Brightens skin, Removes dead cells"
-  },
-  { 
-    id: 3, 
-    name: "Tulsi Soap", 
-    cat: "Body", 
-    price: 150, 
-    img: "pro1.jpg",
-    description: "Holy basil soap for body purification. Detoxifies and refreshes skin.",
-    stock: 20,
-    rating: 4.3,
-    reviews: 29,
-    ingredients: "Tulsi extract, Sandalwood, Honey",
-    benefits: "Detoxifies, Soothes skin"
-  },
-  { 
-    id: 4, 
-    name: "Aloe Vera", 
-    cat: "Face", 
-    price: 150, 
-    img: "pro4.jpg",
-    description: "Soothing aloe vera gel for sensitive skin. Hydrates and calms irritation.",
-    stock: 25,
-    rating: 4.8,
-    reviews: 56,
-    ingredients: "Pure Aloe Vera, Vitamin E, Cucumber",
-    benefits: "Hydrates, Soothes, Reduces redness"
-  },
-  { 
-    id: 5, 
-    name: "Detan Bar", 
-    cat: "Glow", 
-    price: 150, 
-    img: "pro5.jpg",
-    description: "Tan removal bar for glowing skin. Natural ingredients for even tone.",
-    stock: 12,
-    rating: 4.6,
-    reviews: 31,
-    ingredients: "Lemon, Milk, Gram Flour",
-    benefits: "Removes tan, Evens skin tone"
-  },
-  { 
-    id: 6, 
-    name: "Rose Soap", 
-    cat: "Body", 
-    price: 150, 
-    img: "pro3.jpg",
-    description: "Rose petal soap for silky smooth skin. Natural fragrance and moisturizing.",
-    stock: 18,
-    rating: 4.4,
-    reviews: 47,
-    ingredients: "Rose petals, Glycerin, Coconut oil",
-    benefits: "Moisturizes, Natural fragrance"
-  },
-  { 
-    id: 7, 
-    name: "Charcoal", 
-    cat: "Face", 
-    price: 150, 
-    img: "pro7.jpg",
-    description: "Activated charcoal soap for deep cleansing. Draws out impurities and excess oil.",
-    stock: 10,
-    rating: 4.9,
-    reviews: 63,
-    ingredients: "Activated Charcoal, Tea Tree Oil, Clay",
-    benefits: "Deep cleanses, Controls oil"
-  },
-  { 
-    id: 8, 
-    name: "Multani", 
-    cat: "Glow", 
-    price: 150, 
-    img: "pro8.jpg",
-    description: "Fuller's earth soap for pore cleansing. Removes blackheads and tightens pores.",
-    stock: 22,
-    rating: 4.2,
-    reviews: 24,
-    ingredients: "Multani Mitti, Neem, Rose Water",
-    benefits: "Cleans pores, Tightens skin"
-  }
+  { id: 1, name: "Neem Soap", cat: "Face", price: 150, img: "proo.jpg" },
+  { id: 2, name: "Papaya Soap", cat: "Glow", price: 150, img: "pro.jpg" },
+  { id: 3, name: "Tulsi Soap", cat: "Body", price: 150, img: "pro1.jpg" },
+  { id: 4, name: "Aloe Vera", cat: "Face", price: 150, img: "pro4.jpg" },
+  { id: 5, name: "Detan Bar", cat: "Glow", price: 150, img: "pro5.jpg" },
+  { id: 6, name: "Rose Soap", cat: "Body", price: 150, img: "pro3.jpg" },
+  { id: 7, name: "Charcoal", cat: "Face", price: 150, img: "pro7.jpg" },
+  { id: 8, name: "Multani", cat: "Glow", price: 150, img: "pro8.jpg" }
 ];
 
-let cart = [];
-let wishlist = JSON.parse(localStorage.getItem('hh_wishlist') || '[]');
-let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
-let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
-let currentUser = JSON.parse(localStorage.getItem('hh_current_user') || 'null');
-let currentCompletedOrder = null;
-let payMethod = '';
-let currentReturnOrderId = null;
-let carouselCurrentIndex = 0;
+let cart = [], orders = JSON.parse(localStorage.getItem('hh_orders')||'[]'), customers = JSON.parse(localStorage.getItem('hh_customers')||'[]');
+let user = JSON.parse(localStorage.getItem('hh_user')||'null'), lastOrder = null, payMethod = 'QR';
 
-// --- INIT ---
-window.onload = () => {
-    renderProducts(products);
-    updateUserUI();
-    updateWishlistCount();
-    startCountdown();
-    initCarousel();
-    setupScrollAnimations();
-    
-    // Add scroll event for back to top button
-    window.addEventListener('scroll', handleScroll);
-    
-    // Add intersection observer for animations
-    setupIntersectionObserver();
-};
-
-// --- NEW FEATURES ---
-
-// 1. Countdown Timer
-function startCountdown() {
-    const countdownDate = new Date();
-    countdownDate.setDate(countdownDate.getDate() + 7); // 7 days from now
-    
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = countdownDate - now;
-        
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        document.getElementById('days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-        
-        if (distance < 0) {
-            clearInterval(countdownInterval);
-            document.querySelector('.countdown-timer').innerHTML = "<h3>🎉 Special Offer Expired!</h3>";
-        }
-    }
-    
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
-}
-
-// 2. Carousel
-function initCarousel() {
-    const carouselTrack = document.getElementById('carouselTrack');
-    const featuredProducts = products.slice(0, 3); // First 3 products as featured
-    
-    carouselTrack.innerHTML = featuredProducts.map(product => `
-        <div class="carousel-slide">
-            <img src="${product.img}" alt="${product.name}" class="float">
-            <h3>${product.name}</h3>
-            <p>${product.description.substring(0, 100)}...</p>
-            <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
-        </div>
-    `).join('');
-}
-
-function nextSlide() {
-    carouselCurrentIndex = (carouselCurrentIndex + 1) % 3;
-    updateCarousel();
-}
-
-function prevSlide() {
-    carouselCurrentIndex = (carouselCurrentIndex - 1 + 3) % 3;
-    updateCarousel();
-}
-
-function updateCarousel() {
-    const carouselTrack = document.getElementById('carouselTrack');
-    carouselTrack.style.transform = `translateX(-${carouselCurrentIndex * 100}%)`;
-}
-
-// 3. Wishlist Feature
-function toggleWishlist(productId) {
-    const product = products.find(p => p.id === productId);
-    const index = wishlist.findIndex(item => item.id === productId);
-    
-    if (index > -1) {
-        wishlist.splice(index, 1);
-        showToast("Removed from wishlist");
-    } else {
-        wishlist.push(product);
-        showToast("Added to wishlist");
-    }
-    
-    localStorage.setItem('hh_wishlist', JSON.stringify(wishlist));
-    updateWishlistCount();
-    renderProducts(products);
-}
-
-function updateWishlistCount() {
-    document.getElementById('wishlistCount').textContent = wishlist.length;
-}
-
-function openWishlist() {
-    const wishlistItemsDiv = document.getElementById('wishlistItems');
-    
-    if (wishlist.length === 0) {
-        wishlistItemsDiv.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #999;">
-                <i class="fa-regular fa-heart" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <p>Your wishlist is empty</p>
-            </div>
-        `;
-    } else {
-        wishlistItemsDiv.innerHTML = wishlist.map(item => `
-            <div class="cart-item">
-                <img src="${item.img}" alt="${item.name}">
-                <div style="flex:1;">
-                    <div style="font-weight:700; font-size:13px;">${item.name}</div>
-                    <div style="font-size:11px; color:#666;">₹${item.price}</div>
-                    <div class="cart-controls" style="margin-top:5px;">
-                        <button class="btn btn-primary" onclick="addToCart(${item.id})" style="padding:4px 12px; font-size:11px;">Add to Cart</button>
-                        <button class="btn btn-secondary" onclick="toggleWishlist(${item.id})" style="padding:4px 12px; font-size:11px;">Remove</button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    openModal('wishlistModal');
-}
-
-// 4. Product Quick View
-function openQuickView(productId) {
-    const product = products.find(p => p.id === productId);
-    const quickViewContent = document.getElementById('quickViewContent');
-    
-    quickViewContent.innerHTML = `
-        <div class="quick-view-image">
-            <img src="${product.img}" alt="${product.name}">
-        </div>
-        <div class="quick-view-details">
-            <h3>${product.name}</h3>
-            <div class="product-price">₹${product.price}</div>
-            <div class="product-rating">
-                ${generateStars(product.rating)}
-                <span class="rating-count">(${product.reviews} reviews)</span>
-            </div>
-            <p class="product-description">${product.description}</p>
-            <ul class="product-specs">
-                <li><strong>Category:</strong> ${product.cat}</li>
-                <li><strong>Ingredients:</strong> ${product.ingredients}</li>
-                <li><strong>Benefits:</strong> ${product.benefits}</li>
-                <li><strong>Stock:</strong> ${product.stock} units available</li>
-            </ul>
-            <div class="card-qty-wrapper">
-                <button class="qty-mini-btn" onclick="updateCardQty('${product.id}', -1)">-</button>
-                <input type="text" id="quick-qty-${product.id}" class="card-qty-input" value="1" readonly>
-                <button class="qty-mini-btn" onclick="updateCardQty('${product.id}', 1)">+</button>
-            </div>
-            <div class="card-btns" style="margin-top: 15px;">
-                <button class="btn btn-primary" onclick="addToCart(${product.id}); closeModal('quickViewModal')">Add to Cart</button>
-                <button class="btn btn-secondary" onclick="toggleWishlist(${product.id})">
-                    <i class="fa-${wishlist.find(w => w.id === product.id) ? 'solid' : 'regular'} fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    `;
-    
-    openModal('quickViewModal');
-}
-
-function generateStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        if (i <= Math.floor(rating)) {
-            stars += '<i class="fa-solid fa-star star"></i>';
-        } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-            stars += '<i class="fa-solid fa-star-half-alt star"></i>';
-        } else {
-            stars += '<i class="fa-regular fa-star star"></i>';
-        }
-    }
-    return stars;
-}
-
-// 5. Scroll Animations
-function handleScroll() {
-    const backToTop = document.getElementById('backToTop');
-    if (window.scrollY > 300) {
-        backToTop.classList.add('visible');
-    } else {
-        backToTop.classList.remove('visible');
-    }
-}
-
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-function setupIntersectionObserver() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-}
-
-function setupScrollAnimations() {
-    const elements = document.querySelectorAll('.section-title, .product-card, .countdown-timer, .newsletter');
-    elements.forEach(el => {
-        el.classList.add('animate-on-scroll');
-    });
-}
-
-// 6. Newsletter Subscription
-function subscribeNewsletter(event) {
-    event.preventDefault();
-    const email = event.target.querySelector('input[type="email"]').value;
-    
-    // Save to localStorage
-    let subscribers = JSON.parse(localStorage.getItem('hh_newsletter') || '[]');
-    if (!subscribers.includes(email)) {
-        subscribers.push(email);
-        localStorage.setItem('hh_newsletter', JSON.stringify(subscribers));
-        showToast("Subscribed successfully!");
-        event.target.reset();
-    } else {
-        showToast("Already subscribed!");
-    }
-}
-
-// 7. Enhanced Add to Cart with Animation
-function addToCart(id) {
-    const p = products.find(x => x.id === id);
-    const qtyInput = document.getElementById(`card-qty-${id}`) || document.getElementById(`quick-qty-${id}`);
-    const qty = parseInt(qtyInput ? qtyInput.value : 1);
-    const ex = cart.find(x => x.id === id);
-    
-    if (p.stock < (ex ? ex.qty + qty : qty)) {
-        showToast("Insufficient stock!");
-        return;
-    }
-    
-    if(ex) ex.qty += qty; else cart.push({...p, qty});
-    if(qtyInput) qtyInput.value = 1;
-    
-    // Animate cart icon
-    const cartIcon = document.querySelector('.cart-icon-wrap i');
-    cartIcon.classList.add('cart-animation');
-    setTimeout(() => cartIcon.classList.remove('cart-animation'), 600);
-    
-    updateCart(); 
-    showToast("Added to Bag");
-    
-    // Update product stock display
-    renderProducts(products);
-}
-
-// 8. Enhanced Product Rendering
+// CORE
+window.onload = () => { renderProducts(products); checkUser(); };
 function renderProducts(list) {
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML = list.map((p, i) => {
-        const isInWishlist = wishlist.find(w => w.id === p.id);
-        const stockBadge = p.stock < 5 ? `<div class="stock-badge">Only ${p.stock} left</div>` : '';
-        
-        return `
-        <div class="product-card animate-in" style="animation-delay: ${i*0.05}s">
-            <div class="badge">Pure</div>
-            ${stockBadge}
-            <div class="product-img" onclick="openQuickView(${p.id})">
-                <img src="${p.img}" alt="${p.name}" loading="lazy">
-            </div>
-            <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" onclick="toggleWishlist(${p.id})">
-                <i class="fa-${isInWishlist ? 'solid' : 'regular'} fa-heart"></i>
-            </button>
+    document.getElementById('productsGrid').innerHTML = list.map(p => `
+        <div class="product-card">
+            <div class="product-img"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
             <div class="product-info">
-                <h3 class="product-title" onclick="openQuickView(${p.id})">${p.name}</h3>
-                <div class="product-rating">
-                    ${generateStars(p.rating)}
-                    <span class="rating-count">(${p.reviews})</span>
-                </div>
+                <h3 class="product-title">${p.name}</h3>
                 <div class="product-price">₹${p.price}</div>
-                <div class="card-qty-wrapper">
-                    <button class="qty-mini-btn" onclick="updateCardQty('${p.id}', -1)">-</button>
-                    <input type="text" id="card-qty-${p.id}" class="card-qty-input" value="1" readonly>
-                    <button class="qty-mini-btn" onclick="updateCardQty('${p.id}', 1)">+</button>
+                <div class="card-qty">
+                    <div class="qty-mini" onclick="cardQty('${p.id}',-1)">-</div>
+                    <input id="q-${p.id}" class="qty-display" value="1" readonly>
+                    <div class="qty-mini" onclick="cardQty('${p.id}',1)">+</div>
                 </div>
                 <div class="card-btns">
-                    <button class="btn btn-primary" onclick="addToCart(${p.id})">Add</button>
-                    <button class="btn btn-secondary" onclick="buyNow(${p.id})">Buy</button>
+                    <button class="btn btn-primary" onclick="add('${p.id}')">Add</button>
+                    <button class="btn btn-secondary" onclick="buy('${p.id}')">Buy</button>
                 </div>
             </div>
-        </div>
-        `;
-    }).join('');
+        </div>`).join('');
 }
+function cardQty(id,d) { const e=document.getElementById('q-'+id); e.value=Math.max(1,parseInt(e.value)+d); }
+function filterProducts() { const q=document.getElementById('search').value.toLowerCase(); renderProducts(products.filter(p=>p.name.toLowerCase().includes(q))); }
+function filterCat(c,b) { document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderProducts(c==='all'?products:products.filter(p=>p.cat===c)); }
 
-// 9. Enhanced Toast Notification
-function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.innerHTML = `
-        <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-        ${msg}
-    `;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+// CART
+function add(id) {
+    const p = products.find(x=>x.id==id), q = parseInt(document.getElementById('q-'+id).value);
+    const ex = cart.find(x=>x.id==id); ex ? ex.qty+=q : cart.push({...p, qty:q});
+    updateCart(); document.getElementById('q-'+id).value=1;
+    const t = document.getElementById('toast'); t.style.opacity=1; t.style.transform='translateX(-50%) translateY(0)';
+    setTimeout(()=>{t.style.opacity=0; t.style.transform='translateX(-50%) translateY(20px)'},2000);
 }
-
-// --- EXISTING FUNCTIONS (Enhanced) ---
-function updateCardQty(id, chg) {
-    const el = document.getElementById(`card-qty-${id}`) || document.getElementById(`quick-qty-${id}`);
-    if (!el) return;
-    let v = parseInt(el.value) + chg;
-    if(v<1) v=1; 
-    if(v>products.find(p => p.id === id).stock) {
-        showToast("Maximum stock reached!", "warning");
-        v = products.find(p => p.id === id).stock;
-    }
-    el.value = v;
-}
-
-function filterProducts() {
-    const q = document.getElementById('search').value.toLowerCase();
-    const filtered = products.filter(p => 
-        p.name.toLowerCase().includes(q) || 
-        p.cat.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
-    );
-    renderProducts(filtered);
-}
-
-function filterCat(cat, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filtered = cat === 'all' ? products : products.filter(p => p.cat.includes(cat));
-    renderProducts(filtered);
-}
-
 function updateCart() {
-    const count = cart.reduce((a,b) => a+b.qty, 0);
-    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-    document.getElementById('cartCount').innerText = count;
-    document.getElementById('cartTotal').innerText = '₹' + total;
-    document.getElementById('cartItems').innerHTML = cart.length ? cart.map(i => `
+    document.getElementById('cartCount').innerText = cart.reduce((a,b)=>a+b.qty,0);
+    document.getElementById('cartTotal').innerText = '₹'+cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    document.getElementById('cartItems').innerHTML = cart.map(i=>`
         <div class="cart-item">
             <img src="${i.img}">
-            <div style="flex:1;">
-                <div style="font-weight:700; font-size:13px;">${i.name}</div>
-                <div style="font-size:11px; color:#666;">₹${i.price}</div>
+            <div style="flex:1">
+                <div>${i.name}</div><div style="color:#666;font-size:12px;">₹${i.price}</div>
                 <div class="cart-controls">
-                    <button class="qty-btn" onclick="modQty(${i.id}, -1)">-</button>
-                    <input type="number" class="cart-qty-input" value="${i.qty}" onchange="manualCartQty(${i.id}, this.value)" min="1" max="${i.stock}">
-                    <button class="qty-btn" onclick="modQty(${i.id}, 1)">+</button>
-                    <button class="bulk-btn" onclick="modQty(${i.id}, 5)">+5</button>
-                    <button class="bulk-btn" style="background: var(--danger);" onclick="removeFromCart(${i.id})">Remove</button>
+                    <div class="qty-mini" onclick="mod('${i.id}',-1)">-</div>
+                    <input class="qty-display" value="${i.qty}" readonly>
+                    <div class="qty-mini" onclick="mod('${i.id}',1)">+</div>
+                    <button class="bulk-btn" onclick="mod('${i.id}',10)">+10</button>
                 </div>
             </div>
-        </div>
-    `).join('') : `
-        <div style="text-align:center; padding: 40px; color: #999;">
-            <i class="fa-solid fa-shopping-bag" style="font-size: 48px; margin-bottom: 15px;"></i>
-            <p>Your bag is empty</p>
-            <button class="btn btn-primary" onclick="toggleCart(); document.getElementById('products').scrollIntoView({behavior: 'smooth'})" style="margin-top: 15px;">Continue Shopping</button>
-        </div>
-    `;
+        </div>`).join('');
 }
-
-function removeFromCart(id) {
-    cart = cart.filter(x => x.id !== id);
-    updateCart();
-    showToast("Item removed from cart");
+function mod(id,d) { const i=cart.find(x=>x.id==id); i.qty+=d; if(i.qty<=0) cart=cart.filter(x=>x.id!=id); updateCart(); }
+function toggleCart() { 
+    const d=document.getElementById('cartDrawer'), o=document.getElementById('cartOverlay');
+    const a = d.classList.contains('active');
+    d.classList.toggle('active'); o.classList.toggle('active');
+    if(!a) document.getElementById('mainMenu').classList.remove('active'); // Close menu on cart open
 }
+function buy(id) { cart=[]; add(id); toggleCart(); openCheckout(); }
 
-function modQty(id, n) {
-    const i = cart.find(x => x.id === id);
-    if(i) { 
-        const newQty = i.qty + n;
-        if(newQty <= 0) {
-            cart = cart.filter(x => x.id !== id);
-            showToast("Item removed from cart");
-        } else if(newQty > products.find(p => p.id === id).stock) {
-            showToast("Maximum stock reached!", "warning");
-            i.qty = products.find(p => p.id === id).stock;
-        } else {
-            i.qty = newQty;
-        }
-    }
-    updateCart();
-}
-
-function manualCartQty(id, v) {
-    const i = cart.find(x => x.id === id);
-    if(i) { 
-        const newQty = parseInt(v);
-        if(newQty > 0 && newQty <= products.find(p => p.id === id).stock) {
-            i.qty = newQty;
-        } else if(newQty > products.find(p => p.id === id).stock) {
-            showToast("Maximum stock reached!", "warning");
-            i.qty = products.find(p => p.id === id).stock;
-        }
-    }
-    updateCart();
-}
-
-// --- GENERIC MODAL UTILS ---
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-    document.querySelector('.overlay').classList.add('active');
-}
-
-// --- EXISTING FUNCTIONS (Keep as is) ---
-function toggleCart() {
-    const d = document.getElementById('cartDrawer');
-    const o = document.getElementById('cartOverlay');
-    if(d.classList.contains('active')) { d.classList.remove('active'); o.classList.remove('active'); }
-    else { d.classList.add('active'); o.classList.add('active'); }
-}
-
-function buyNow(id) { cart=[]; addToCart(id); toggleCart(); openCheckout(); }
-
+// CHECKOUT & INVOICE
 function openCheckout() {
-    if(!cart.length) return showToast("Cart is empty");
+    if(!cart.length) return alert("Empty Cart");
     toggleCart(); openModal('checkoutModal');
-    // Pre-fill if logged in
-    if(currentUser) {
-        document.getElementById('cName').value = currentUser.name;
-        document.getElementById('cEmail').value = currentUser.email;
-        document.getElementById('cPhone').value = currentUser.phone;
-    }
-    document.getElementById('step1').style.display = 'block';
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step3').style.display = 'none';
+    if(user) { document.getElementById('cName').value=user.name; document.getElementById('cEmail').value=user.email; document.getElementById('cPhone').value=user.phone; }
+    document.getElementById('step1').style.display='block'; document.getElementById('step2').style.display='none'; document.getElementById('step3').style.display='none';
 }
-
-function goToPayment(e) {
-    e.preventDefault();
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
-    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-    document.getElementById('payAmount').innerText = '₹' + total;
-    const url = `upi://pay?pa=${UPI_ID}&pn=HerbalHeaven&am=${total}&cu=INR`;
-    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+function goToPayment() {
+    document.getElementById('step1').style.display='none'; document.getElementById('step2').style.display='block';
+    const tot = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    document.getElementById('payAmount').innerText='₹'+tot;
+    const url = `upi://pay?pa=${CONFIG.UPI}&pn=HerbalHeaven&am=${tot}&cu=INR`;
+    document.getElementById('qrImg').src=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
 }
-
-function pay(m) { payMethod = m; }
-
 function confirmOrder() {
-    const name = document.getElementById('cName').value;
-    const email = document.getElementById('cEmail').value;
-    const phone = document.getElementById('cPhone').value;
-    const addr = document.getElementById('cAddr').value;
-    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
-    const uid = "HH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
-
-    // Update product stock
-    cart.forEach(item => {
-        const product = products.find(p => p.id === item.id);
-        if (product) {
-            product.stock -= item.qty;
-        }
-    });
-
-    // Create Order Object
-    const order = {
-        id: uid, date: new Date().toLocaleDateString(),
-        customer: name, email, phone, address: addr,
-        items: [...cart], // Clone cart items for storage
-        total, method: payMethod || 'QR', status: 'Placed'
-    };
+    const name=document.getElementById('cName').value, email=document.getElementById('cEmail').value, phone=document.getElementById('cPhone').value, addr=document.getElementById('cAddr').value;
+    const tot = cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const uid = "HH-"+Math.random().toString(36).substr(2,4).toUpperCase();
+    const order = { id:uid, date:new Date().toLocaleDateString(), customer:name, email, phone, address:addr, items:[...cart], total:tot, status:'Placed' };
+    orders.push(order); localStorage.setItem('hh_orders', JSON.stringify(orders)); lastOrder=order;
     
-    // Save locally
-    orders.push(order);
-    localStorage.setItem('hh_orders', JSON.stringify(orders));
-    currentCompletedOrder = order; // Save for invoice
+    // Prep Invoice
+    document.getElementById('invId').innerText=uid; document.getElementById('invDate').innerText=order.date;
+    document.getElementById('invName').innerText=name; document.getElementById('invPhone').innerText=phone; document.getElementById('invAddr').innerText=addr;
+    document.getElementById('invBody').innerHTML=cart.map(i=>`<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right;">${i.price*i.qty}</td></tr>`).join('');
+    document.getElementById('invTotal').innerText=tot;
 
-    // Notify Owner
-    const msg = `New Order! ID: ${uid} Name: ${name} Total: ₹${total}`;
-    window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-
-    document.getElementById('finalOrderId').innerText = uid;
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step3').style.display = 'block';
-    
-    // Populate Invoice HTML (Hidden)
-    document.getElementById('invId').innerText = uid;
-    document.getElementById('invDate').innerText = order.date;
-    document.getElementById('invCustName').innerText = name;
-    document.getElementById('invCustPhone').innerText = phone;
-    document.getElementById('invCustAddr').innerText = addr;
-    document.getElementById('invFinalTotal').innerText = total;
-    document.getElementById('invItemsBody').innerHTML = order.items.map(i => 
-        `<tr><td>${i.name}</td><td>${i.qty}</td><td style="text-align:right;">${i.price}</td><td style="text-align:right;">${i.price*i.qty}</td></tr>`
-    ).join('');
-
-    cart = []; updateCart();
-    renderProducts(products); // Update stock display
+    document.getElementById('finalOrderId').innerText=uid;
+    document.getElementById('step2').style.display='none'; document.getElementById('step3').style.display='block';
+    cart=[]; updateCart();
+    window.open(`https://wa.me/${CONFIG.OWNER}?text=New Order ${uid} from ${name} Total: ${tot}`, '_blank');
 }
-
 function downloadInvoice() {
-    if(!currentCompletedOrder) return alert("No order found!");
-    const element = document.getElementById('invoiceTemplate');
-    element.style.display = 'block'; // Make visible for capture
-    
-    html2pdf(element, {
-        margin: 10,
-        filename: `Invoice_${currentCompletedOrder.id}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).then(() => {
-        element.style.display = 'none'; // Hide again
-    });
+    html2pdf(document.getElementById('invoiceTemplate'), { margin:10, filename:`Invoice_${lastOrder.id}.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4'} });
 }
 
-// --- USER SYSTEM ---
-function updateUserUI() {
-    if(currentUser) {
-        document.getElementById('signInBtn').style.display = 'none';
-        document.getElementById('userInfo').style.display = 'block';
-        document.getElementById('userNameDisplay').innerText = currentUser.name;
-    } else {
-        document.getElementById('signInBtn').style.display = 'block';
-        document.getElementById('userInfo').style.display = 'none';
-    }
+// USER & MENU
+function toggleMenu() { 
+    const m=document.getElementById('mainMenu'), o=document.getElementById('menuOverlay');
+    m.classList.toggle('active'); o.classList.toggle('active');
 }
-
-function openSignIn() { openModal('signInModal'); }
-
+function openModal(id) { document.getElementById(id).classList.add('active'); document.querySelector('.overlay').classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.querySelector('.overlay').classList.remove('active'); }
+function checkUser() { if(user) { document.getElementById('signInBtn').style.display='none'; document.getElementById('userInfo').style.display='block'; document.getElementById('userNameDisplay').innerText=user.name; } }
 function handleSignIn(e) {
     e.preventDefault();
-    const name = document.getElementById('signName').value;
-    const email = document.getElementById('signEmail').value;
-    const phone = document.getElementById('signPhone').value;
-    
-    currentUser = { name, email, phone };
-    localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
-    
-    if(!customers.find(c => c.email === email)) {
-        customers.push({name, email, phone, date: new Date().toLocaleDateString()});
-        localStorage.setItem('hh_customers', JSON.stringify(customers));
-    }
-    
-    closeModal('signInModal');
-    updateUserUI();
-    showToast(`Welcome, ${name}!`);
+    user = { name:document.getElementById('signName').value, email:document.getElementById('signEmail').value, phone:document.getElementById('signPhone').value };
+    localStorage.setItem('hh_user', JSON.stringify(user));
+    if(!customers.find(c=>c.email==user.email)) { customers.push(user); localStorage.setItem('hh_customers', JSON.stringify(customers)); }
+    closeModal('signInModal'); checkUser();
 }
-
-function handleSignOut() {
-    localStorage.removeItem('hh_current_user');
-    currentUser = null;
-    closeModal('userModal');
-    updateUserUI();
-    showToast("Signed Out.");
-}
-
+function handleSignOut() { user=null; localStorage.removeItem('hh_user'); closeModal('userModal'); document.getElementById('signInBtn').style.display='block'; document.getElementById('userInfo').style.display='none'; }
 function openUserDashboard() {
-    if(!currentUser) return;
-    document.getElementById('dashboardName').innerText = currentUser.name;
-    const myOrders = orders.filter(o => o.email === currentUser.email || o.phone === currentUser.phone);
-    const container = document.getElementById('userOrderHistory');
-    
-    if(myOrders.length === 0) container.innerHTML = "<p>No orders yet.</p>";
-    else {
-        container.innerHTML = myOrders.map(o => `
-            <div style="border-bottom:1px solid #eee; padding:5px 0;">
-                <strong>${o.id}</strong> - <span style="color:var(--primary)">${o.status}</span><br>
-                Items: ${o.items.length} | Total: ₹${o.total}<br>
-                <small>${o.date}</small>
-            </div>
-        `).join('');
-    }
+    document.getElementById('dashboardName').innerText=user.name;
+    document.getElementById('userOrderHistory').innerHTML = orders.filter(o=>o.email==user.email).map(o=>`<div style="padding:10px; border-bottom:1px solid #eee;"><b>${o.id}</b> - ${o.status}<br>₹${o.total}</div>`).join('') || "No orders";
     openModal('userModal');
 }
+function openSignIn() { openModal('signInModal'); }
 
-// --- ADMIN & MENU ---
-function toggleMenu() {
-    const m = document.getElementById('mainMenu');
-    const o = document.getElementById('menuOverlay');
-    if(m.classList.contains('active')) { m.classList.remove('active'); o.classList.remove('active'); }
-    else { m.classList.add('active'); o.classList.add('active'); }
-}
-
-function openAdminLogin() { openModal('adminModal'); document.getElementById('adminLogin').style.display = 'block'; document.getElementById('adminDash').style.display = 'none'; }
-
-function checkAdmin() {
-    if(document.getElementById('admPass').value === ADMIN_PASS) {
-        document.getElementById('adminLogin').style.display = 'none';
-        document.getElementById('adminDash').style.display = 'block';
-        refreshData();
-    } else alert("Wrong Password");
-}
-
-function refreshData() {
-    document.getElementById('orderBody').innerHTML = orders.map((o, index) => 
-        `<tr style="border-bottom:1px solid #eee;">
-            <td style="padding:8px;">
-                <strong>${o.id}</strong><br>
-                <select onchange="updateStatus(${index}, this.value)" style="font-size:11px; padding:2px;">
-                    <option value="Placed" ${o.status === 'Placed' ? 'selected' : ''}>Placed</option>
-                    <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                    <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                </select>
-            </td>
-            <td style="padding:8px; font-size:11px;">${o.items.map(i=>`${i.name}(${i.qty})`).join(', ')}</td>
-            <td style="padding:8px; white-space:nowrap;">
-                <button class="btn-icon" style="background:#25d366" onclick="notifyWA('${o.phone}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-brands fa-whatsapp"></i></button>
-                <button class="btn-icon" style="background:#DB4437" onclick="notifyEmail('${o.email}', '${o.customer}', '${o.id}', '${o.total}')"><i class="fa-solid fa-envelope"></i></button>
-            </td>
-        </tr>`
-    ).join('');
-}
-
-function updateStatus(index, newStatus) {
-    orders[index].status = newStatus;
-    localStorage.setItem('hh_orders', JSON.stringify(orders));
-    showToast("Status Updated!");
-}
-
-function notifyWA(phone, name, id, total) {
-    const msg = `Hi ${name}, Your order ${id} of ₹${total} is confirmed! - Herbal&Heaven`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-}
-
-function notifyEmail(email, name, id, total) {
-    const subject = `Order Confirmed: ${id}`;
-    const body = `Hi ${name},\n\nOrder ${id} amounting to ₹${total} is confirmed.\n\nRegards,\nOmkar`;
-    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-}
-
-function resetDatabase() {
-    const code = prompt("Enter Secret Code to DELETE ALL DATA:");
-    if(code === SECRET_CODE) {
-        if(confirm("Are you sure? This cannot be undone.")) {
-            localStorage.removeItem('hh_orders');
-            localStorage.removeItem('hh_customers');
-            localStorage.removeItem('hh_wishlist');
-            localStorage.removeItem('hh_newsletter');
-            orders = []; customers = []; wishlist = []; refreshData(); alert("Database Wiped.");
-        }
-    } else alert("Incorrect Code.");
-}
-
-function exportOrders() {
-    const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
-        ID: o.id, Status: o.status, Date: o.date, Name: o.customer, Phone: o.phone, 
-        Total: o.total, Items: o.items.map(i=>`${i.name}(${i.qty})`).join(', ')
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Orders");
-    XLSX.writeFile(wb, "Orders.xlsx");
-}
-
-function exportCustomers() {
-    const ws = XLSX.utils.json_to_sheet(customers);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Customers");
-    XLSX.writeFile(wb, "Customers.xlsx");
-}
-
-// --- TRACK & RETURN ---
+// TRACK & RETURN
 function openTrackOrder() { openModal('trackModal'); }
-
 function trackOrderNow() {
-    const id = document.getElementById('trackInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
-    const r = document.getElementById('trackResult');
-    r.style.display = 'block';
-    if(o) {
-        const statusSteps = ['Placed', 'Shipped', 'Delivered'];
-        const currentStep = statusSteps.indexOf(o.status);
-        
-        r.innerHTML = `
-            <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px; margin-top:15px;">
-                <h4 style="margin-bottom:10px;">Order ${o.id}</h4>
-                <div class="progress-tracker">
-                    ${statusSteps.map((step, index) => `
-                        <div class="progress-step">
-                            <div class="step-circle ${index <= currentStep ? 'active' : ''}">${index + 1}</div>
-                            <div class="step-label">${step}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div style="margin-top:15px; font-size:12px;">
-                    <p><strong>Date:</strong> ${o.date}</p>
-                    <p><strong>Total:</strong> ₹${o.total}</p>
-                    <p><strong>Status:</strong> <span style="color:var(--primary); font-weight:bold;">${o.status}</span></p>
-                </div>
-            </div>
-        `;
-    } else {
-        r.innerHTML = "<p style='color:red; margin-top:10px;'>Order not found.</p>";
-    }
+    const o = orders.find(x=>x.id==document.getElementById('trackInput').value.trim().toUpperCase());
+    document.getElementById('trackResult').innerHTML = o ? `<b>${o.id}</b>: ${o.status}<br>Total: ₹${o.total}` : "Not Found";
 }
-
-function openReturnOrder() { 
-    openModal('returnModal'); 
-    document.getElementById('returnStep1').style.display = 'block'; 
-    document.getElementById('returnStep2').style.display = 'none'; 
-}
-
+function openReturnOrder() { openModal('returnModal'); document.getElementById('retStep1').style.display='block'; document.getElementById('retStep2').style.display='none'; }
 function fetchReturnItems() {
-    const id = document.getElementById('returnInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
+    const o = orders.find(x=>x.id==document.getElementById('returnInput').value.trim().toUpperCase());
     if(o) {
-        currentReturnOrderId = o.id;
-        document.getElementById('returnStep1').style.display = 'none';
-        document.getElementById('returnStep2').style.display = 'block';
-        document.getElementById('returnItemsList').innerHTML = o.items.map(i => `
-            <div style="display:flex; align-items:center; gap:10px; padding:5px 0; border-bottom:1px solid #f5f5f5;">
-                <input type="checkbox" value="${i.name}" id="return-${i.id}">
-                <label for="return-${i.id}" style="flex:1; font-size:13px;">${i.name} (Qty: ${i.qty})</label>
-            </div>
-        `).join('');
-    } else {
-        showToast("Order not found", "warning");
-    }
+        currentReturnId=o.id; document.getElementById('retStep1').style.display='none'; document.getElementById('retStep2').style.display='block';
+        document.getElementById('returnItemsList').innerHTML=o.items.map(i=>`<div><input type="checkbox" value="${i.name}"> ${i.name}</div>`).join('');
+    } else alert("Not Found");
 }
-
 function processReturn() {
-    const reason = document.getElementById('returnReason').value;
-    if(!reason.trim()) {
-        showToast("Please provide a reason", "warning");
-        return;
-    }
-    
-    const selectedItems = Array.from(document.querySelectorAll('#returnItemsList input:checked'))
-        .map(cb => cb.value);
-    
-    if(selectedItems.length === 0) {
-        showToast("Please select items to return", "warning");
-        return;
-    }
-    
-    const msg = `RETURN REQUEST\nOrder ID: ${currentReturnOrderId}\nItems: ${selectedItems.join(', ')}\nReason: ${reason}`;
-    window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+    const items = Array.from(document.querySelectorAll('#returnItemsList input:checked')).map(c=>c.value).join(', ');
+    if(!items) return alert("Select items");
+    window.open(`https://wa.me/${CONFIG.OWNER}?text=RETURN ${currentReturnId} Items: ${items} Reason: ${document.getElementById('returnReason').value}`, '_blank');
     closeModal('returnModal');
-    showToast("Return request submitted");
 }
 
-// Auto carousel rotation
-setInterval(nextSlide, 5000);
-
-// Initialize with first slide centered
-setTimeout(() => {
-    updateCarousel();
-}, 100);
+// ADMIN
+function openAdminLogin() { openModal('adminModal'); document.getElementById('adminLogin').style.display='block'; document.getElementById('adminDash').style.display='none'; }
+function checkAdmin() { if(document.getElementById('admPass').value===CONFIG.PASS) { document.getElementById('adminLogin').style.display='none'; document.getElementById('adminDash').style.display='block'; refreshData(); } else alert("Wrong"); }
+function refreshData() {
+    document.getElementById('orderBody').innerHTML = orders.map((o,i)=>`
+        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">
+            <b>${o.id}</b><br>${o.customer}<br>
+            <select onchange="updStat(${i},this.value)" style="font-size:10px;"><option>${o.status}</option><option>Shipped</option><option>Delivered</option></select>
+        </td><td style="padding:8px;">
+            <button onclick="window.open('https://wa.me/${o.phone}?text=Order ${o.id} Update: ${o.status}')">Notify</button>
+        </td></tr>`).join('');
+}
+function updStat(i,s) { orders[i].status=s; localStorage.setItem('hh_orders', JSON.stringify(orders)); }
+function resetDatabase() { if(prompt("Code")===CONFIG.CODE) { localStorage.clear(); location.reload(); } }
+function exportOrders() { const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(orders), "Orders"); XLSX.writeFile(wb,"Orders.xlsx"); }
+function exportCustomers() { const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(customers), "Cust"); XLSX.writeFile(wb,"Customers.xlsx"); }
 </script>
 </body>
 </html>
