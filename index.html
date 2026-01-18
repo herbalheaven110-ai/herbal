@@ -40,7 +40,7 @@ body {
   color: var(--text-dark);
   line-height: 1.6;
   overflow-x: hidden;
-  padding-bottom: 80px; /* Space for bottom bar */
+  padding-bottom: 80px; 
 }
 
 h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--primary); }
@@ -49,19 +49,10 @@ button { cursor: pointer; border: none; outline: none; font-family: var(--font-b
 img { max-width: 100%; display: block; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* ---------- 2. Animations (Optimized) ---------- */
-.animate-in { 
-    opacity: 0; 
-    transform: translateY(20px); 
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
-    will-change: opacity, transform; 
-}
+/* ---------- 2. Animations ---------- */
+.animate-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; will-change: opacity, transform; }
 .animate-in.visible { opacity: 1; transform: translateY(0); }
-
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes cartAdd { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
-
-.float { animation: float 3s ease-in-out infinite; will-change: transform; }
 .cart-animation { animation: cartAdd 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
 /* ---------- 3. UI Components ---------- */
@@ -73,22 +64,12 @@ input, textarea, select { font-family: var(--font-body); }
   letter-spacing: 0.5px; transition: var(--transition);
   text-transform: uppercase; font-size: 11px;
 }
-
 .btn-primary { background: var(--primary); color: var(--white); box-shadow: 0 4px 15px rgba(45, 74, 34, 0.3); }
 .btn-primary:active { transform: scale(0.96); }
-
 .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
 .btn-secondary:hover { background: var(--primary); color: var(--white); }
 
-.btn-icon {
-    width: 28px; height: 28px; border-radius: 50%; display: inline-flex; 
-    align-items: center; justify-content: center; color: white; margin-left: 5px;
-}
-
-.badge, .stock-badge {
-  position: absolute; color: white; border-radius: 50px; z-index: 2;
-  text-transform: uppercase; font-weight: bold;
-}
+.badge, .stock-badge { position: absolute; color: white; border-radius: 50px; z-index: 2; text-transform: uppercase; font-weight: bold; }
 .badge { top: 15px; left: 15px; background: var(--accent); padding: 4px 12px; font-size: 10px; letter-spacing: 1px; }
 .stock-badge { top: 15px; right: 15px; background: var(--danger); padding: 4px 8px; font-size: 9px; border-radius: 4px; }
 
@@ -96,31 +77,17 @@ input, textarea, select { font-family: var(--font-body); }
 header {
   position: sticky; top: 0; z-index: 100;
   background: rgba(253, 251, 247, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
-  transition: transform 0.3s ease;
-  will-change: transform; /* Hardware Acceleration */
+  will-change: transform;
 }
-
 .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
-
 .logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--primary); }
 .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
-
-/* Desktop Menu */
 .nav-menu { display: flex; gap: 20px; align-items: center; }
 .nav-menu a { font-size: 13px; font-weight: 700; color: var(--text-dark); position: relative; padding: 5px 0; }
-.nav-menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: var(--transition); }
-.nav-menu a:hover::after { width: 100%; }
-
-/* Admin Button Specifics */
 .admin-link { color: var(--danger) !important; font-weight: 800; }
-
-.signin-btn { border: 1px solid var(--primary); padding: 6px 15px; border-radius: 20px; font-size: 12px; transition: 0.3s; }
-.signin-btn:hover { background: var(--primary); color: white; }
-.user-info { display: none; font-size: 12px; font-weight: bold; color: var(--primary); cursor: pointer; }
 
 .nav-icons { display: flex; align-items: center; gap: 15px; }
 .cart-icon-wrap, .wishlist-icon-wrap { position: relative; cursor: pointer; font-size: 20px; padding: 5px; color: var(--text-dark); }
@@ -130,50 +97,21 @@ header {
   display: flex; align-items: center; justify-content: center;
 }
 .wishlist-count { background: var(--accent); }
-
 .top-contact { background:#345b2a; color:#fff; text-align:center; padding:5px 10px; font-size:0.75rem; font-weight: 600; }
 
-/* ---------- 5. Mobile Bottom Navigation ---------- */
+/* ---------- 5. Bottom Nav (Mobile) ---------- */
 .bottom-nav {
-    display: none; /* Hidden on Desktop */
-    position: fixed; bottom: 0; left: 0; width: 100%;
-    background: white; border-top: 1px solid #eee;
-    z-index: 1000;
-    justify-content: space-around;
-    padding: 10px 0;
+    display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+    background: white; border-top: 1px solid #eee; z-index: 1000;
+    justify-content: space-around; padding: 10px 0;
     box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
     padding-bottom: max(10px, env(safe-area-inset-bottom));
-    will-change: transform;
 }
-
-.nav-item {
-    display: flex; flex-direction: column; align-items: center;
-    color: #888; font-size: 10px; font-weight: 600; gap: 4px;
-    background: none; width: 100%;
-}
-.nav-item i { font-size: 20px; margin-bottom: 2px; transition: 0.2s; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 10px; font-weight: 600; gap: 4px; background: none; width: 100%; }
 .nav-item.active { color: var(--primary); }
-.nav-item.active i { transform: translateY(-2px); }
 
-/* ---------- 6. Hero Section ---------- */
-.hero {
-  position: relative; height: 60vh; min-height: 400px;
-  background: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-  display: flex; align-items: center; margin-bottom: 40px;
-}
-.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)); }
-.hero-content { position: relative; z-index: 2; color: white; max-width: 600px; padding-left: 5%; animation: fadeInUp 0.8s ease-out; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ---------- 7. Components & Grids ---------- */
-.countdown-timer { background: var(--secondary); padding: 15px; text-align: center; margin: 20px auto; border-radius: var(--radius); max-width: 500px; }
-.timer-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-.timer-box { background: white; padding: 5px 10px; border-radius: 8px; min-width: 55px; box-shadow: var(--shadow); }
-.timer-value { font-size: 20px; font-weight: bold; color: var(--primary); }
-
-/* CONTENT-VISIBILITY OPTIMIZATION: Faster rendering */
+/* ---------- 6. Products Grid & Card ---------- */
 #products { content-visibility: auto; contain-intrinsic-size: 1000px; }
-
 .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: 50px; }
 @media(min-width: 768px) { .products-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; } }
 
@@ -183,85 +121,73 @@ header {
   position: relative; height: 100%; display: flex; flex-direction: column;
 }
 .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-
 .product-img { height: 180px; overflow: hidden; position: relative; background: #f9f9f9; cursor: pointer; }
 .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .product-card:hover .product-img img { transform: scale(1.05); }
 
-.wishlist-btn {
-  position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9);
-  width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 3; transition: 0.2s; color: #ccc;
-}
+.wishlist-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3; transition: 0.2s; color: #ccc; }
 .wishlist-btn.active { background: var(--danger); color: white; }
 
 .product-info { padding: 12px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 .product-title { font-size: 14px; margin: 6px 0; color: var(--text-dark); cursor: pointer; font-weight: 700; }
 .product-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 8px; }
 
-.card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px; }
-.card-btns .btn { padding: 8px 0; font-size: 10px; width: 100%; }
-
-/* ---------- 8. Modals & Overlay ---------- */
-.overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-  z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
-  will-change: opacity;
+/* NEW: Card Quantity Controls */
+.card-qty-ctrl {
+    display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;
 }
-.overlay.active { opacity: 1; visibility: visible; }
+.qty-mini-btn { width: 22px; height: 22px; background: #eee; border-radius: 50%; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555; }
+.qty-mini-btn:active { background: var(--primary); color: white; }
+.card-qty-input { width: 30px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 2px; font-size: 12px; pointer-events: none; }
 
-.modal {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
-  width: 90%; max-width: 500px; background: white;
-  z-index: 1000; border-radius: 12px; padding: 25px;
-  opacity: 0; visibility: hidden; transition: var(--transition);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-  max-height: 85vh; overflow-y: auto;
-  will-change: transform, opacity;
-}
-.modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+.card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 
-/* ---------- 9. Cart Drawer ---------- */
-.cart-drawer {
-  position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
-  background: white; z-index: 1002; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-  will-change: transform;
-}
+/* ---------- 7. Cart & Drawers ---------- */
+.cart-drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%; background: white; z-index: 1002; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); will-change: transform; }
 .cart-drawer.active { right: 0; transform: translateX(0); }
 
 .cart-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; background: #fff; padding: 8px; border-bottom: 1px solid #f0f0f0; }
 .cart-item img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-.qty-btn { width: 24px; height: 24px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
 
-/* ---------- 10. Utils ---------- */
+/* NEW: Cart Input Styling */
+.cart-qty-manual { width: 40px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 4px; font-size: 13px; font-weight: bold; -moz-appearance: textfield; }
+.cart-qty-manual::-webkit-outer-spin-button, .cart-qty-manual::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.bulk-btn { font-size: 10px; padding: 2px 6px; background: #f0f0f0; border-radius: 4px; border: 1px solid #ddd; margin-left: 5px; color: var(--primary); font-weight: bold; }
+.bulk-btn:active { background: var(--primary); color: white; }
+
+/* ---------- 8. Modals ---------- */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; will-change: opacity; }
+.overlay.active { opacity: 1; visibility: visible; }
+.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); width: 90%; max-width: 500px; background: white; z-index: 1000; border-radius: 12px; padding: 25px; opacity: 0; visibility: hidden; transition: var(--transition); box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; will-change: transform, opacity; }
+.modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+
+/* ---------- 9. Hero & Utils ---------- */
+.hero { position: relative; height: 60vh; min-height: 400px; background: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; display: flex; align-items: center; margin-bottom: 40px; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.1)); }
+.hero-content { position: relative; z-index: 2; color: white; max-width: 600px; padding-left: 5%; }
+.countdown-timer { background: var(--secondary); padding: 15px; text-align: center; margin: 20px auto; border-radius: var(--radius); max-width: 500px; }
+.timer-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+.timer-box { background: white; padding: 5px 10px; border-radius: 8px; min-width: 55px; box-shadow: var(--shadow); }
+.timer-value { font-size: 20px; font-weight: bold; color: var(--primary); }
 .search-box { position: relative; width: 100%; max-width: 400px; margin: 0 auto 20px auto; }
 .search-box input { width: 100%; padding: 12px 20px; padding-right: 40px; border-radius: 50px; border: 1px solid #ddd; outline: none; }
 .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
-
 .filter-btn { padding: 6px 15px; border-radius: 20px; border: 1px solid #eee; background: white; margin: 0 4px; font-size: 12px; transition: 0.2s; }
 .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-.toast {
-  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: rgba(30,30,30,0.95); color: white; padding: 10px 20px; border-radius: 30px;
-  font-size: 13px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000;
-  display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(30,30,30,0.95); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; display: flex; align-items: center; gap: 10px; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* Responsive Tweaks */
 @media (max-width: 768px) {
-  .nav-menu { display: none; } /* Hide Desktop Menu */
-  .bottom-nav { display: flex; } /* Show Bottom Nav */
+  .nav-menu { display: none; }
+  .bottom-nav { display: flex; }
   .mobile-hide { display: none; }
   .hero { height: 45vh; }
   .hero h1 { font-size: 28px; }
   .cart-drawer { width: 85%; }
-  
-  header .logo span { font-size: 16px; }
-  .section-title h2 { font-size: 24px; }
   .filter-container { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
+  /* Show Mobile Header Icons */
+  #mobileHeaderIcons { display: flex !important; align-items: center; }
 }
 </style>
 </head>
@@ -273,19 +199,19 @@ header {
 
 <header>
   <div class="container nav-wrapper">
-    <a href="#" class="logo">
-      <img src="herb.jpg" alt="Logo" loading="lazy">
-      <span>Herbal&Heaven</span>
-    </a>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <a href="#" class="logo">
+          <img src="herb.jpg" alt="Logo" loading="lazy">
+          <span>Herbal&Heaven</span>
+        </a>
+    </div>
     
     <nav class="nav-menu">
       <a href="#home">Home</a>
       <a href="#products">Shop</a>
       <a href="#" onclick="openTrackOrder()">Track</a>
       <a href="#" onclick="openReturnOrder()">Return</a>
-      
       <a href="#" onclick="openAdminLogin()" class="admin-link">Admin Portal</a>
-
       <a href="#" class="signin-btn" id="signInBtn" onclick="openSignIn()">Sign In</a>
       <div class="user-info" id="userInfo" onclick="openUserDashboard()">
           <i class="fa-solid fa-user"></i> <span id="userNameDisplay">User</span>
@@ -304,6 +230,7 @@ header {
     </div>
 
     <div class="nav-icons" style="display:none;" id="mobileHeaderIcons">
+       <button onclick="openAdminLogin()" style="background:none; color:var(--danger); font-size:16px; margin-right:5px;"><i class="fa-solid fa-lock"></i></button>
        <div class="wishlist-icon-wrap" onclick="openWishlist()">
          <i class="fa-regular fa-heart"></i>
          <span class="wishlist-count" id="mobileWishlistCount">0</span>
@@ -317,7 +244,7 @@ header {
 </header>
 
 <section id="home" class="hero">
-  <div class="container hero-content">
+  <div class="container hero-content animate-in">
     <span style="color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:10px; display:block;">100% ORGANIC</span>
     <h1>Nature's Purest <br>Secret for You</h1>
     <p>Handcrafted, chemical-free skincare rituals designed for your inner glow.</p>
@@ -336,11 +263,11 @@ header {
 </div>
 
 <section id="products" class="container" style="margin-top: 40px;">
-  <div class="section-title" style="text-align: center; margin-bottom: 20px;">
+  <div class="section-title animate-in" style="text-align: center; margin-bottom: 20px;">
     <h2>Curated Rituals</h2>
   </div>
 
-  <div class="filter-container" style="text-align:center; margin-bottom:20px;">
+  <div class="filter-container animate-in" style="text-align:center; margin-bottom:20px;">
     <div class="search-box">
       <input type="text" id="search" placeholder="Search soaps, oils..." onkeyup="filterProducts()">
       <i class="fa-solid fa-search"></i>
@@ -434,6 +361,11 @@ header {
     <h3>Profile</h3>
     <h4 id="dashboardName" style="color:#555; margin:5px 0 15px 0;"></h4>
     <div id="userOrderHistory" style="max-height:200px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:5px; margin-bottom:15px;"></div>
+    
+    <button class="btn" style="width:100%; border:1px solid #ddd; margin-bottom:10px; color:#555;" onclick="closeModal('userModal'); openAdminLogin();">
+        <i class="fa-solid fa-lock"></i> Admin Portal
+    </button>
+    
     <button class="btn btn-secondary" style="width:100%;" onclick="handleSignOut()">Sign Out</button>
 </div>
 
@@ -507,23 +439,20 @@ header {
 
     <div id="adminDash" style="display:none;">
         <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
-            <button class="btn btn-secondary" onclick="exportOrders()"><i class="fa-solid fa-file-excel"></i> Export Orders</button>
-            <button class="btn btn-secondary" onclick="exportCustomers()"><i class="fa-solid fa-users"></i> Customers</button>
+            <button class="btn btn-secondary" onclick="exportOrders()"><i class="fa-solid fa-file-excel"></i> Export</button>
+            <button class="btn btn-secondary" onclick="exportCustomers()"><i class="fa-solid fa-users"></i> Users</button>
             <button class="btn btn-primary" onclick="refreshData()"><i class="fa-solid fa-rotate"></i> Refresh</button>
         </div>
         
         <div style="max-height:350px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
             <table id="orderTable" style="width:100%; font-size:12px; border-collapse:collapse; text-align:left;">
-                <thead style="background:#f5f5f5; position:sticky; top:0;">
-                    <tr><th style="padding:8px;">Order Details</th><th style="padding:8px;">Actions</th></tr>
-                </thead>
                 <tbody id="orderBody"></tbody>
             </table>
         </div>
 
         <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #eee; text-align: center;">
             <button class="btn" style="background: var(--danger); color: white; font-size: 10px;" onclick="resetDatabase()">
-                <i class="fa-solid fa-trash"></i> Reset Database (Danger)
+                <i class="fa-solid fa-trash"></i> Reset Database
             </button>
         </div>
     </div>
@@ -564,10 +493,9 @@ window.onload = () => {
     updateWishlistCount();
     startCountdown();
     
-    // Performance: Use RequestAnimationFrame for Scrolling
+    // Performance: Scroll Animation
     let ticking = false;
     const animateElements = document.querySelectorAll('.animate-in');
-    
     window.addEventListener('scroll', () => {
         if (!ticking) {
             window.requestAnimationFrame(() => {
@@ -581,17 +509,10 @@ window.onload = () => {
             ticking = true;
         }
     });
-    
-    // Trigger initial animations
     setTimeout(() => window.dispatchEvent(new Event('scroll')), 50);
-    
-    // Mobile Check for Layout
-    if(window.innerWidth <= 768) {
-        document.getElementById('mobileHeaderIcons').style.display = 'flex';
-    }
 };
 
-// --- CORE FUNCTIONS ---
+// --- RENDER PRODUCTS WITH QTY CONTROLS ---
 function renderProducts(list) {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = list.map((p, i) => {
@@ -611,8 +532,15 @@ function renderProducts(list) {
                 <div>
                     <h3 class="product-title" onclick="openQuickView(${p.id})">${p.name}</h3>
                     <div class="product-price">₹${p.price}</div>
-                    <div style="font-size:12px; color:#f39c12;">${'★'.repeat(Math.floor(p.rating))}<span style="color:#ddd;">${'★'.repeat(5-Math.floor(p.rating))}</span></div>
+                    <div style="font-size:12px; color:#f39c12;">${'★'.repeat(Math.floor(p.rating))}</div>
                 </div>
+                
+                <div class="card-qty-ctrl">
+                    <button class="qty-mini-btn" onclick="updateCardQty(${p.id}, -1)">-</button>
+                    <input type="text" id="p-qty-${p.id}" class="card-qty-input" value="1" readonly>
+                    <button class="qty-mini-btn" onclick="updateCardQty(${p.id}, 1)">+</button>
+                </div>
+                
                 <div class="card-btns">
                     <button class="btn btn-primary" onclick="addToCart(${p.id}, event)">Add</button>
                     <button class="btn btn-secondary" onclick="buyNow(${p.id}, event)">Buy</button>
@@ -623,35 +551,50 @@ function renderProducts(list) {
     }).join('');
 }
 
+function updateCardQty(id, change) {
+    const input = document.getElementById(`p-qty-${id}`);
+    let val = parseInt(input.value) + change;
+    if(val < 1) val = 1;
+    input.value = val;
+}
+
 function filterProducts() {
     const q = document.getElementById('search').value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
-    renderProducts(filtered);
+    renderProducts(products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q)));
 }
 
 function filterCat(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
-    renderProducts(filtered);
+    renderProducts(cat === 'all' ? products : products.filter(p => p.cat === cat));
 }
 
-// --- CART & WISHLIST ---
+// --- CART LOGIC ENHANCED ---
 function addToCart(id, event) {
     if(event) event.stopPropagation();
     const p = products.find(x => x.id === id);
+    // Get Qty from card input (default 1)
+    const qtyInput = document.getElementById(`p-qty-${id}`);
+    const qtyToAdd = qtyInput ? parseInt(qtyInput.value) : 1;
+    
     const ex = cart.find(x => x.id === id);
+    
     if(ex) {
-        if(ex.qty < p.stock) ex.qty++; else return showToast("Out of stock!");
+        if(ex.qty + qtyToAdd <= p.stock) ex.qty += qtyToAdd; 
+        else return showToast("Out of stock!");
     } else {
-        cart.push({...p, qty: 1});
+        if(qtyToAdd <= p.stock) cart.push({...p, qty: qtyToAdd});
+        else return showToast("Out of stock!");
     }
+    
+    // Reset card input
+    if(qtyInput) qtyInput.value = 1;
+
     updateCart();
     showToast("Added to Bag");
     
     // Animate Icon
-    const icons = document.querySelectorAll('.cart-icon-wrap i');
-    icons.forEach(i => {
+    document.querySelectorAll('.cart-icon-wrap i').forEach(i => {
         i.classList.add('cart-animation');
         setTimeout(() => i.classList.remove('cart-animation'), 400);
     });
@@ -673,10 +616,15 @@ function updateCart() {
                 <div style="font-weight:700; font-size:13px;">${i.name}</div>
                 <div style="font-size:11px; color:#666;">₹${i.price}</div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:5px;">
                 <button class="qty-btn" onclick="modQty(${i.id}, -1)">-</button>
-                <span style="font-size:12px; font-weight:bold; width:20px; text-align:center;">${i.qty}</span>
+                
+                <input type="number" class="cart-qty-manual" value="${i.qty}" 
+                    onchange="manualCartQty(${i.id}, this.value)">
+                    
                 <button class="qty-btn" onclick="modQty(${i.id}, 1)">+</button>
+                
+                <button class="bulk-btn" onclick="modQty(${i.id}, 10)">+10</button>
             </div>
         </div>
     `).join('') : '<p style="text-align:center; color:#999; margin-top:20px;">Your bag is empty.</p>';
@@ -686,8 +634,21 @@ function modQty(id, n) {
     const i = cart.find(x => x.id === id);
     if(i) {
         i.qty += n;
+        const max = products.find(p=>p.id===id).stock;
         if(i.qty <= 0) cart = cart.filter(x => x.id !== id);
-        else if(i.qty > products.find(p=>p.id===id).stock) i.qty--;
+        else if(i.qty > max) { i.qty = max; showToast("Max stock reached"); }
+    }
+    updateCart();
+}
+
+function manualCartQty(id, val) {
+    const i = cart.find(x => x.id === id);
+    if(i) {
+        let newQty = parseInt(val);
+        const max = products.find(p=>p.id===id).stock;
+        if(isNaN(newQty) || newQty < 1) newQty = 1;
+        if(newQty > max) { newQty = max; showToast("Max stock reached"); }
+        i.qty = newQty;
     }
     updateCart();
 }
@@ -704,7 +665,6 @@ function toggleWishlist(id, event) {
     const idx = wishlist.findIndex(w => w.id === id);
     if(idx > -1) { wishlist.splice(idx, 1); showToast("Removed from wishlist"); }
     else { wishlist.push(products.find(p => p.id === id)); showToast("Added to wishlist"); }
-    
     localStorage.setItem('hh_wishlist', JSON.stringify(wishlist));
     updateWishlistCount();
     renderProducts(products); 
@@ -723,15 +683,8 @@ function updateWishlistCount() {
     `).join('') : '<p>Empty.</p>';
 }
 
-function openWishlist() {
-    updateWishlistCount(); 
-    openModal('wishlistModal');
-}
-
-function openReturnOrder() {
-    openModal('returnModal');
-}
-
+function openWishlist() { updateWishlistCount(); openModal('wishlistModal'); }
+function openReturnOrder() { openModal('returnModal'); }
 function fetchReturnItems() {
     const id = document.getElementById('returnInput').value.trim();
     if(!id) return showToast("Enter Order ID");
@@ -741,7 +694,6 @@ function fetchReturnItems() {
 // --- MODALS & UX ---
 function openModal(id) { document.getElementById(id).classList.add('active'); document.querySelector('.overlay').classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); document.querySelector('.overlay').classList.remove('active'); }
-
 function openQuickView(id) {
     const p = products.find(x => x.id === id);
     document.getElementById('quickViewContent').innerHTML = `
@@ -750,29 +702,32 @@ function openQuickView(id) {
             <h2 style="margin:10px 0;">${p.name}</h2>
             <p style="color:#666; font-size:13px; margin-bottom:15px;">${p.desc}</p>
             <h3 style="color:var(--primary);">₹${p.price}</h3>
-            <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="addToCart(${p.id}); closeModal('quickViewModal')">Add to Cart</button>
+            <div style="margin:15px 0;">
+                <input type="number" id="quick-qty-${p.id}" value="1" style="width:50px; text-align:center; padding:5px; border:1px solid #ddd; border-radius:4px;">
+            </div>
+            <button class="btn btn-primary" style="width:100%;" onclick="addQuick(${p.id})">Add to Cart</button>
         </div>
     `;
     openModal('quickViewModal');
 }
-
+function addQuick(id) {
+    const qty = parseInt(document.getElementById(`quick-qty-${id}`).value);
+    const p = products.find(x=>x.id===id);
+    const ex = cart.find(x=>x.id===id);
+    if(ex) ex.qty += qty; else cart.push({...p, qty});
+    updateCart(); closeModal('quickViewModal'); showToast("Added!");
+}
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.innerHTML = `<i class="fa-solid fa-check"></i> ${msg}`;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2000);
 }
-
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
 // --- AUTH & CHECKOUT ---
-function handleMobileProfileClick() {
-    if(currentUser) openUserDashboard();
-    else openSignIn();
-}
-
+function handleMobileProfileClick() { if(currentUser) openUserDashboard(); else openSignIn(); }
 function openSignIn() { openModal('signInModal'); }
-
 function handleSignIn(e) {
     e.preventDefault();
     const name = document.getElementById('signName').value;
@@ -780,25 +735,13 @@ function handleSignIn(e) {
     const phone = document.getElementById('signPhone').value;
     currentUser = { name, email, phone };
     localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
-    
-    // Auto-save to customers list
     if(!customers.find(c => c.email === email)) {
         customers.push({...currentUser, joined: new Date().toLocaleDateString()});
         localStorage.setItem('hh_customers', JSON.stringify(customers));
     }
-    
-    closeModal('signInModal');
-    updateUserUI();
-    showToast(`Welcome ${currentUser.name}`);
+    closeModal('signInModal'); updateUserUI(); showToast(`Welcome ${currentUser.name}`);
 }
-
-function handleSignOut() {
-    localStorage.removeItem('hh_current_user');
-    currentUser = null;
-    closeModal('userModal');
-    updateUserUI();
-}
-
+function handleSignOut() { localStorage.removeItem('hh_current_user'); currentUser = null; closeModal('userModal'); updateUserUI(); }
 function updateUserUI() {
     if(currentUser) {
         document.getElementById('signInBtn').style.display = 'none';
@@ -809,7 +752,6 @@ function updateUserUI() {
         document.getElementById('userInfo').style.display = 'none';
     }
 }
-
 function openUserDashboard() {
     if(!currentUser) return;
     document.getElementById('dashboardName').innerText = currentUser.name;
@@ -821,7 +763,6 @@ function openUserDashboard() {
     `).join('') : 'No orders found.';
     openModal('userModal');
 }
-
 function openCheckout() {
     if(!cart.length) return showToast("Cart is empty");
     toggleCart(); openModal('checkoutModal');
@@ -834,60 +775,43 @@ function openCheckout() {
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'none';
 }
-
 function goToPayment(e) {
     e.preventDefault();
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'block';
     const total = cart.reduce((a,b)=>a+(b.price*b.qty),0);
     document.getElementById('payAmount').innerText = '₹'+total;
-    // Generate QR
     const url = `upi://pay?pa=${UPI_ID}&pn=HerbalHeaven&am=${total}&cu=INR`;
     document.getElementById('qrImgContainer').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}" style="margin:0 auto;">`;
 }
-
 function confirmOrder() {
     const total = cart.reduce((a,b)=>a+(b.price*b.qty),0);
     const uid = "ORD-" + Math.floor(Math.random()*10000);
-    
     currentOrder = {
-        id: uid,
-        date: new Date().toLocaleDateString(),
+        id: uid, date: new Date().toLocaleDateString(),
         customer: document.getElementById('cName').value,
-        email: document.getElementById('cEmail').value,
-        phone: document.getElementById('cPhone').value,
-        items: [...cart],
-        total: total,
-        status: 'Placed'
+        email: document.getElementById('cEmail').value, phone: document.getElementById('cPhone').value,
+        items: [...cart], total: total, status: 'Placed'
     };
-    
     orders.push(currentOrder);
     localStorage.setItem('hh_orders', JSON.stringify(orders));
-    
-    // Notify Owner
     window.open(`https://wa.me/${OWNER_PHONE}?text=New Order: ${uid} Value: ₹${total}`, '_blank');
-    
     document.getElementById('finalOrderId').innerText = uid;
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
     cart = []; updateCart();
 }
-
 function downloadInvoice() {
     const el = document.getElementById('invoiceTemplate');
     document.getElementById('invContent').innerHTML = `
-        <p>Order ID: ${currentOrder.id}</p>
-        <p>Customer: ${currentOrder.customer}</p>
+        <p>Order ID: ${currentOrder.id}</p><p>Customer: ${currentOrder.customer}</p>
         <table style="width:100%; border-collapse:collapse; margin-top:10px;">
             <tr><th style="text-align:left;">Item</th><th>Price</th></tr>
             ${currentOrder.items.map(i => `<tr><td>${i.name} x${i.qty}</td><td>${i.price*i.qty}</td></tr>`).join('')}
-        </table>
-        <h3 style="text-align:right;">Total: ₹${currentOrder.total}</h3>
-    `;
+        </table><h3 style="text-align:right;">Total: ₹${currentOrder.total}</h3>`;
     el.style.display = 'block';
     html2pdf(el).then(() => el.style.display = 'none');
 }
-
 function buyNow(id, e) {
     if(e) e.stopPropagation();
     cart = []; addToCart(id); toggleCart(); openCheckout();
@@ -899,31 +823,22 @@ function openAdminLogin() {
     document.getElementById('adminLogin').style.display = 'block';
     document.getElementById('adminDash').style.display = 'none';
 }
-
 function checkAdmin() {
     if(document.getElementById('admPass').value === ADMIN_PASS) {
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminDash').style.display = 'block';
-        refreshData();
-        showToast("Admin Logged In");
-    } else {
-        alert("Wrong Password");
-    }
+        refreshData(); showToast("Admin Logged In");
+    } else alert("Wrong Password");
 }
-
 function refreshData() {
     const tbody = document.getElementById('orderBody');
     if(!orders.length) { tbody.innerHTML = "<tr><td colspan='2' style='padding:10px;'>No orders yet.</td></tr>"; return; }
-    
     tbody.innerHTML = orders.map((o, index) => `
         <tr style="border-bottom:1px solid #eee;">
             <td style="padding:10px; vertical-align:top;">
                 <strong>${o.id}</strong> <span style="color:#888; font-size:10px;">${o.date}</span><br>
-                ${o.customer} (${o.phone})<br>
-                Total: ₹${o.total}<br>
-                <div style="margin-top:5px; font-size:11px; color:#555;">
-                   ${o.items.map(i=>`${i.name} (${i.qty})`).join(', ')}
-                </div>
+                ${o.customer} (${o.phone})<br>Total: ₹${o.total}<br>
+                <div style="margin-top:5px; font-size:11px; color:#555;">${o.items.map(i=>`${i.name}(${i.qty})`).join(', ')}</div>
             </td>
             <td style="padding:10px; vertical-align:top;">
                 <select onchange="updateStatus(${index}, this.value)" style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px; margin-bottom:5px;">
@@ -931,60 +846,33 @@ function refreshData() {
                     <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
                     <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
                 </select>
-                <div style="display:flex;">
-                    <button class="btn-icon" style="background:#25d366" onclick="window.open('https://wa.me/${o.phone}?text=Order ${o.id} Status: ${o.status}', '_blank')"><i class="fa-brands fa-whatsapp"></i></button>
-                    <button class="btn-icon" style="background:#DB4437" onclick="window.open('mailto:${o.email}?subject=Order ${o.id}&body=Status: ${o.status}')"><i class="fa-solid fa-envelope"></i></button>
+                <div style="display:flex; gap:5px;">
+                    <button class="btn" style="padding:5px; background:#25d366; color:white;" onclick="window.open('https://wa.me/${o.phone}?text=Order ${o.id} Status: ${o.status}', '_blank')"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button class="btn" style="padding:5px; background:#DB4437; color:white;" onclick="window.open('mailto:${o.email}?subject=Order ${o.id}&body=Status: ${o.status}')"><i class="fa-solid fa-envelope"></i></button>
                 </div>
             </td>
-        </tr>
-    `).join('');
+        </tr>`).join('');
 }
-
-function updateStatus(index, newStatus) {
-    orders[index].status = newStatus;
-    localStorage.setItem('hh_orders', JSON.stringify(orders));
-    showToast(`Order Updated: ${newStatus}`);
-}
-
+function updateStatus(index, newStatus) { orders[index].status = newStatus; localStorage.setItem('hh_orders', JSON.stringify(orders)); showToast(`Updated: ${newStatus}`); }
 function exportOrders() {
-    const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
-        ID: o.id, Date: o.date, Name: o.customer, Phone: o.phone, 
-        Status: o.status, Total: o.total, Items: o.items.map(i=>i.name).join(', ')
-    })));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Orders");
-    XLSX.writeFile(wb, "Herbal_Orders.xlsx");
+    const ws = XLSX.utils.json_to_sheet(orders.map(o => ({ ID: o.id, Date: o.date, Name: o.customer, Phone: o.phone, Status: o.status, Total: o.total, Items: o.items.map(i=>i.name).join(', ') })));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Orders"); XLSX.writeFile(wb, "Herbal_Orders.xlsx");
 }
-
 function exportCustomers() {
-    const ws = XLSX.utils.json_to_sheet(customers);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Customers");
-    XLSX.writeFile(wb, "Herbal_Customers.xlsx");
+    const ws = XLSX.utils.json_to_sheet(customers); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Customers"); XLSX.writeFile(wb, "Herbal_Customers.xlsx");
 }
-
 function resetDatabase() {
-    const code = prompt("Enter Secret Code to WIPE DATA:");
-    if(code === SECRET_CODE) {
-        if(confirm("Permanently delete all orders and customers?")) {
-            localStorage.removeItem('hh_orders');
-            localStorage.removeItem('hh_customers');
-            orders = []; customers = [];
-            refreshData();
-            showToast("Database Reset Complete.");
-        }
-    } else {
-        alert("Incorrect Code.");
+    if(prompt("Code:") === SECRET_CODE && confirm("Delete ALL Data?")) {
+        localStorage.removeItem('hh_orders'); localStorage.removeItem('hh_customers');
+        orders = []; customers = []; refreshData(); showToast("Reset Complete.");
     }
 }
-
 function openTrackOrder() { openModal('trackModal'); }
 function trackOrderNow() {
     const id = document.getElementById('trackInput').value;
     const o = orders.find(x => x.id == id);
     document.getElementById('trackResult').innerText = o ? `Status: ${o.status} | Date: ${o.date}` : "Order not found.";
 }
-
 function startCountdown() {
     const end = new Date(); end.setDate(end.getDate()+3);
     setInterval(() => {
