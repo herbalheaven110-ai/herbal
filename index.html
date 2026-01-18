@@ -54,8 +54,50 @@ input, textarea, select { font-family: var(--font-body); }
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes cartAdd {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
 .animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
 .delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.float { animation: float 3s ease-in-out infinite; }
+.pulse { animation: pulse 2s infinite; }
+.slide-in-right { animation: slideInRight 0.6s ease-out forwards; }
+.slide-in-left { animation: slideInLeft 0.6s ease-out forwards; }
+.cart-animation { animation: cartAdd 0.6s ease; }
+.shake { animation: shake 0.5s ease; }
 
 /* ---------- 3. UI Components ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -95,6 +137,14 @@ input, textarea, select { font-family: var(--font-body); }
   z-index: 2;
 }
 
+.stock-badge {
+  position: absolute; top: 15px; right: 15px;
+  background: var(--danger); color: white;
+  padding: 4px 8px; font-size: 9px;
+  border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+  z-index: 2;
+}
+
 /* ---------- 4. Header ---------- */
 header {
   position: sticky; top: 0; z-index: 100;
@@ -102,6 +152,12 @@ header {
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 10px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  animation: slideInDown 0.5s ease;
+}
+
+@keyframes slideInDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
 }
 
 .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
@@ -132,13 +188,21 @@ header {
 .user-info { display: none; font-size: 12px; font-weight: bold; color: var(--primary); cursor: pointer; }
 
 .nav-icons { display: flex; align-items: center; gap: 15px; }
-.cart-icon-wrap { position: relative; cursor: pointer; font-size: 18px; padding: 5px; } 
-.cart-count {
+.cart-icon-wrap, .wishlist-icon-wrap { 
+    position: relative; cursor: pointer; font-size: 18px; padding: 5px;
+    transition: var(--transition);
+}
+.cart-icon-wrap:hover, .wishlist-icon-wrap:hover {
+    transform: translateY(-2px);
+}
+.cart-count, .wishlist-count {
   position: absolute; top: -5px; right: -5px;
   background: var(--danger); color: white;
   width: 16px; height: 16px; border-radius: 50%;
   font-size: 9px; display: flex; align-items: center; justify-content: center;
 }
+
+.wishlist-count { background: var(--accent); }
 
 .mobile-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--primary); padding: 5px; }
 
@@ -152,6 +216,7 @@ header {
   position: relative; height: 60vh; min-height: 450px;
   background: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
   display: flex; align-items: center; margin-bottom: 50px;
+  overflow: hidden;
 }
 .hero::before {
   content: ''; position: absolute; inset: 0;
@@ -167,7 +232,102 @@ header {
 
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ---------- 6. Products ---------- */
+/* ---------- 6. Countdown Timer ---------- */
+.countdown-timer {
+  background: var(--secondary);
+  padding: 15px;
+  text-align: center;
+  margin: 20px auto;
+  border-radius: var(--radius);
+  max-width: 500px;
+  animation: pulse 2s infinite;
+}
+
+.timer-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.timer-box {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  min-width: 60px;
+  box-shadow: var(--shadow);
+}
+
+.timer-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.timer-label {
+  font-size: 11px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ---------- 7. Featured Carousel ---------- */
+.featured-section {
+  padding: 40px 0;
+  background: linear-gradient(135deg, #fdfbf7 0%, #f4e9d5 100%);
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.carousel-slide img {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  border: 5px solid white;
+  box-shadow: var(--shadow);
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.8);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--transition);
+}
+
+.carousel-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+/* ---------- 8. Products ---------- */
 .section-title { text-align: center; margin-bottom: 35px; }
 .section-title h2 { font-size: 28px; margin-bottom: 8px; }
 
@@ -194,16 +354,75 @@ header {
 .product-card {
   background: white; border-radius: var(--radius); overflow: hidden;
   box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #f0f0f0;
+  position: relative;
 }
 .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
-.product-img { height: 240px; overflow: hidden; position: relative; background: #f9f9f9; }
-.product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.product-img { 
+  height: 240px; overflow: hidden; position: relative; background: #f9f9f9;
+  cursor: pointer;
+}
+.product-img img { 
+  width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;
+  loading: lazy;
+}
 .product-card:hover .product-img img { transform: scale(1.05); }
 
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: var(--transition);
+}
+
+.wishlist-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.wishlist-btn.active {
+  background: var(--danger);
+  color: white;
+}
+
 .product-info { padding: 15px; text-align: center; }
-.product-title { font-size: 16px; margin: 6px 0; color: var(--text-dark); }
+.product-title { 
+  font-size: 16px; margin: 6px 0; color: var(--text-dark);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.product-title:hover {
+  color: var(--primary);
+}
 .product-price { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 10px; }
+
+.product-rating {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.star {
+  color: #ffd700;
+  font-size: 12px;
+}
+
+.rating-count {
+  font-size: 11px;
+  color: #666;
+  margin-left: 5px;
+}
 
 .card-qty-wrapper {
     display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px;
@@ -211,13 +430,210 @@ header {
 .qty-mini-btn {
     width: 22px; height: 22px; background: #eee; border-radius: 50%; font-weight: bold;
     display: flex; align-items: center; justify-content: center; font-size: 14px; color: #555;
+    transition: var(--transition);
+}
+.qty-mini-btn:hover {
+    background: var(--primary);
+    color: white;
 }
 .card-qty-input {
     width: 35px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 2px; font-size: 12px;
 }
 .card-btns { display: flex; gap: 6px; justify-content: center; }
 
-/* ---------- 7. Modals ---------- */
+/* ---------- 9. Product Quick View ---------- */
+.quick-view-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .quick-view-modal .modal-content {
+    flex-direction: row;
+  }
+}
+
+.quick-view-image {
+  flex: 1;
+}
+
+.quick-view-image img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.quick-view-details {
+  flex: 1;
+}
+
+.product-description {
+  font-size: 14px;
+  color: #666;
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.product-specs {
+  list-style: none;
+  margin: 15px 0;
+}
+
+.product-specs li {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.product-specs li:last-child {
+  border-bottom: none;
+}
+
+/* ---------- 10. Order Progress Tracker ---------- */
+.progress-tracker {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 20px 0;
+  padding: 0 10px;
+}
+
+.progress-tracker::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: #eee;
+  z-index: 1;
+}
+
+.progress-step {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  flex: 1;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #eee;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  transition: var(--transition);
+}
+
+.step-circle.active {
+  background: var(--success);
+  color: white;
+  transform: scale(1.1);
+}
+
+.step-label {
+  font-size: 11px;
+  color: #666;
+}
+
+/* ---------- 11. Review System ---------- */
+.review-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.review-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.review-date {
+  font-size: 11px;
+  color: #999;
+}
+
+.review-text {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* ---------- 12. Newsletter ---------- */
+.newsletter {
+  background: var(--primary);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 40px 0;
+  border-radius: var(--radius);
+}
+
+.newsletter-form {
+  max-width: 500px;
+  margin: 20px auto 0;
+  display: flex;
+  gap: 10px;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 50px;
+  font-size: 14px;
+}
+
+/* ---------- 13. Back to Top Button ---------- */
+.back-to-top {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  border: 2px solid white;
+  box-shadow: var(--shadow);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+}
+
+/* ---------- 14. Modals ---------- */
 /* FIXED: Removed backdrop-filter to solve Mobile Blur Glitch */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7); /* Solid transparent black */
@@ -242,7 +658,7 @@ header {
   width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;
 }
 
-/* ---------- 8. Cart Drawer ---------- */
+/* ---------- 15. Cart Drawer ---------- */
 .cart-drawer {
   position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
   background: white; z-index: 1001; transition: var(--transition);
@@ -251,14 +667,16 @@ header {
 .cart-drawer.active { right: 0; }
 .cart-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 .cart-body { flex: 1; overflow-y: auto; padding: 20px; }
-.cart-item { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #fff; }
+.cart-item { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #fff; padding: 10px; border-radius: var(--radius); border: 1px solid #f0f0f0; }
 .cart-item img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
 .cart-controls { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-.qty-btn { width: 24px; height: 24px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+.qty-btn { width: 24px; height: 24px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.qty-btn:hover { background: var(--primary); color: white; }
 .cart-qty-input { width: 35px; padding: 2px; text-align: center; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;}
-.bulk-btn { background: #e0e0e0; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+.bulk-btn { background: #e0e0e0; font-size: 10px; padding: 2px 6px; border-radius: 4px; transition: var(--transition); }
+.bulk-btn:hover { background: var(--primary); color: white; }
 
-/* ---------- 9. Social Media Bar ---------- */
+/* ---------- 16. Social Media Bar ---------- */
 .social-bar {
   position: fixed; bottom: 0; left: 0; width: 100%;
   background: white; border-top: 1px solid #eee;
@@ -317,6 +735,9 @@ header {
   .filter-container { flex-direction: column; align-items: stretch; }
   .search-box { width: 100%; max-width: none; }
   .modal { width: 95%; padding: 20px; }
+  .newsletter-form { flex-direction: column; }
+  .timer-container { flex-wrap: wrap; }
+  .timer-box { min-width: 45px; }
 }
 </style>
 </head>
@@ -353,6 +774,10 @@ header {
     </nav>
     
     <div class="nav-icons">
+      <div class="wishlist-icon-wrap" onclick="openWishlist()">
+        <i class="fa-solid fa-heart"></i>
+        <span class="wishlist-count" id="wishlistCount">0</span>
+      </div>
       <div class="cart-icon-wrap" onclick="toggleCart()">
         <i class="fa-solid fa-shopping-bag"></i>
         <span class="cart-count" id="cartCount">0</span>
@@ -368,10 +793,51 @@ header {
     <span style="color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:10px; display:block;">100% ORGANIC</span>
     <h1>Nature's Purest <br>Secret for You</h1>
     <p>Handcrafted, chemical-free skincare rituals designed for your inner glow.</p>
-    <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView()">Shop Now</button>
+    <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">Shop Now</button>
   </div>
 </section>
 
+<!-- Countdown Timer -->
+<div class="countdown-timer animate-in">
+  <h3 style="color: var(--primary); margin-bottom: 10px;">🎁 Special Offer Ends In:</h3>
+  <div class="timer-container">
+    <div class="timer-box">
+      <div class="timer-value" id="days">00</div>
+      <div class="timer-label">Days</div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-value" id="hours">00</div>
+      <div class="timer-label">Hours</div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-value" id="minutes">00</div>
+      <div class="timer-label">Minutes</div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-value" id="seconds">00</div>
+      <div class="timer-label">Seconds</div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Products Carousel -->
+<section class="featured-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>🌟 Featured Products</h2>
+      <p>Our best-selling organic rituals</p>
+    </div>
+    <div class="carousel-container">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Carousel slides will be added dynamically -->
+      </div>
+      <button class="carousel-btn prev" onclick="prevSlide()">‹</button>
+      <button class="carousel-btn next" onclick="nextSlide()">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- Main Products Section -->
 <section id="products" class="container">
   <div class="section-title animate-in">
     <h2>Curated Rituals</h2>
@@ -393,12 +859,32 @@ header {
   <div class="products-grid" id="productsGrid"></div>
 </section>
 
+<!-- Newsletter Section -->
+<section class="newsletter slide-in-left">
+  <div class="container">
+    <h2 style="color: white;">Stay Updated</h2>
+    <p>Subscribe to get exclusive offers and skincare tips</p>
+    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+      <input type="email" placeholder="Your email address" required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+  </div>
+</section>
+
 <footer style="background: #222; color: #fff; padding: 40px 0; margin-bottom: 50px;">
   <div class="container" style="text-align: center;">
     <h3 style="color: white; margin-bottom: 10px;">Herbal&Heaven</h3>
     <p style="color: #888; font-size: 13px;">Nature's Pure Essence. Made with Love.</p>
+    <div style="margin-top: 20px; font-size: 12px; color: #aaa;">
+      <p>© 2024 Herbal&Heaven. All rights reserved.</p>
+    </div>
   </div>
 </footer>
+
+<!-- Back to Top Button -->
+<div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+  <i class="fa-solid fa-chevron-up"></i>
+</div>
 
 <div class="social-bar">
     <a href="https://wa.me/919595641664" target="_blank" class="social-link">
@@ -414,6 +900,7 @@ header {
 
 <div class="toast" id="toast">Item added to cart</div>
 
+<!-- Cart Drawer -->
 <div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-header">
@@ -430,6 +917,24 @@ header {
   </div>
 </div>
 
+<!-- Wishlist Modal -->
+<div class="modal" id="wishlistModal">
+    <button onclick="closeModal('wishlistModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <h3>My Wishlist</h3>
+    <div id="wishlistItems" style="max-height: 400px; overflow-y: auto; margin-top: 15px;">
+        <!-- Wishlist items will be added here -->
+    </div>
+</div>
+
+<!-- Product Quick View Modal -->
+<div class="modal" id="quickViewModal">
+    <button onclick="closeModal('quickViewModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
+    <div class="modal-content" id="quickViewContent">
+        <!-- Content will be dynamically added -->
+    </div>
+</div>
+
+<!-- Existing Modals (Sign In, User, Track, Return, Checkout, Admin) -->
 <div class="modal" id="signInModal">
     <button onclick="closeModal('signInModal')" style="position: absolute; right: 15px; top: 15px; font-size: 18px; background:none;"><i class="fa-solid fa-times"></i></button>
     <h3>Sign In</h3>
@@ -583,104 +1088,407 @@ const SECRET_CODE = "DELETE99";
 
 // --- DATA ---
 const products = [
-  { id: 1, name: "Neem Soap", cat: "Face", price: 150, img: "proo.jpg" },
-  { id: 2, name: "Papaya Soap", cat: "Glow", price: 150, img: "pro.jpg" },
-  { id: 3, name: "Tulsi Soap", cat: "Body", price: 150, img: "pro1.jpg" },
-  { id: 4, name: "Aloe Vera", cat: "Face", price: 150, img: "pro4.jpg" },
-  { id: 5, name: "Detan Bar", cat: "Glow", price: 150, img: "pro5.jpg" },
-  { id: 6, name: "Rose Soap", cat: "Body", price: 150, img: "pro3.jpg" },
-  { id: 7, name: "Charcoal", cat: "Face", price: 150, img: "pro7.jpg" },
-  { id: 8, name: "Multani", cat: "Glow", price: 150, img: "pro8.jpg" }
+  { 
+    id: 1, 
+    name: "Neem Soap", 
+    cat: "Face", 
+    price: 150, 
+    img: "proo.jpg",
+    description: "Purifying neem soap for clear skin. Antibacterial properties fight acne.",
+    stock: 15,
+    rating: 4.5,
+    reviews: 42,
+    ingredients: "Neem extract, Turmeric, Basil",
+    benefits: "Clears acne, Reduces inflammation"
+  },
+  { 
+    id: 2, 
+    name: "Papaya Soap", 
+    cat: "Glow", 
+    price: 150, 
+    img: "pro.jpg",
+    description: "Papaya enzyme soap for radiant skin. Natural exfoliation and brightening.",
+    stock: 8,
+    rating: 4.7,
+    reviews: 38,
+    ingredients: "Papaya extract, Vitamin C, Aloe Vera",
+    benefits: "Brightens skin, Removes dead cells"
+  },
+  { 
+    id: 3, 
+    name: "Tulsi Soap", 
+    cat: "Body", 
+    price: 150, 
+    img: "pro1.jpg",
+    description: "Holy basil soap for body purification. Detoxifies and refreshes skin.",
+    stock: 20,
+    rating: 4.3,
+    reviews: 29,
+    ingredients: "Tulsi extract, Sandalwood, Honey",
+    benefits: "Detoxifies, Soothes skin"
+  },
+  { 
+    id: 4, 
+    name: "Aloe Vera", 
+    cat: "Face", 
+    price: 150, 
+    img: "pro4.jpg",
+    description: "Soothing aloe vera gel for sensitive skin. Hydrates and calms irritation.",
+    stock: 25,
+    rating: 4.8,
+    reviews: 56,
+    ingredients: "Pure Aloe Vera, Vitamin E, Cucumber",
+    benefits: "Hydrates, Soothes, Reduces redness"
+  },
+  { 
+    id: 5, 
+    name: "Detan Bar", 
+    cat: "Glow", 
+    price: 150, 
+    img: "pro5.jpg",
+    description: "Tan removal bar for glowing skin. Natural ingredients for even tone.",
+    stock: 12,
+    rating: 4.6,
+    reviews: 31,
+    ingredients: "Lemon, Milk, Gram Flour",
+    benefits: "Removes tan, Evens skin tone"
+  },
+  { 
+    id: 6, 
+    name: "Rose Soap", 
+    cat: "Body", 
+    price: 150, 
+    img: "pro3.jpg",
+    description: "Rose petal soap for silky smooth skin. Natural fragrance and moisturizing.",
+    stock: 18,
+    rating: 4.4,
+    reviews: 47,
+    ingredients: "Rose petals, Glycerin, Coconut oil",
+    benefits: "Moisturizes, Natural fragrance"
+  },
+  { 
+    id: 7, 
+    name: "Charcoal", 
+    cat: "Face", 
+    price: 150, 
+    img: "pro7.jpg",
+    description: "Activated charcoal soap for deep cleansing. Draws out impurities and excess oil.",
+    stock: 10,
+    rating: 4.9,
+    reviews: 63,
+    ingredients: "Activated Charcoal, Tea Tree Oil, Clay",
+    benefits: "Deep cleanses, Controls oil"
+  },
+  { 
+    id: 8, 
+    name: "Multani", 
+    cat: "Glow", 
+    price: 150, 
+    img: "pro8.jpg",
+    description: "Fuller's earth soap for pore cleansing. Removes blackheads and tightens pores.",
+    stock: 22,
+    rating: 4.2,
+    reviews: 24,
+    ingredients: "Multani Mitti, Neem, Rose Water",
+    benefits: "Cleans pores, Tightens skin"
+  }
 ];
 
 let cart = [];
+let wishlist = JSON.parse(localStorage.getItem('hh_wishlist') || '[]');
 let orders = JSON.parse(localStorage.getItem('hh_orders') || '[]');
 let customers = JSON.parse(localStorage.getItem('hh_customers') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('hh_current_user') || 'null');
-let currentCompletedOrder = null; // Stores last order for Invoice
+let currentCompletedOrder = null;
 let payMethod = '';
+let currentReturnOrderId = null;
+let carouselCurrentIndex = 0;
 
 // --- INIT ---
 window.onload = () => {
     renderProducts(products);
     updateUserUI();
+    updateWishlistCount();
+    startCountdown();
+    initCarousel();
+    setupScrollAnimations();
+    
+    // Add scroll event for back to top button
+    window.addEventListener('scroll', handleScroll);
+    
+    // Add intersection observer for animations
+    setupIntersectionObserver();
 };
 
-// --- GENERIC MODAL UTILS ---
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-    document.querySelector('.overlay').classList.remove('active');
-}
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-    document.querySelector('.overlay').classList.add('active');
+// --- NEW FEATURES ---
+
+// 1. Countdown Timer
+function startCountdown() {
+    const countdownDate = new Date();
+    countdownDate.setDate(countdownDate.getDate() + 7); // 7 days from now
+    
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.querySelector('.countdown-timer').innerHTML = "<h3>🎉 Special Offer Expired!</h3>";
+        }
+    }
+    
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
 }
 
-// --- USER SYSTEM ---
-function updateUserUI() {
-    if(currentUser) {
-        document.getElementById('signInBtn').style.display = 'none';
-        document.getElementById('userInfo').style.display = 'block';
-        document.getElementById('userNameDisplay').innerText = currentUser.name;
+// 2. Carousel
+function initCarousel() {
+    const carouselTrack = document.getElementById('carouselTrack');
+    const featuredProducts = products.slice(0, 3); // First 3 products as featured
+    
+    carouselTrack.innerHTML = featuredProducts.map(product => `
+        <div class="carousel-slide">
+            <img src="${product.img}" alt="${product.name}" class="float">
+            <h3>${product.name}</h3>
+            <p>${product.description.substring(0, 100)}...</p>
+            <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+        </div>
+    `).join('');
+}
+
+function nextSlide() {
+    carouselCurrentIndex = (carouselCurrentIndex + 1) % 3;
+    updateCarousel();
+}
+
+function prevSlide() {
+    carouselCurrentIndex = (carouselCurrentIndex - 1 + 3) % 3;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    const carouselTrack = document.getElementById('carouselTrack');
+    carouselTrack.style.transform = `translateX(-${carouselCurrentIndex * 100}%)`;
+}
+
+// 3. Wishlist Feature
+function toggleWishlist(productId) {
+    const product = products.find(p => p.id === productId);
+    const index = wishlist.findIndex(item => item.id === productId);
+    
+    if (index > -1) {
+        wishlist.splice(index, 1);
+        showToast("Removed from wishlist");
     } else {
-        document.getElementById('signInBtn').style.display = 'block';
-        document.getElementById('userInfo').style.display = 'none';
-    }
-}
-function openSignIn() { openModal('signInModal'); }
-function handleSignIn(e) {
-    e.preventDefault();
-    const name = document.getElementById('signName').value;
-    const email = document.getElementById('signEmail').value;
-    const phone = document.getElementById('signPhone').value;
-    
-    currentUser = { name, email, phone };
-    localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
-    
-    if(!customers.find(c => c.email === email)) {
-        customers.push({name, email, phone, date: new Date().toLocaleDateString()});
-        localStorage.setItem('hh_customers', JSON.stringify(customers));
+        wishlist.push(product);
+        showToast("Added to wishlist");
     }
     
-    closeModal('signInModal');
-    updateUserUI();
-    showToast(`Welcome, ${name}!`);
+    localStorage.setItem('hh_wishlist', JSON.stringify(wishlist));
+    updateWishlistCount();
+    renderProducts(products);
 }
-function handleSignOut() {
-    localStorage.removeItem('hh_current_user');
-    currentUser = null;
-    closeModal('userModal');
-    updateUserUI();
-    showToast("Signed Out.");
+
+function updateWishlistCount() {
+    document.getElementById('wishlistCount').textContent = wishlist.length;
 }
-function openUserDashboard() {
-    if(!currentUser) return;
-    document.getElementById('dashboardName').innerText = currentUser.name;
-    const myOrders = orders.filter(o => o.email === currentUser.email || o.phone === currentUser.phone);
-    const container = document.getElementById('userOrderHistory');
+
+function openWishlist() {
+    const wishlistItemsDiv = document.getElementById('wishlistItems');
     
-    if(myOrders.length === 0) container.innerHTML = "<p>No orders yet.</p>";
-    else {
-        container.innerHTML = myOrders.map(o => `
-            <div style="border-bottom:1px solid #eee; padding:5px 0;">
-                <strong>${o.id}</strong> - <span style="color:var(--primary)">${o.status}</span><br>
-                Items: ${o.items.length} | Total: ₹${o.total}<br>
-                <small>${o.date}</small>
+    if (wishlist.length === 0) {
+        wishlistItemsDiv.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <i class="fa-regular fa-heart" style="font-size: 48px; margin-bottom: 15px;"></i>
+                <p>Your wishlist is empty</p>
+            </div>
+        `;
+    } else {
+        wishlistItemsDiv.innerHTML = wishlist.map(item => `
+            <div class="cart-item">
+                <img src="${item.img}" alt="${item.name}">
+                <div style="flex:1;">
+                    <div style="font-weight:700; font-size:13px;">${item.name}</div>
+                    <div style="font-size:11px; color:#666;">₹${item.price}</div>
+                    <div class="cart-controls" style="margin-top:5px;">
+                        <button class="btn btn-primary" onclick="addToCart(${item.id})" style="padding:4px 12px; font-size:11px;">Add to Cart</button>
+                        <button class="btn btn-secondary" onclick="toggleWishlist(${item.id})" style="padding:4px 12px; font-size:11px;">Remove</button>
+                    </div>
+                </div>
             </div>
         `).join('');
     }
-    openModal('userModal');
+    
+    openModal('wishlistModal');
 }
 
-// --- PRODUCTS ---
+// 4. Product Quick View
+function openQuickView(productId) {
+    const product = products.find(p => p.id === productId);
+    const quickViewContent = document.getElementById('quickViewContent');
+    
+    quickViewContent.innerHTML = `
+        <div class="quick-view-image">
+            <img src="${product.img}" alt="${product.name}">
+        </div>
+        <div class="quick-view-details">
+            <h3>${product.name}</h3>
+            <div class="product-price">₹${product.price}</div>
+            <div class="product-rating">
+                ${generateStars(product.rating)}
+                <span class="rating-count">(${product.reviews} reviews)</span>
+            </div>
+            <p class="product-description">${product.description}</p>
+            <ul class="product-specs">
+                <li><strong>Category:</strong> ${product.cat}</li>
+                <li><strong>Ingredients:</strong> ${product.ingredients}</li>
+                <li><strong>Benefits:</strong> ${product.benefits}</li>
+                <li><strong>Stock:</strong> ${product.stock} units available</li>
+            </ul>
+            <div class="card-qty-wrapper">
+                <button class="qty-mini-btn" onclick="updateCardQty('${product.id}', -1)">-</button>
+                <input type="text" id="quick-qty-${product.id}" class="card-qty-input" value="1" readonly>
+                <button class="qty-mini-btn" onclick="updateCardQty('${product.id}', 1)">+</button>
+            </div>
+            <div class="card-btns" style="margin-top: 15px;">
+                <button class="btn btn-primary" onclick="addToCart(${product.id}); closeModal('quickViewModal')">Add to Cart</button>
+                <button class="btn btn-secondary" onclick="toggleWishlist(${product.id})">
+                    <i class="fa-${wishlist.find(w => w.id === product.id) ? 'solid' : 'regular'} fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    openModal('quickViewModal');
+}
+
+function generateStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+            stars += '<i class="fa-solid fa-star star"></i>';
+        } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+            stars += '<i class="fa-solid fa-star-half-alt star"></i>';
+        } else {
+            stars += '<i class="fa-regular fa-star star"></i>';
+        }
+    }
+    return stars;
+}
+
+// 5. Scroll Animations
+function handleScroll() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 300) {
+        backToTop.classList.add('visible');
+    } else {
+        backToTop.classList.remove('visible');
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function setupIntersectionObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+}
+
+function setupScrollAnimations() {
+    const elements = document.querySelectorAll('.section-title, .product-card, .countdown-timer, .newsletter');
+    elements.forEach(el => {
+        el.classList.add('animate-on-scroll');
+    });
+}
+
+// 6. Newsletter Subscription
+function subscribeNewsletter(event) {
+    event.preventDefault();
+    const email = event.target.querySelector('input[type="email"]').value;
+    
+    // Save to localStorage
+    let subscribers = JSON.parse(localStorage.getItem('hh_newsletter') || '[]');
+    if (!subscribers.includes(email)) {
+        subscribers.push(email);
+        localStorage.setItem('hh_newsletter', JSON.stringify(subscribers));
+        showToast("Subscribed successfully!");
+        event.target.reset();
+    } else {
+        showToast("Already subscribed!");
+    }
+}
+
+// 7. Enhanced Add to Cart with Animation
+function addToCart(id) {
+    const p = products.find(x => x.id === id);
+    const qtyInput = document.getElementById(`card-qty-${id}`) || document.getElementById(`quick-qty-${id}`);
+    const qty = parseInt(qtyInput ? qtyInput.value : 1);
+    const ex = cart.find(x => x.id === id);
+    
+    if (p.stock < (ex ? ex.qty + qty : qty)) {
+        showToast("Insufficient stock!");
+        return;
+    }
+    
+    if(ex) ex.qty += qty; else cart.push({...p, qty});
+    if(qtyInput) qtyInput.value = 1;
+    
+    // Animate cart icon
+    const cartIcon = document.querySelector('.cart-icon-wrap i');
+    cartIcon.classList.add('cart-animation');
+    setTimeout(() => cartIcon.classList.remove('cart-animation'), 600);
+    
+    updateCart(); 
+    showToast("Added to Bag");
+    
+    // Update product stock display
+    renderProducts(products);
+}
+
+// 8. Enhanced Product Rendering
 function renderProducts(list) {
     const grid = document.getElementById('productsGrid');
-    grid.innerHTML = list.map((p, i) => `
+    grid.innerHTML = list.map((p, i) => {
+        const isInWishlist = wishlist.find(w => w.id === p.id);
+        const stockBadge = p.stock < 5 ? `<div class="stock-badge">Only ${p.stock} left</div>` : '';
+        
+        return `
         <div class="product-card animate-in" style="animation-delay: ${i*0.05}s">
             <div class="badge">Pure</div>
-            <div class="product-img"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+            ${stockBadge}
+            <div class="product-img" onclick="openQuickView(${p.id})">
+                <img src="${p.img}" alt="${p.name}" loading="lazy">
+            </div>
+            <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" onclick="toggleWishlist(${p.id})">
+                <i class="fa-${isInWishlist ? 'solid' : 'regular'} fa-heart"></i>
+            </button>
             <div class="product-info">
-                <h3 class="product-title">${p.name}</h3>
+                <h3 class="product-title" onclick="openQuickView(${p.id})">${p.name}</h3>
+                <div class="product-rating">
+                    ${generateStars(p.rating)}
+                    <span class="rating-count">(${p.reviews})</span>
+                </div>
                 <div class="product-price">₹${p.price}</div>
                 <div class="card-qty-wrapper">
                     <button class="qty-mini-btn" onclick="updateCardQty('${p.id}', -1)">-</button>
@@ -693,33 +1501,51 @@ function renderProducts(list) {
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
+
+// 9. Enhanced Toast Notification
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.innerHTML = `
+        <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        ${msg}
+    `;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// --- EXISTING FUNCTIONS (Enhanced) ---
 function updateCardQty(id, chg) {
-    const el = document.getElementById(`card-qty-${id}`);
+    const el = document.getElementById(`card-qty-${id}`) || document.getElementById(`quick-qty-${id}`);
+    if (!el) return;
     let v = parseInt(el.value) + chg;
-    if(v<1) v=1; el.value = v;
+    if(v<1) v=1; 
+    if(v>products.find(p => p.id === id).stock) {
+        showToast("Maximum stock reached!", "warning");
+        v = products.find(p => p.id === id).stock;
+    }
+    el.value = v;
 }
+
 function filterProducts() {
     const q = document.getElementById('search').value.toLowerCase();
-    renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
+    const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        p.cat.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+    );
+    renderProducts(filtered);
 }
+
 function filterCat(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    renderProducts(cat === 'all' ? products : products.filter(p => p.cat.includes(cat)));
+    const filtered = cat === 'all' ? products : products.filter(p => p.cat.includes(cat));
+    renderProducts(filtered);
 }
 
-// --- CART ---
-function addToCart(id) {
-    const p = products.find(x => x.id === id);
-    const qtyInput = document.getElementById(`card-qty-${id}`);
-    const qty = parseInt(qtyInput ? qtyInput.value : 1);
-    const ex = cart.find(x => x.id === id);
-    if(ex) ex.qty += qty; else cart.push({...p, qty});
-    if(qtyInput) qtyInput.value = 1;
-    updateCart(); showToast("Added to Bag");
-}
 function updateCart() {
     const count = cart.reduce((a,b) => a+b.qty, 0);
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
@@ -733,33 +1559,79 @@ function updateCart() {
                 <div style="font-size:11px; color:#666;">₹${i.price}</div>
                 <div class="cart-controls">
                     <button class="qty-btn" onclick="modQty(${i.id}, -1)">-</button>
-                    <input type="number" class="cart-qty-input" value="${i.qty}" onchange="manualCartQty(${i.id}, this.value)">
+                    <input type="number" class="cart-qty-input" value="${i.qty}" onchange="manualCartQty(${i.id}, this.value)" min="1" max="${i.stock}">
                     <button class="qty-btn" onclick="modQty(${i.id}, 1)">+</button>
-                    <button class="bulk-btn" onclick="modQty(${i.id}, 10)">+10</button>
+                    <button class="bulk-btn" onclick="modQty(${i.id}, 5)">+5</button>
+                    <button class="bulk-btn" style="background: var(--danger);" onclick="removeFromCart(${i.id})">Remove</button>
                 </div>
             </div>
         </div>
-    `).join('') : '<p style="text-align:center; color:#999; font-size:12px;">Empty Bag</p>';
+    `).join('') : `
+        <div style="text-align:center; padding: 40px; color: #999;">
+            <i class="fa-solid fa-shopping-bag" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <p>Your bag is empty</p>
+            <button class="btn btn-primary" onclick="toggleCart(); document.getElementById('products').scrollIntoView({behavior: 'smooth'})" style="margin-top: 15px;">Continue Shopping</button>
+        </div>
+    `;
 }
+
+function removeFromCart(id) {
+    cart = cart.filter(x => x.id !== id);
+    updateCart();
+    showToast("Item removed from cart");
+}
+
 function modQty(id, n) {
     const i = cart.find(x => x.id === id);
-    if(i) { i.qty += n; if(i.qty <= 0) cart = cart.filter(x => x.id !== id); }
+    if(i) { 
+        const newQty = i.qty + n;
+        if(newQty <= 0) {
+            cart = cart.filter(x => x.id !== id);
+            showToast("Item removed from cart");
+        } else if(newQty > products.find(p => p.id === id).stock) {
+            showToast("Maximum stock reached!", "warning");
+            i.qty = products.find(p => p.id === id).stock;
+        } else {
+            i.qty = newQty;
+        }
+    }
     updateCart();
 }
+
 function manualCartQty(id, v) {
     const i = cart.find(x => x.id === id);
-    if(i) { i.qty = parseInt(v) > 0 ? parseInt(v) : 1; }
+    if(i) { 
+        const newQty = parseInt(v);
+        if(newQty > 0 && newQty <= products.find(p => p.id === id).stock) {
+            i.qty = newQty;
+        } else if(newQty > products.find(p => p.id === id).stock) {
+            showToast("Maximum stock reached!", "warning");
+            i.qty = products.find(p => p.id === id).stock;
+        }
+    }
     updateCart();
 }
+
+// --- GENERIC MODAL UTILS ---
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.querySelector('.overlay').classList.remove('active');
+}
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    document.querySelector('.overlay').classList.add('active');
+}
+
+// --- EXISTING FUNCTIONS (Keep as is) ---
 function toggleCart() {
     const d = document.getElementById('cartDrawer');
     const o = document.getElementById('cartOverlay');
     if(d.classList.contains('active')) { d.classList.remove('active'); o.classList.remove('active'); }
     else { d.classList.add('active'); o.classList.add('active'); }
 }
+
 function buyNow(id) { cart=[]; addToCart(id); toggleCart(); openCheckout(); }
 
-// --- CHECKOUT ---
 function openCheckout() {
     if(!cart.length) return showToast("Cart is empty");
     toggleCart(); openModal('checkoutModal');
@@ -773,6 +1645,7 @@ function openCheckout() {
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'none';
 }
+
 function goToPayment(e) {
     e.preventDefault();
     document.getElementById('step1').style.display = 'none';
@@ -782,7 +1655,9 @@ function goToPayment(e) {
     const url = `upi://pay?pa=${UPI_ID}&pn=HerbalHeaven&am=${total}&cu=INR`;
     document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
 }
-function pay(m) { payMethod = m; goToPayment(new Event('click')); }
+
+function pay(m) { payMethod = m; }
+
 function confirmOrder() {
     const name = document.getElementById('cName').value;
     const email = document.getElementById('cEmail').value;
@@ -790,6 +1665,14 @@ function confirmOrder() {
     const addr = document.getElementById('cAddr').value;
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
     const uid = "HH-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+    // Update product stock
+    cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        if (product) {
+            product.stock -= item.qty;
+        }
+    });
 
     // Create Order Object
     const order = {
@@ -824,9 +1707,9 @@ function confirmOrder() {
     ).join('');
 
     cart = []; updateCart();
+    renderProducts(products); // Update stock display
 }
 
-// --- INVOICE ---
 function downloadInvoice() {
     if(!currentCompletedOrder) return alert("No order found!");
     const element = document.getElementById('invoiceTemplate');
@@ -843,32 +1726,64 @@ function downloadInvoice() {
     });
 }
 
-// --- TRACK & RETURN ---
-function openTrackOrder() { openModal('trackModal'); }
-function trackOrderNow() {
-    const id = document.getElementById('trackInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
-    const r = document.getElementById('trackResult');
-    r.style.display = 'block';
-    if(o) r.innerHTML = `<div style="background:#f9f9f9; padding:10px; border:1px solid #eee; border-radius:6px; margin-top:10px;"><b>${o.id}</b>: <span style="color:var(--primary)">${o.status}</span><br>Date: ${o.date}<br>Total: ₹${o.total}</div>`;
-    else r.innerHTML = "<p style='color:red; margin-top:10px;'>Order not found.</p>";
+// --- USER SYSTEM ---
+function updateUserUI() {
+    if(currentUser) {
+        document.getElementById('signInBtn').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'block';
+        document.getElementById('userNameDisplay').innerText = currentUser.name;
+    } else {
+        document.getElementById('signInBtn').style.display = 'block';
+        document.getElementById('userInfo').style.display = 'none';
+    }
 }
-function openReturnOrder() { openModal('returnModal'); document.getElementById('returnStep1').style.display = 'block'; document.getElementById('returnStep2').style.display = 'none'; }
-function fetchReturnItems() {
-    const id = document.getElementById('returnInput').value.trim().toUpperCase();
-    const o = orders.find(x => x.id === id);
-    if(o) {
-        currentReturnOrderId = o.id;
-        document.getElementById('returnStep1').style.display = 'none';
-        document.getElementById('returnStep2').style.display = 'block';
-        document.getElementById('returnItemsList').innerHTML = o.items.map(i => `<div><input type="checkbox" value="${i.name}"> ${i.name}</div>`).join('');
-    } else alert("Order not found");
+
+function openSignIn() { openModal('signInModal'); }
+
+function handleSignIn(e) {
+    e.preventDefault();
+    const name = document.getElementById('signName').value;
+    const email = document.getElementById('signEmail').value;
+    const phone = document.getElementById('signPhone').value;
+    
+    currentUser = { name, email, phone };
+    localStorage.setItem('hh_current_user', JSON.stringify(currentUser));
+    
+    if(!customers.find(c => c.email === email)) {
+        customers.push({name, email, phone, date: new Date().toLocaleDateString()});
+        localStorage.setItem('hh_customers', JSON.stringify(customers));
+    }
+    
+    closeModal('signInModal');
+    updateUserUI();
+    showToast(`Welcome, ${name}!`);
 }
-function processReturn() {
-    const reason = document.getElementById('returnReason').value;
-    const msg = `RETURN: ${currentReturnOrderId} Reason: ${reason}`;
-    window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-    closeModal('returnModal');
+
+function handleSignOut() {
+    localStorage.removeItem('hh_current_user');
+    currentUser = null;
+    closeModal('userModal');
+    updateUserUI();
+    showToast("Signed Out.");
+}
+
+function openUserDashboard() {
+    if(!currentUser) return;
+    document.getElementById('dashboardName').innerText = currentUser.name;
+    const myOrders = orders.filter(o => o.email === currentUser.email || o.phone === currentUser.phone);
+    const container = document.getElementById('userOrderHistory');
+    
+    if(myOrders.length === 0) container.innerHTML = "<p>No orders yet.</p>";
+    else {
+        container.innerHTML = myOrders.map(o => `
+            <div style="border-bottom:1px solid #eee; padding:5px 0;">
+                <strong>${o.id}</strong> - <span style="color:var(--primary)">${o.status}</span><br>
+                Items: ${o.items.length} | Total: ₹${o.total}<br>
+                <small>${o.date}</small>
+            </div>
+        `).join('');
+    }
+    openModal('userModal');
 }
 
 // --- ADMIN & MENU ---
@@ -878,12 +1793,9 @@ function toggleMenu() {
     if(m.classList.contains('active')) { m.classList.remove('active'); o.classList.remove('active'); }
     else { m.classList.add('active'); o.classList.add('active'); }
 }
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.innerText = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
+
 function openAdminLogin() { openModal('adminModal'); document.getElementById('adminLogin').style.display = 'block'; document.getElementById('adminDash').style.display = 'none'; }
+
 function checkAdmin() {
     if(document.getElementById('admPass').value === ADMIN_PASS) {
         document.getElementById('adminLogin').style.display = 'none';
@@ -891,6 +1803,7 @@ function checkAdmin() {
         refreshData();
     } else alert("Wrong Password");
 }
+
 function refreshData() {
     document.getElementById('orderBody').innerHTML = orders.map((o, index) => 
         `<tr style="border-bottom:1px solid #eee;">
@@ -910,30 +1823,37 @@ function refreshData() {
         </tr>`
     ).join('');
 }
+
 function updateStatus(index, newStatus) {
     orders[index].status = newStatus;
     localStorage.setItem('hh_orders', JSON.stringify(orders));
     showToast("Status Updated!");
 }
+
 function notifyWA(phone, name, id, total) {
     const msg = `Hi ${name}, Your order ${id} of ₹${total} is confirmed! - Herbal&Heaven`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 }
+
 function notifyEmail(email, name, id, total) {
     const subject = `Order Confirmed: ${id}`;
     const body = `Hi ${name},\n\nOrder ${id} amounting to ₹${total} is confirmed.\n\nRegards,\nOmkar`;
     window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
 }
+
 function resetDatabase() {
     const code = prompt("Enter Secret Code to DELETE ALL DATA:");
     if(code === SECRET_CODE) {
         if(confirm("Are you sure? This cannot be undone.")) {
             localStorage.removeItem('hh_orders');
             localStorage.removeItem('hh_customers');
-            orders = []; customers = []; refreshData(); alert("Database Wiped.");
+            localStorage.removeItem('hh_wishlist');
+            localStorage.removeItem('hh_newsletter');
+            orders = []; customers = []; wishlist = []; refreshData(); alert("Database Wiped.");
         }
     } else alert("Incorrect Code.");
 }
+
 function exportOrders() {
     const ws = XLSX.utils.json_to_sheet(orders.map(o => ({
         ID: o.id, Status: o.status, Date: o.date, Name: o.customer, Phone: o.phone, 
@@ -943,12 +1863,101 @@ function exportOrders() {
     XLSX.utils.book_append_sheet(wb, ws, "Orders");
     XLSX.writeFile(wb, "Orders.xlsx");
 }
+
 function exportCustomers() {
     const ws = XLSX.utils.json_to_sheet(customers);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Customers");
     XLSX.writeFile(wb, "Customers.xlsx");
 }
+
+// --- TRACK & RETURN ---
+function openTrackOrder() { openModal('trackModal'); }
+
+function trackOrderNow() {
+    const id = document.getElementById('trackInput').value.trim().toUpperCase();
+    const o = orders.find(x => x.id === id);
+    const r = document.getElementById('trackResult');
+    r.style.display = 'block';
+    if(o) {
+        const statusSteps = ['Placed', 'Shipped', 'Delivered'];
+        const currentStep = statusSteps.indexOf(o.status);
+        
+        r.innerHTML = `
+            <div style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:6px; margin-top:15px;">
+                <h4 style="margin-bottom:10px;">Order ${o.id}</h4>
+                <div class="progress-tracker">
+                    ${statusSteps.map((step, index) => `
+                        <div class="progress-step">
+                            <div class="step-circle ${index <= currentStep ? 'active' : ''}">${index + 1}</div>
+                            <div class="step-label">${step}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top:15px; font-size:12px;">
+                    <p><strong>Date:</strong> ${o.date}</p>
+                    <p><strong>Total:</strong> ₹${o.total}</p>
+                    <p><strong>Status:</strong> <span style="color:var(--primary); font-weight:bold;">${o.status}</span></p>
+                </div>
+            </div>
+        `;
+    } else {
+        r.innerHTML = "<p style='color:red; margin-top:10px;'>Order not found.</p>";
+    }
+}
+
+function openReturnOrder() { 
+    openModal('returnModal'); 
+    document.getElementById('returnStep1').style.display = 'block'; 
+    document.getElementById('returnStep2').style.display = 'none'; 
+}
+
+function fetchReturnItems() {
+    const id = document.getElementById('returnInput').value.trim().toUpperCase();
+    const o = orders.find(x => x.id === id);
+    if(o) {
+        currentReturnOrderId = o.id;
+        document.getElementById('returnStep1').style.display = 'none';
+        document.getElementById('returnStep2').style.display = 'block';
+        document.getElementById('returnItemsList').innerHTML = o.items.map(i => `
+            <div style="display:flex; align-items:center; gap:10px; padding:5px 0; border-bottom:1px solid #f5f5f5;">
+                <input type="checkbox" value="${i.name}" id="return-${i.id}">
+                <label for="return-${i.id}" style="flex:1; font-size:13px;">${i.name} (Qty: ${i.qty})</label>
+            </div>
+        `).join('');
+    } else {
+        showToast("Order not found", "warning");
+    }
+}
+
+function processReturn() {
+    const reason = document.getElementById('returnReason').value;
+    if(!reason.trim()) {
+        showToast("Please provide a reason", "warning");
+        return;
+    }
+    
+    const selectedItems = Array.from(document.querySelectorAll('#returnItemsList input:checked'))
+        .map(cb => cb.value);
+    
+    if(selectedItems.length === 0) {
+        showToast("Please select items to return", "warning");
+        return;
+    }
+    
+    const msg = `RETURN REQUEST\nOrder ID: ${currentReturnOrderId}\nItems: ${selectedItems.join(', ')}\nReason: ${reason}`;
+    window.open(`https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+    closeModal('returnModal');
+    showToast("Return request submitted");
+}
+
+// Auto carousel rotation
+setInterval(nextSlide, 5000);
+
+// Initialize with first slide centered
+setTimeout(() => {
+    updateCarousel();
+}, 100);
 </script>
 </body>
 </html>
